@@ -41,12 +41,14 @@ partial class Form1
         radioButton10 = new RadioButton();
         button1 = new Button();
         SeriaHdTb = new TextBox();
+        button2 = new Button();
+        textBox1 = new TextBox();
         SuspendLayout();
         // 
         // radioButton1
         // 
         radioButton1.AutoSize = true;
-        radioButton1.Location = new Point(659, 158);
+        radioButton1.Location = new Point(12, 16);
         radioButton1.Name = "radioButton1";
         radioButton1.Size = new Size(65, 19);
         radioButton1.TabIndex = 0;
@@ -59,7 +61,7 @@ partial class Form1
         // radioButton2
         // 
         radioButton2.AutoSize = true;
-        radioButton2.Location = new Point(659, 183);
+        radioButton2.Location = new Point(12, 41);
         radioButton2.Name = "radioButton2";
         radioButton2.Size = new Size(73, 19);
         radioButton2.TabIndex = 1;
@@ -72,7 +74,7 @@ partial class Form1
         // radioButton3
         // 
         radioButton3.AutoSize = true;
-        radioButton3.Location = new Point(659, 208);
+        radioButton3.Location = new Point(12, 66);
         radioButton3.Name = "radioButton3";
         radioButton3.Size = new Size(91, 19);
         radioButton3.TabIndex = 2;
@@ -85,20 +87,20 @@ partial class Form1
         // radioButton4
         // 
         radioButton4.AutoSize = true;
-        radioButton4.Location = new Point(659, 233);
+        radioButton4.Location = new Point(12, 91);
         radioButton4.Name = "radioButton4";
-        radioButton4.Size = new Size(79, 19);
+        radioButton4.Size = new Size(57, 19);
         radioButton4.TabIndex = 3;
         radioButton4.TabStop = true;
         radioButton4.Tag = "4";
-        radioButton4.Text = "Sincroniza";
+        radioButton4.Text = "NFS-e";
         radioButton4.UseVisualStyleBackColor = true;
         radioButton4.CheckedChanged += RadioButton_CheckedChanged;
         // 
         // radioButton5
         // 
         radioButton5.AutoSize = true;
-        radioButton5.Location = new Point(659, 258);
+        radioButton5.Location = new Point(12, 116);
         radioButton5.Name = "radioButton5";
         radioButton5.Size = new Size(62, 19);
         radioButton5.TabIndex = 4;
@@ -111,7 +113,7 @@ partial class Form1
         // radioButton6
         // 
         radioButton6.AutoSize = true;
-        radioButton6.Location = new Point(659, 283);
+        radioButton6.Location = new Point(12, 141);
         radioButton6.Name = "radioButton6";
         radioButton6.Size = new Size(63, 19);
         radioButton6.TabIndex = 5;
@@ -124,7 +126,7 @@ partial class Form1
         // radioButton7
         // 
         radioButton7.AutoSize = true;
-        radioButton7.Location = new Point(659, 308);
+        radioButton7.Location = new Point(12, 166);
         radioButton7.Name = "radioButton7";
         radioButton7.Size = new Size(63, 19);
         radioButton7.TabIndex = 6;
@@ -137,7 +139,7 @@ partial class Form1
         // radioButton8
         // 
         radioButton8.AutoSize = true;
-        radioButton8.Location = new Point(659, 333);
+        radioButton8.Location = new Point(12, 191);
         radioButton8.Name = "radioButton8";
         radioButton8.Size = new Size(80, 19);
         radioButton8.TabIndex = 7;
@@ -150,7 +152,7 @@ partial class Form1
         // radioButton9
         // 
         radioButton9.AutoSize = true;
-        radioButton9.Location = new Point(659, 358);
+        radioButton9.Location = new Point(12, 216);
         radioButton9.Name = "radioButton9";
         radioButton9.Size = new Size(139, 19);
         radioButton9.TabIndex = 8;
@@ -163,7 +165,7 @@ partial class Form1
         // radioButton10
         // 
         radioButton10.AutoSize = true;
-        radioButton10.Location = new Point(659, 383);
+        radioButton10.Location = new Point(12, 241);
         radioButton10.Name = "radioButton10";
         radioButton10.Size = new Size(61, 19);
         radioButton10.TabIndex = 9;
@@ -175,7 +177,7 @@ partial class Form1
         // 
         // button1
         // 
-        button1.Location = new Point(659, 432);
+        button1.Location = new Point(12, 290);
         button1.Name = "button1";
         button1.Size = new Size(200, 23);
         button1.TabIndex = 10;
@@ -185,17 +187,43 @@ partial class Form1
         // 
         // SeriaHdTb
         // 
-        SeriaHdTb.Location = new Point(1189, 42);
+        SeriaHdTb.Location = new Point(1698, 12);
         SeriaHdTb.Name = "SeriaHdTb";
         SeriaHdTb.Size = new Size(89, 23);
         SeriaHdTb.TabIndex = 11;
         SeriaHdTb.TextChanged += textBox1_TextChanged;
+        // 
+        // button2
+        // 
+        button2.BackColor = Color.Turquoise;
+        button2.Location = new Point(12, 523);
+        button2.Name = "button2";
+        button2.Size = new Size(75, 23);
+        button2.TabIndex = 12;
+        button2.Text = "Setar reg";
+        button2.UseVisualStyleBackColor = false;
+        button2.Click += button2_Click;
+        // 
+        // textBox1
+        // 
+        textBox1.BackColor = SystemColors.Control;
+        textBox1.BorderStyle = BorderStyle.None;
+        textBox1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+        textBox1.Location = new Point(1599, 13);
+        textBox1.Multiline = true;
+        textBox1.Name = "textBox1";
+        textBox1.Size = new Size(93, 23);
+        textBox1.TabIndex = 13;
+        textBox1.Text = "Serial HD:";
+        textBox1.TextAlign = HorizontalAlignment.Center;
         // 
         // Form1
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(1799, 840);
+        Controls.Add(textBox1);
+        Controls.Add(button2);
         Controls.Add(SeriaHdTb);
         Controls.Add(button1);
         Controls.Add(radioButton10);
@@ -229,4 +257,6 @@ partial class Form1
     private RadioButton radioButton10;
     private Button button1;
     private TextBox SeriaHdTb;
+    private Button button2;
+    private TextBox textBox1;
 }

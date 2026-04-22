@@ -12,7 +12,7 @@ namespace CartsysControlPanel
             {1, "Cartsys.Registro.Executa.exe"},
             {2, "Cartsys.Guardian.exe"},
             {3, "Cartsys.Notificacao.Servico.exe"},
-            {4, "Sincroniza.exe"},
+            {4, "Cartsys.NFSe.Servico.exe"},
             {5, "CartsysTarefas.exe"},
             {6, "Cartsys.WhatsApp.Servico.exe"},
             {7, "Cartsys.Update.Servico.exe"},

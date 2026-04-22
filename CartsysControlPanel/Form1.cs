@@ -10,6 +10,7 @@ public partial class Form1 : Form
     private string _appPath = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
     private int _serviceSelected;
     private string _serialHd;
+    private string _serverName;
     public Form1()
     {
         InitializeComponent();
@@ -40,23 +41,17 @@ public partial class Form1 : Form
 
             return;
         }
-        GetHdSerial();
+        SeriaHdTb.Text = setHdSerial();
+
+
+    }
+    private string setHdSerial()
+    {
+        _serialHd = GetSerialHd.GetHdSerial();
+        return _serialHd;
     }
 
-    private void GetHdSerial()
-    {
-        try
-        {
-            string drive = "C";
-            ManagementObject disk = new ManagementObject("win32_logicaldisk.deviceid=\"" + drive + ":\"");
-            disk.Get();
-            SeriaHdTb.Text = disk["VolumeSerialNumber"].ToString();
-        }
-        catch(Exception e)
-        {
-            MessageBox.Show($"Ocorreu um erro ao tentar obter o serial do HD: {e.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
+
 
     private void RadioButton_CheckedChanged(object sender, EventArgs e)
     {
@@ -97,6 +92,20 @@ public partial class Form1 : Form
 
     private void textBox1_TextChanged(object sender, EventArgs e)
     {
-       
+
+    }
+
+    private void button2_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            _serverName = NetworkHandler.ServerName();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Ocorreu um erro ao tentar recuperar as informações de DNS do servidor: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error); ;           
+        }
+
+        RegeditHandler.CreateRegistryKey(_serverName, "C:\\CARTSYSDADOS\\CARTORIO.FDB");
     }
 }
