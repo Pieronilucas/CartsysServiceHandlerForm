@@ -43,6 +43,10 @@ partial class Form1
         SeriaHdTb = new TextBox();
         button2 = new Button();
         textBox1 = new TextBox();
+        button3 = new Button();
+        btnUninstallAll = new Button();
+        BtnInstallAll = new Button();
+        button6 = new Button();
         SuspendLayout();
         // 
         // radioButton1
@@ -217,11 +221,55 @@ partial class Form1
         textBox1.Text = "Serial HD:";
         textBox1.TextAlign = HorizontalAlignment.Center;
         // 
+        // button3
+        // 
+        button3.Location = new Point(12, 319);
+        button3.Name = "button3";
+        button3.Size = new Size(200, 23);
+        button3.TabIndex = 14;
+        button3.Text = "Desinstalar";
+        button3.UseVisualStyleBackColor = true;
+        button3.Click += button3_Click;
+        // 
+        // btnUninstallAll
+        // 
+        btnUninstallAll.Location = new Point(12, 348);
+        btnUninstallAll.Name = "btnUninstallAll";
+        btnUninstallAll.Size = new Size(200, 23);
+        btnUninstallAll.TabIndex = 15;
+        btnUninstallAll.Text = "Botão do geme meu nome";
+        btnUninstallAll.UseVisualStyleBackColor = true;
+        btnUninstallAll.Click += btnUninstallAll_Click;
+        // 
+        // BtnInstallAll
+        // 
+        BtnInstallAll.Location = new Point(12, 377);
+        BtnInstallAll.Name = "BtnInstallAll";
+        BtnInstallAll.Size = new Size(200, 23);
+        BtnInstallAll.TabIndex = 16;
+        BtnInstallAll.Text = "AAAAAAAAAAAAAAAAAAAA";
+        BtnInstallAll.UseVisualStyleBackColor = true;
+        BtnInstallAll.Click += BtnInstallAll_Click;
+        // 
+        // button6
+        // 
+        button6.Location = new Point(10, 406);
+        button6.Name = "button6";
+        button6.Size = new Size(202, 23);
+        button6.TabIndex = 17;
+        button6.Text = "banda restart";
+        button6.UseVisualStyleBackColor = true;
+        button6.Click += button6_Click;
+        // 
         // Form1
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(1799, 840);
+        Controls.Add(button6);
+        Controls.Add(BtnInstallAll);
+        Controls.Add(btnUninstallAll);
+        Controls.Add(button3);
         Controls.Add(textBox1);
         Controls.Add(button2);
         Controls.Add(SeriaHdTb);
@@ -259,4 +307,8 @@ partial class Form1
     private TextBox SeriaHdTb;
     private Button button2;
     private TextBox textBox1;
+    private Button button3;
+    private Button btnUninstallAll;
+    private Button BtnInstallAll;
+    private Button button6;
 }

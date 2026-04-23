@@ -53,6 +53,6 @@ namespace CartsysControlPanel
                 return serverName = Dns.GetHostName();
             }
             return serverName = _ipAddress;
-           }
+        }
     }
 }
