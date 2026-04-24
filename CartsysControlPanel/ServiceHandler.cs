@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
-using System;
+using System.ComponentModel;
 using System.Diagnostics;
-using System.Xml.Linq;
 
 namespace CartsysControlPanel
 {
@@ -85,10 +84,17 @@ namespace CartsysControlPanel
                     }
                 }
             }
+            catch (Win32Exception ex) when (ex.NativeErrorCode == 5) // Erro de Acesso Negado
+            {
+                MessageBox.Show("Acesso negado ao executar o InstallUtil. O programa deve ser executado como Administrador.", "Erro de Permissão", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+            catch (Win32Exception ex)
+            {
+                MessageBox.Show($"Erro de sistema ao iniciar instalador: {ex.Message}", "Erro Win32", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             catch (Exception ex)
             {
-                MessageBox.Show($"Falha crítica ao tentar instalar o serviço. Erro: {ex.Message}.", $"Erro ao instalar o serviço",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Falha inesperada na instalação: {ex.Message}", "Erro Crítico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }
@@ -130,10 +136,13 @@ namespace CartsysControlPanel
                     }
                 }
             }
+            catch (Win32Exception ex)
+            {
+                MessageBox.Show($"Não foi possível executar o 'sc.exe': {ex.Message}", "Erro de Execução", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             catch (Exception ex)
             {
-                MessageBox.Show($"Falha ao tentar desinstalar os serviço. Erro: {ex.Message}.", $"Erro ao desinstalar o serviço",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Erro inesperado na desinstalação: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
 
@@ -190,29 +199,36 @@ namespace CartsysControlPanel
             string serviceName = serviceNames[option];
             string exeName = executaveis[option];
 
-            var startInfo = new ProcessStartInfo
+            try
             {
-                FileName = "net",
-                CreateNoWindow = true,
-                UseShellExecute = false
-            };
-            using (var process = Process.Start(startInfo))
-            {
-                process?.WaitForExit(2000);
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = "net",
+                    CreateNoWindow = true,
+                    UseShellExecute = false
+                };
+                using (var process = Process.Start(startInfo))
+                {
+                    process?.WaitForExit(2000);
+                }
+
+
+                var killInfo = new ProcessStartInfo
+                {
+                    FileName = "taskkill.exe",
+                    Arguments = $"/F /IM \"{exeName}\" /T",
+                    CreateNoWindow = true,
+                    UseShellExecute = false
+                };
+
+                using (var p = Process.Start(killInfo))
+                {
+                    p?.WaitForExit();
+                }
             }
-
-
-            var killInfo = new ProcessStartInfo
+            catch (Exception ex)
             {
-                FileName = "taskkill.exe",
-                Arguments = $"/F /IM \"{exeName}\" /T",
-                CreateNoWindow = true,
-                UseShellExecute = false
-            };
-
-            using (var p = Process.Start(killInfo))
-            {
-                p?.WaitForExit(); 
+                MessageBox.Show($"Falha ao parar o serviço {serviceName}. Erro: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

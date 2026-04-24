@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Text;
 
 namespace CartsysControlPanel
 {
@@ -15,34 +12,46 @@ namespace CartsysControlPanel
 
         private static void GetNetworkInfo()
         {
-            var interfaces = NetworkInterface.GetAllNetworkInterfaces()
-            .Where(ni => ni.OperationalStatus == OperationalStatus.Up)
-
-            .Where(ni => ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-            .Where(ni => !ni.Description.Contains("Virtual", StringComparison.OrdinalIgnoreCase))
-            .Where(ni => !ni.Description.Contains("VPN", StringComparison.OrdinalIgnoreCase))
-            .Where(ni => !ni.Description.Contains("Pseudo", StringComparison.OrdinalIgnoreCase));
-
-            foreach (var ni in interfaces)
+            try
             {
-                var props = ni.GetIPProperties();
+                var interfaces = NetworkInterface.GetAllNetworkInterfaces()
+                .Where(ni => ni.OperationalStatus == OperationalStatus.Up)
 
+                .Where(ni => ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                .Where(ni => !ni.Description.Contains("Virtual", StringComparison.OrdinalIgnoreCase))
+                .Where(ni => !ni.Description.Contains("VPN", StringComparison.OrdinalIgnoreCase))
+                .Where(ni => !ni.Description.Contains("Pseudo", StringComparison.OrdinalIgnoreCase));
 
-                var hasGateway = props.GatewayAddresses.Any();
-                if (!hasGateway) continue;
-                var ip = props.UnicastAddresses.FirstOrDefault(address =>
-                    address.Address.AddressFamily == AddressFamily.InterNetwork);
-                _ipAddress = ip?.Address.ToString();
-
-                try
+                foreach (var ni in interfaces)
                 {
-                    _isDhcpEnabled = props.GetIPv4Properties()?.IsDhcpEnabled ?? false;
+                    var props = ni.GetIPProperties();
 
+
+                    var hasGateway = props.GatewayAddresses.Any();
+                    if (!hasGateway) continue;
+                    var ip = props.UnicastAddresses.FirstOrDefault(address =>
+                        address.Address.AddressFamily == AddressFamily.InterNetwork);
+                    _ipAddress = ip?.Address.ToString();
+
+                    try
+                    {
+                        _isDhcpEnabled = props.GetIPv4Properties()?.IsDhcpEnabled ?? false;
+
+                    }
+                    catch (NetworkInformationException)
+                    {
+                        // Falha ao obter propriedades específicas de IPv4
+                        _isDhcpEnabled = false;
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message); ;
-                }
+            }
+            catch (NetworkInformationException netEx)
+            {
+                MessageBox.Show($"Erro ao acessar informações de rede: {netEx.Message}", "Erro de Rede", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Falha inesperada ao mapear rede: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         public static string ServerName()

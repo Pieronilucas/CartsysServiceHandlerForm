@@ -1,4 +1,3 @@
-using System.Management;
 using System.Diagnostics;
 using System.Security.Principal;
 

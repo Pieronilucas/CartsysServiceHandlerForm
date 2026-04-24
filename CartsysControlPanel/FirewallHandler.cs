@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 
 namespace CartsysControlPanel
-{   
+{
     public static class FirewallHandler
     {
         private static Type type = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
