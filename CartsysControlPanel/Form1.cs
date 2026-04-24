@@ -19,36 +19,14 @@ public partial class Form1 : Form
 
     private void Form1_Load(object sender, EventArgs e)
     {
-        if (!_isAdmin)
-        {
-            var elevated = new ProcessStartInfo
-            {
-                FileName = _appPath,
-                UseShellExecute = true,
-                Verb = "runas"
-            };
 
-            try
-            {
-                Process.Start(elevated);
-                Application.Exit();
-            }
-            catch
-            {
-                MessageBox.Show("Este aplicativo requer privilégios de administrador para funcionar corretamente.", "Permissão Negada", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Application.Exit();
-            }
-
-            return;
-        }
-        SeriaHdTb.Text = setHdSerial();
-
+        setHdSerial();
 
     }
-    private string setHdSerial()
+    private void setHdSerial()
     {
         _serialHd = GetSerialHd.GetHdSerial();
-        return _serialHd;
+        SeriaHdTb.Text = _serialHd;
     }
 
 
@@ -140,7 +118,7 @@ public partial class Form1 : Form
     {
         btnUninstallAll.Text = "Desinstalando...";
         btnUninstallAll.Enabled = false;
-        
+
         await Task.Run(() =>
         {
             try
@@ -189,5 +167,15 @@ public partial class Form1 : Form
         {
             MessageBox.Show($"Ocorreu um erro ao tentar configurar a reinicialização automática do serviço: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+    }
+
+    private async void btnFirewall_Click(object sender, EventArgs e)
+    {
+        btnFirewall.Enabled = false;
+        await Task.Run(() =>
+        {
+            FirewallHandler.OpenFirebirdPort();
+        });
+        btnFirewall.Enabled = true;
     }
 }

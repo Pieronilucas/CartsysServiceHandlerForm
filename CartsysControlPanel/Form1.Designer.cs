@@ -47,6 +47,7 @@ partial class Form1
         btnUninstallAll = new Button();
         BtnInstallAll = new Button();
         button6 = new Button();
+        btnFirewall = new Button();
         SuspendLayout();
         // 
         // radioButton1
@@ -261,11 +262,22 @@ partial class Form1
         button6.UseVisualStyleBackColor = true;
         button6.Click += button6_Click;
         // 
+        // btnFirewall
+        // 
+        btnFirewall.Location = new Point(12, 552);
+        btnFirewall.Name = "btnFirewall";
+        btnFirewall.Size = new Size(75, 23);
+        btnFirewall.TabIndex = 18;
+        btnFirewall.Text = "fairiuau";
+        btnFirewall.UseVisualStyleBackColor = true;
+        btnFirewall.Click += btnFirewall_Click;
+        // 
         // Form1
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(1799, 840);
+        Controls.Add(btnFirewall);
         Controls.Add(button6);
         Controls.Add(BtnInstallAll);
         Controls.Add(btnUninstallAll);
@@ -311,4 +323,5 @@ partial class Form1
     private Button btnUninstallAll;
     private Button BtnInstallAll;
     private Button button6;
+    private Button btnFirewall;
 }
