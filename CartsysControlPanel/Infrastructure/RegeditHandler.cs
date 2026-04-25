@@ -1,7 +1,7 @@
 ﻿using Microsoft.Win32;
 using System.Security;
 
-namespace CartsysControlPanel
+namespace CartsysControlPanel.Handlers
 {
     public static class RegeditHandler
     {

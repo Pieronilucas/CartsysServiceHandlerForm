@@ -1,14 +1,18 @@
-﻿using System.Net;
+﻿using System.ComponentModel;
+using System.Diagnostics;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
-namespace CartsysControlPanel
+namespace CartsysControlPanel.Handlers
 {
     public static class NetworkHandler
     {
         private static bool _isDhcpEnabled;
         private static string _ipAddress;
         public static string serverName;
+        private readonly static string _DirectDownloadUrl = "https://ib-aid.com/download/hqbird/hqbirdwindows.zip";
+        private readonly static string _downloadPageUrl = "https://ib-aid.com/br/hqbird-download/";
 
         private static void GetNetworkInfo()
         {
@@ -54,6 +58,7 @@ namespace CartsysControlPanel
                 MessageBox.Show($"Falha inesperada ao mapear rede: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         public static string ServerName()
         {
             GetNetworkInfo();
@@ -62,6 +67,49 @@ namespace CartsysControlPanel
                 return serverName = Dns.GetHostName();
             }
             return serverName = _ipAddress;
+        }
+
+        
+
+        public static async Task<bool> IsLinkValid(string url)
+        {
+            try
+            {
+                using var client = new HttpClient();
+                client.Timeout = TimeSpan.FromSeconds(7);
+
+                var request = new HttpRequestMessage(HttpMethod.Head, url);
+                using var response = await client.SendAsync(request);
+
+                return response.IsSuccessStatusCode;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static async Task<bool> ValidateAndOpen(string url)
+        {
+            if (await IsLinkValid(url))
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                    return true;
+                }
+                catch (Win32Exception) 
+                { 
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        public static async Task<bool> RedirectToHqbird(bool isDirectDownload)
+        {
+            string url = isDirectDownload ? _DirectDownloadUrl : _downloadPageUrl;
+            return await ValidateAndOpen(url);
         }
     }
 }

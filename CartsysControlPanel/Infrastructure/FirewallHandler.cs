@@ -1,7 +1,7 @@
 ﻿using NetFwTypeLib;
 using System.Runtime.InteropServices;
 
-namespace CartsysControlPanel
+namespace CartsysControlPanel.Handlers
 {
     public static class FirewallHandler
     {

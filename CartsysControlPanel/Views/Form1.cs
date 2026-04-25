@@ -1,12 +1,11 @@
-using System.Diagnostics;
-using System.Security.Principal;
+using CartsysControlPanel.Handlers;
+using CartsysControlPanel.Infrastructure;
+using System.Management;
 
 namespace CartsysControlPanel;
 
 public partial class Form1 : Form
 {
-    private bool _isAdmin = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
-    private string _appPath = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
     private int _serviceSelected;
     private string _serialHd;
     private string _serverName;
@@ -18,13 +17,11 @@ public partial class Form1 : Form
 
     private void Form1_Load(object sender, EventArgs e)
     {
-
         setHdSerial();
-
     }
     private void setHdSerial()
     {
-        _serialHd = GetSerialHd.GetHdSerial();
+        _serialHd = HardwareHandler.GetHdSerial();
         SeriaHdTb.Text = _serialHd;
     }
 
@@ -32,7 +29,6 @@ public partial class Form1 : Form
 
     private void RadioButton_CheckedChanged(object sender, EventArgs e)
     {
-
         if (sender is RadioButton rb && rb.Checked)
         {
 
@@ -176,5 +172,45 @@ public partial class Form1 : Form
             FirewallHandler.OpenFirebirdPort();
         });
         btnFirewall.Enabled = true;
+    }
+
+    private async void btnOpenHqBirdPage_Click(object sender, EventArgs e)
+    {
+        bool sucess = await NetworkHandler.RedirectToHqbird(isDirectDownload: false);
+
+        if (!sucess)
+        {
+            MessageBox.Show("Não foi possível acessar a página de download. Verifique sua conexão com a internet.",
+                "Erro de Conexão", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    private async void btnHqBirdDirectDownload_Click(object sender, EventArgs e)
+    {
+        var result = MessageBox.Show(
+        "O download direto será iniciado no seu navegador.\n\n" +
+        "Atenção: Firewalls podem bloquear o download automático.",
+        "Confirmar Download", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        if (result == DialogResult.Yes)
+        {
+            btnHqBirdDirectDownload.Enabled = false;
+
+            bool sucess = await NetworkHandler.RedirectToHqbird(isDirectDownload: true);
+
+            if (!sucess)
+            {
+                MessageBox.Show("O link direto está inacessível ou foi bloqueado pela rede do cartório. " +
+                            "Tente usar o botão de 'Página de Download'.",
+                            "Falha no Download", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            btnHqBirdDirectDownload.Enabled = true;
+
+        }
+    }
+
+    private void button4_Click(object sender, EventArgs e)
+    {
+        MessageBox.Show(ServiceHandler.GetExecutablePath("FirebirdServerHQBirdInstanceFB3"));
+
     }
 }

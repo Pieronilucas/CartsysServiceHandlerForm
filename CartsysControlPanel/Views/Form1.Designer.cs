@@ -48,6 +48,9 @@ partial class Form1
         BtnInstallAll = new Button();
         button6 = new Button();
         btnFirewall = new Button();
+        btnOpenHqBirdPage = new Button();
+        btnHqBirdDirectDownload = new Button();
+        button4 = new Button();
         SuspendLayout();
         // 
         // radioButton1
@@ -272,11 +275,44 @@ partial class Form1
         btnFirewall.UseVisualStyleBackColor = true;
         btnFirewall.Click += btnFirewall_Click;
         // 
+        // btnOpenHqBirdPage
+        // 
+        btnOpenHqBirdPage.Location = new Point(1599, 66);
+        btnOpenHqBirdPage.Name = "btnOpenHqBirdPage";
+        btnOpenHqBirdPage.Size = new Size(188, 23);
+        btnOpenHqBirdPage.TabIndex = 19;
+        btnOpenHqBirdPage.Text = "pagina download hqbird";
+        btnOpenHqBirdPage.UseVisualStyleBackColor = true;
+        btnOpenHqBirdPage.Click += btnOpenHqBirdPage_Click;
+        // 
+        // btnHqBirdDirectDownload
+        // 
+        btnHqBirdDirectDownload.Location = new Point(1599, 95);
+        btnHqBirdDirectDownload.Name = "btnHqBirdDirectDownload";
+        btnHqBirdDirectDownload.Size = new Size(188, 23);
+        btnHqBirdDirectDownload.TabIndex = 20;
+        btnHqBirdDirectDownload.Text = "download direto hqbird";
+        btnHqBirdDirectDownload.UseVisualStyleBackColor = true;
+        btnHqBirdDirectDownload.Click += btnHqBirdDirectDownload_Click;
+        // 
+        // button4
+        // 
+        button4.Location = new Point(495, 130);
+        button4.Name = "button4";
+        button4.Size = new Size(75, 23);
+        button4.TabIndex = 21;
+        button4.Text = "button4";
+        button4.UseVisualStyleBackColor = true;
+        button4.Click += button4_Click;
+        // 
         // Form1
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(1799, 840);
+        Controls.Add(button4);
+        Controls.Add(btnHqBirdDirectDownload);
+        Controls.Add(btnOpenHqBirdPage);
         Controls.Add(btnFirewall);
         Controls.Add(button6);
         Controls.Add(BtnInstallAll);
@@ -324,4 +360,7 @@ partial class Form1
     private Button BtnInstallAll;
     private Button button6;
     private Button btnFirewall;
+    private Button btnOpenHqBirdPage;
+    private Button btnHqBirdDirectDownload;
+    private Button button4;
 }

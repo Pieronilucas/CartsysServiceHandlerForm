@@ -1,8 +1,9 @@
 ﻿using Microsoft.Win32;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Management;
 
-namespace CartsysControlPanel
+namespace CartsysControlPanel.Handlers
 {
     public class ServiceHandler
     {
@@ -230,6 +231,33 @@ namespace CartsysControlPanel
             {
                 MessageBox.Show($"Falha ao parar o serviço {serviceName}. Erro: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        public static string GetExecutablePath(string serviceName)
+        {
+            try
+            {
+                using var searcher = new ManagementObjectSearcher(
+                    $"SELECT PathName FROM Win32_Service WHERE Name = '{serviceName}'");
+
+                foreach (ManagementObject service in searcher.Get())
+                {
+                    string pathName = service["PathName"]?.ToString();
+                    if (string.IsNullOrEmpty(pathName)) return null;
+
+                    // O Regex abaixo pega tudo que está dentro de aspas OU até o primeiro espaço após o .exe
+                    string pattern = @"^""?([^""]+\.exe)""?.*$";
+                    var match = System.Text.RegularExpressions.Regex.Match(pathName, pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+                    return match.Success ? match.Groups[1].Value : pathName;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+                return null;
+            }
+            return null;
         }
     }
 }

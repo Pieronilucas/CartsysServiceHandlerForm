@@ -1,9 +1,9 @@
 ﻿using System.Management;
 using System.Runtime.InteropServices;
 
-namespace CartsysControlPanel
+namespace CartsysControlPanel.Infrastructure
 {
-    public static class GetSerialHd
+    public static class HardwareHandler
     {
         public static string GetHdSerial()
         {
