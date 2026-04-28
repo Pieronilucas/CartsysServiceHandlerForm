@@ -213,41 +213,39 @@ namespace CartsysControlPanel.Handlers
             });
             await Task.WhenAll(task);
         }
-        
+
 
 
         // Tenta pegar a pasta raiz do executável do serviço.
-        // O caminho é obtido através do WMI, e o nome do executável é extraído usando Regex.
+        // O caminho é obtido de registry ou através do WMI, e o nome do executável é extraído usando Regex.
         // Metodo irá retornar null caso o serviço não seja encontrado ou ocorra algum erro durante a consulta WMI.
-        public static string GetExecutablePath(string serviceName)
+        public static string GetServiceDirectory(string serviceName)
         {
             try
-            {
+            {     
                 using var searcher = new ManagementObjectSearcher(
                     $"SELECT PathName FROM Win32_Service WHERE Name = '{serviceName}'");
 
-                foreach (ManagementObject service in searcher.Get())
-                {
-                    string pathName = service["PathName"]?.ToString();
-                    if (string.IsNullOrEmpty(pathName)) return null;
+                using var collection = searcher.Get();
+                var service = collection.Cast<ManagementObject>().FirstOrDefault();
 
-                    // O Regex abaixo pega tudo que está dentro de aspas ou até o primeiro espaço após o .exe
-                    string pattern = @"^""?([^""]+\.exe)""?.*$";
-                    var match = System.Text.RegularExpressions.Regex.Match(pathName, pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                if (service == null) return null;
 
-                    if (match.Success)
-                    {
-                         string fullExePath = match.Groups[1].Value;
-                        return Path.GetDirectoryName(fullExePath);
-                    }
-                }
+                string rawPath = service["PathName"]?.ToString();
+                if (string.IsNullOrWhiteSpace(rawPath)) return null;
+
+                // Limpeza de aspas e argumentos
+                string cleanPath = rawPath.StartsWith("\"")
+                    ? rawPath.Split('\"')[1]
+                    : rawPath.Split(' ')[0];
+
+                return Path.GetDirectoryName(cleanPath);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
                 return null;
             }
-            return null;
         }
     }
 }
