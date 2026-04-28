@@ -210,7 +210,6 @@ public partial class Form1 : Form
 
     private void button4_Click(object sender, EventArgs e)
     {
-        DependencyManager.FirebirdInstallable();
-
+        DependencyManager.setUdrDll();
     }
 }

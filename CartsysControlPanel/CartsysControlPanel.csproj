@@ -11,6 +11,7 @@
 
     <ItemGroup>
       <None Remove="Assets\Firebird.exe" />
+      <None Remove="Assets\UDR_SC.dll" />
     </ItemGroup>
 
     <ItemGroup>
@@ -27,6 +28,7 @@
 
     <ItemGroup>
       <EmbeddedResource Include="Assets\Firebird.exe" />
+      <EmbeddedResource Include="Assets\UDR_SC.dll" />
     </ItemGroup>
 
     <ItemGroup>
