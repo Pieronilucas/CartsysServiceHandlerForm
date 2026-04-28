@@ -10,6 +10,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Assets\Firebird.exe" />
+    </ItemGroup>
+
+    <ItemGroup>
       <COMReference Include="NetFwTypeLib">
         <WrapperTool>tlbimp</WrapperTool>
         <VersionMinor>0</VersionMinor>
@@ -22,7 +26,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <EmbeddedResource Include="Assets\Firebird.exe" />
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="System.Management" Version="10.0.6" />
+      <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.7" />
     </ItemGroup>
 
     <ItemGroup>
@@ -38,10 +47,6 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       </EmbeddedResource>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Assets\" />
     </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 using CartsysControlPanel.Handlers;
 using CartsysControlPanel.Infrastructure;
-using System.Management;
+using System.Diagnostics;
 
 namespace CartsysControlPanel;
 
@@ -210,7 +210,7 @@ public partial class Form1 : Form
 
     private void button4_Click(object sender, EventArgs e)
     {
-        MessageBox.Show(ServiceHandler.GetExecutablePath("FirebirdServerHQBirdInstanceFB3"));
+        DependencyManager.FirebirdInstallable();
 
     }
 }
