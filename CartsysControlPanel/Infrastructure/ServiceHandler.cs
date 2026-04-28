@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Management;
+using System.ServiceProcess;
 
 namespace CartsysControlPanel.Handlers
 {
@@ -194,45 +195,30 @@ namespace CartsysControlPanel.Handlers
         }
 
 
-        // Tenta parar o serviço pelo Net stop. Se o mesmo se recusar a parar em 2 segundos, mata a tarefas.
-        public static void ServiceStop(int option)
+        public async static void ServiceStop(int option)
         {
-            string serviceName = serviceNames[option];
-            string exeName = executaveis[option];
-
-            try
+            var task = Task.Run(() =>
             {
-                var startInfo = new ProcessStartInfo
+                try
                 {
-                    FileName = "net",
-                    CreateNoWindow = true,
-                    UseShellExecute = false
-                };
-                using (var process = Process.Start(startInfo))
-                {
-                    process?.WaitForExit(2000);
+                    var sc = new ServiceController(serviceNames[option]);
+                    sc.Stop();
+                    sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(5));
                 }
-
-
-                var killInfo = new ProcessStartInfo
+                catch
                 {
-                    FileName = "taskkill.exe",
-                    Arguments = $"/F /IM \"{exeName}\" /T",
-                    CreateNoWindow = true,
-                    UseShellExecute = false
-                };
 
-                using (var p = Process.Start(killInfo))
-                {
-                    p?.WaitForExit();
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Falha ao parar o serviço {serviceName}. Erro: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                
+            });
+            await Task.WhenAll(task);
         }
+        
 
+
+        // Tenta pegar a pasta raiz do executável do serviço.
+        // O caminho é obtido através do WMI, e o nome do executável é extraído usando Regex.
+        // Metodo irá retornar null caso o serviço não seja encontrado ou ocorra algum erro durante a consulta WMI.
         public static string GetExecutablePath(string serviceName)
         {
             try
@@ -245,16 +231,20 @@ namespace CartsysControlPanel.Handlers
                     string pathName = service["PathName"]?.ToString();
                     if (string.IsNullOrEmpty(pathName)) return null;
 
-                    // O Regex abaixo pega tudo que está dentro de aspas OU até o primeiro espaço após o .exe
+                    // O Regex abaixo pega tudo que está dentro de aspas ou até o primeiro espaço após o .exe
                     string pattern = @"^""?([^""]+\.exe)""?.*$";
                     var match = System.Text.RegularExpressions.Regex.Match(pathName, pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
-                    return match.Success ? match.Groups[1].Value : pathName;
+                    if (match.Success)
+                    {
+                         string fullExePath = match.Groups[1].Value;
+                        return Path.GetDirectoryName(fullExePath);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw;
                 return null;
             }
             return null;
