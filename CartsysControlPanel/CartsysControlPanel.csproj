@@ -10,6 +10,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Assets\DbCrypt.conf" />
+      <None Remove="Assets\firebird.conf" />
       <None Remove="Assets\Firebird.exe" />
       <None Remove="Assets\UDR_SC.dll" />
     </ItemGroup>
@@ -27,6 +29,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <EmbeddedResource Include="Assets\DbCrypt.conf" />
+      <EmbeddedResource Include="Assets\firebird.conf" />
       <EmbeddedResource Include="Assets\Firebird.exe" />
       <EmbeddedResource Include="Assets\UDR_SC.dll" />
     </ItemGroup>

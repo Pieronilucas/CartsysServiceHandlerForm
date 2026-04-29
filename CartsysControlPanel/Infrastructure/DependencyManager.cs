@@ -8,7 +8,7 @@ namespace CartsysControlPanel.Infrastructure
     public static class DependencyManager
     {
         private static readonly String _firebirdDependency = "CartsysControlPanel.Assets.Firebird.exe";
-
+        private static readonly String HqbirdPath = ServiceHandler.GetServiceDirectory("FirebirdServerHQBirdInstanceFB3");
 
         public static void FirebirdInstallable()
         {
@@ -59,13 +59,11 @@ namespace CartsysControlPanel.Infrastructure
 
         public static void setUdrDll()
         {
-            string HqbirdPath = ServiceHandler.GetServiceDirectory("FirebirdServerHQBirdInstanceFB3");
+
             string targetPath = Path.Combine(HqbirdPath, "plugins", "udr", "UDR_SC.dll");
 
             if (!File.Exists(targetPath))
             {
-                string sourcePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "UDR_SC.dll");
-
                 try
                 {
                     using (var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("CartsysControlPanel.Assets.UDR_SC.dll"))
@@ -86,6 +84,60 @@ namespace CartsysControlPanel.Infrastructure
                     MessageBox.Show($"Ocorreu um erro ao tentar copiar o arquivo udr.dll: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
+
+        }
+
+        public static void setFirebirdConfig()
+        {
+            string targetPath = Path.Combine(HqbirdPath, "firebird.conf");
+
+            try
+            {
+                using (var ResourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("CartsysControlPanel.Assets.firebird.conf"))
+                {
+                    if (ResourceStream == null)
+                    {
+                        throw new FileNotFoundException("O recurso incorporado 'firebird.conf' não foi encontrado.");
+                    }
+                    using (var fileStream = new FileStream(targetPath, FileMode.Create, FileAccess.Write))
+                    {
+                        ResourceStream.CopyTo(fileStream);
+                        fileStream.Flush();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocorreu um erro ao tentar copiar o arquivo firebird.conf: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+
+        }
+
+        public static void setDbCrypt()
+        {
+            string targetPath = Path.Combine(HqbirdPath, "plugins", "DbCrypt.conf");
+
+            try
+            {
+                using (var ResourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("CartsysControlPanel.Assets.DbCrypt.conf"))
+                {
+                    if (ResourceStream == null)
+                    {
+                        throw new FileNotFoundException("O recurso incorporado 'DbCrypt.conf' não foi encontrado.");
+                    }
+                    using (var fileStream = new FileStream(targetPath, FileMode.Create, FileAccess.Write))
+                    {
+                        ResourceStream.CopyTo(fileStream);
+                        fileStream.Flush();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocorreu um erro ao tentar copiar o arquivo DbCrypt.conf: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
 
         }
 
