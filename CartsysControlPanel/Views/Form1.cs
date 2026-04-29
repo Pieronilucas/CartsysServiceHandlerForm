@@ -1,6 +1,5 @@
 using CartsysControlPanel.Handlers;
 using CartsysControlPanel.Infrastructure;
-using System.Diagnostics;
 
 namespace CartsysControlPanel;
 
@@ -127,7 +126,7 @@ public partial class Form1 : Form
             }
         });
         btnUninstallAll.Enabled = true;
-        btnUninstallAll.Text = "Botão do geme meu nome";
+        btnUninstallAll.Text = "Desinstalar Todos";
     }
 
     private async void BtnInstallAll_Click(object sender, EventArgs e)
@@ -147,7 +146,7 @@ public partial class Form1 : Form
              }
          });
         BtnInstallAll.Enabled = true;
-        BtnInstallAll.Text = "AAAAAAAAAAAAAAAAAAAA";
+        BtnInstallAll.Text = "Instalar Todos";
 
     }
 
@@ -210,6 +209,31 @@ public partial class Form1 : Form
 
     private void button4_Click(object sender, EventArgs e)
     {
-        DependencyManager.setUdrDll();
+        long? result = HqbirdHandler.DefaultDbCacheCalc(13922660352, 16384);
+        if (result.HasValue)
+        {
+            MessageBox.Show($"O valor calculado para o cache do banco de dados é {result.Value} páginas.", "Informação", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        else
+        {
+            MessageBox.Show("Não foi possível calcular o valor do cache do banco de dados.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+
+    }
+
+    private void button5_Click(object sender, EventArgs e)
+    {
+        using (var fdb = new FolderBrowserDialog())
+        {
+            fdb.Description = "Selecione a pasta onde o banco de dados do cartório está localizado.";
+            fdb.RootFolder = Environment.SpecialFolder.MyComputer;
+            fdb.ShowNewFolderButton = false;
+            if (fdb.ShowDialog() == DialogResult.OK)
+            {
+                string selectedPath = fdb.SelectedPath;
+                MessageBox.Show($"O caminho selecionado foi {selectedPath}!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
     }
 }

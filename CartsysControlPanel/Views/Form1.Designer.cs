@@ -51,6 +51,7 @@ partial class Form1
         btnOpenHqBirdPage = new Button();
         btnHqBirdDirectDownload = new Button();
         button4 = new Button();
+        button5 = new Button();
         SuspendLayout();
         // 
         // radioButton1
@@ -241,7 +242,7 @@ partial class Form1
         btnUninstallAll.Name = "btnUninstallAll";
         btnUninstallAll.Size = new Size(200, 23);
         btnUninstallAll.TabIndex = 15;
-        btnUninstallAll.Text = "Botão do geme meu nome";
+        btnUninstallAll.Text = "Desinstalar todos";
         btnUninstallAll.UseVisualStyleBackColor = true;
         btnUninstallAll.Click += btnUninstallAll_Click;
         // 
@@ -251,7 +252,7 @@ partial class Form1
         BtnInstallAll.Name = "BtnInstallAll";
         BtnInstallAll.Size = new Size(200, 23);
         BtnInstallAll.TabIndex = 16;
-        BtnInstallAll.Text = "AAAAAAAAAAAAAAAAAAAA";
+        BtnInstallAll.Text = "Instalar todos";
         BtnInstallAll.UseVisualStyleBackColor = true;
         BtnInstallAll.Click += BtnInstallAll_Click;
         // 
@@ -261,7 +262,7 @@ partial class Form1
         button6.Name = "button6";
         button6.Size = new Size(202, 23);
         button6.TabIndex = 17;
-        button6.Text = "banda restart";
+        button6.Text = "Set reset serviços";
         button6.UseVisualStyleBackColor = true;
         button6.Click += button6_Click;
         // 
@@ -271,7 +272,7 @@ partial class Form1
         btnFirewall.Name = "btnFirewall";
         btnFirewall.Size = new Size(75, 23);
         btnFirewall.TabIndex = 18;
-        btnFirewall.Text = "fairiuau";
+        btnFirewall.Text = "Firewall";
         btnFirewall.UseVisualStyleBackColor = true;
         btnFirewall.Click += btnFirewall_Click;
         // 
@@ -297,19 +298,30 @@ partial class Form1
         // 
         // button4
         // 
-        button4.Location = new Point(495, 130);
+        button4.Location = new Point(489, 137);
         button4.Name = "button4";
-        button4.Size = new Size(75, 23);
+        button4.Size = new Size(96, 59);
         button4.TabIndex = 21;
-        button4.Text = "button4";
+        button4.Text = "Botão para testes";
         button4.UseVisualStyleBackColor = true;
         button4.Click += button4_Click;
+        // 
+        // button5
+        // 
+        button5.Location = new Point(489, 216);
+        button5.Name = "button5";
+        button5.Size = new Size(96, 44);
+        button5.TabIndex = 22;
+        button5.Text = "botao pra teste 2";
+        button5.UseVisualStyleBackColor = true;
+        button5.Click += button5_Click;
         // 
         // Form1
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(1799, 840);
+        Controls.Add(button5);
         Controls.Add(button4);
         Controls.Add(btnHqBirdDirectDownload);
         Controls.Add(btnOpenHqBirdPage);
@@ -363,4 +375,5 @@ partial class Form1
     private Button btnOpenHqBirdPage;
     private Button btnHqBirdDirectDownload;
     private Button button4;
+    private Button button5;
 }
