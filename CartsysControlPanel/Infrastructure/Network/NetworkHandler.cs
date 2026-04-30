@@ -4,13 +4,12 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
-namespace CartsysControlPanel.Handlers
+namespace CartsysControlPanel.Infrastructure.Network
 {
     public static class NetworkHandler
     {
         private static bool _isDhcpEnabled;
         private static string _ipAddress;
-        public static string serverName;
         private readonly static string _DirectDownloadUrl = "https://ib-aid.com/download/hqbird/hqbirdwindows.zip";
         private readonly static string _downloadPageUrl = "https://ib-aid.com/br/hqbird-download/";
 
@@ -64,28 +63,31 @@ namespace CartsysControlPanel.Handlers
             GetNetworkInfo();
             if (_isDhcpEnabled)
             {
-                return serverName = Dns.GetHostName();
+                return Dns.GetHostName();
             }
-            return serverName = _ipAddress;
+            return _ipAddress;
         }
 
-        
+
 
         public static async Task<bool> IsLinkValid(string url)
         {
-            try
+            using var client = new HttpClient();
             {
-                using var client = new HttpClient();
-                client.Timeout = TimeSpan.FromSeconds(7);
+                try
+                {
 
-                var request = new HttpRequestMessage(HttpMethod.Head, url);
-                using var response = await client.SendAsync(request);
+                    client.Timeout = TimeSpan.FromSeconds(7);
 
-                return response.IsSuccessStatusCode;
-            }
-            catch
-            {
-                return false;
+                    var request = new HttpRequestMessage(HttpMethod.Head, url);
+                    using var response = await client.SendAsync(request);
+
+                    return response.IsSuccessStatusCode;
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
 
@@ -98,8 +100,8 @@ namespace CartsysControlPanel.Handlers
                     Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
                     return true;
                 }
-                catch (Win32Exception) 
-                { 
+                catch (Win32Exception)
+                {
                     return false;
                 }
             }

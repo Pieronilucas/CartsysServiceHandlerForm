@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Management;
 using System.ServiceProcess;
 
-namespace CartsysControlPanel.Handlers
+namespace CartsysControlPanel.Infrastructure.System
 {
     public class ServiceHandler
     {
@@ -195,7 +195,7 @@ namespace CartsysControlPanel.Handlers
         }
 
 
-        public async static void ServiceStop(int option)
+        public async static Task ServiceStop(int option)
         {
             var task = Task.Run(() =>
             {

@@ -1,7 +1,7 @@
 ﻿using System.Management;
 using System.Runtime.InteropServices;
 
-namespace CartsysControlPanel.Infrastructure
+namespace CartsysControlPanel.Infrastructure.Hardware
 {
     public static class HardwareHandler
     {
@@ -10,9 +10,12 @@ namespace CartsysControlPanel.Infrastructure
             try
             {
                 string drive = "C";
-                ManagementObject disk = new ManagementObject("win32_logicaldisk.deviceid=\"" + drive + ":\"");
-                disk.Get();
-                return disk["VolumeSerialNumber"].ToString();
+                using (var disk = new ManagementObject("win32_logicaldisk.deviceid=\"" + drive + ":\""))
+                {
+                    disk.Get();
+                    return disk["VolumeSerialNumber"].ToString();
+                }
+                    
             }
             catch (ManagementException mEx)
             {

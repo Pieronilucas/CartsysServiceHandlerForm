@@ -1,14 +1,13 @@
-﻿using CartsysControlPanel.Handlers;
+﻿using CartsysControlPanel.Infrastructure.System;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace CartsysControlPanel.Infrastructure
+namespace CartsysControlPanel.Domain
 {
 
     public static class DependencyManager
     {
         private static readonly String _firebirdDependency = "CartsysControlPanel.Assets.Firebird.exe";
-        private static readonly String _HqbirdPath = ServiceHandler.GetServiceDirectory("FirebirdServerHQBirdInstanceFB3");
 
         public static void InstallFirebird()
         {
@@ -49,7 +48,7 @@ namespace CartsysControlPanel.Infrastructure
         public static void SetUdrDll()
         {
 
-            string targetPath = Path.Combine(_HqbirdPath, "plugins", "udr", "UDR_SC.dll");
+            string targetPath = Path.Combine(HqbirdPath, "plugins", "udr", "UDR_SC.dll");
 
             if (!File.Exists(targetPath))
             {
@@ -78,7 +77,7 @@ namespace CartsysControlPanel.Infrastructure
 
         public static void SetFirebirdConfig()
         {
-            string targetPath = Path.Combine(_HqbirdPath, "firebird.conf");
+            string targetPath = Path.Combine(HqbirdPath, "firebird.conf");
 
             try
             {
@@ -105,7 +104,7 @@ namespace CartsysControlPanel.Infrastructure
 
         public static void SetDbCrypt()
         {
-            string targetPath = Path.Combine(_HqbirdPath, "plugins", "DbCrypt.conf");
+            string targetPath = Path.Combine(HqbirdPath, "plugins", "DbCrypt.conf");
 
             try
             {
@@ -130,11 +129,11 @@ namespace CartsysControlPanel.Infrastructure
 
         }
 
-        public static void setBackupFolder()
+        public static void SetBackupFolder()
         {
 
-            string backupFolderPath = Path.Combine(_HqbirdPath, "backup");
-            string backupFolderZipPath = Path.Combine(_HqbirdPath, "backup.zip");
+            string backupFolderPath = Path.Combine(HqbirdPath, "backup");
+            string backupFolderZipPath = Path.Combine(HqbirdPath, "backup.zip");
 
             if (Directory.Exists(backupFolderPath)) { return; }
 
@@ -153,12 +152,12 @@ namespace CartsysControlPanel.Infrastructure
                 }
                 if (File.Exists(backupFolderZipPath))
                 {
-                    System.IO.Compression.ZipFile.ExtractToDirectory(backupFolderZipPath, _HqbirdPath); 
+                    System.IO.Compression.ZipFile.ExtractToDirectory(backupFolderZipPath, HqbirdPath);
 
                     TryDeleteFile(backupFolderZipPath);
                 }
 
-                
+
             }
             catch (Exception ex)
             {
@@ -181,7 +180,10 @@ namespace CartsysControlPanel.Infrastructure
                 throw new Exception($"Falha ao tentar excluir o arquivo temporário '{filePath}': {ex.Message}", ex);
             }
         }
-
+        private static string HqbirdPath =>
+            ServiceHandler.GetServiceDirectory("FirebirdServerHQBirdInstanceFB3")
+            ?? throw new InvalidOperationException(
+            "Diretório do HQBird não encontrado. O serviço 'FirebirdServerHQBirdInstanceFB3' está instalado?");
     }
 }
 

@@ -1,15 +1,14 @@
 ﻿using NetFwTypeLib;
 using System.Runtime.InteropServices;
 
-namespace CartsysControlPanel.Handlers
+namespace CartsysControlPanel.Infrastructure.System
 {
     public static class FirewallHandler
     {
         private static Type type = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
-        private static INetFwPolicy2 fwPolicy2 = (INetFwPolicy2)Activator.CreateInstance(type);
-
         public static void OpenFirebirdPort()
         {
+            INetFwPolicy2 fwPolicy2 = (INetFwPolicy2)Activator.CreateInstance(type);
             try
             {
                 try
@@ -21,7 +20,7 @@ namespace CartsysControlPanel.Handlers
                     MessageBox.Show($"Falha ao acessar as políticas do Firewall. O serviço pode estar desativado. Erro: {comEx.Message}", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
 
-                Type ruleType = Type.GetTypeFromProgID("HNetCfg.FWRule");
+                //Type ruleType = Type.GetTypeFromProgID("HNetCfg.FWRule");
 
                 INetFwRule2 firewallRule = (INetFwRule2)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
 

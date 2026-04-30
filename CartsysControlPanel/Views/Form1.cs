@@ -1,5 +1,8 @@
-using CartsysControlPanel.Handlers;
-using CartsysControlPanel.Infrastructure;
+using CartsysControlPanel.Domain;
+using CartsysControlPanel.Infrastructure.FileSystem;
+using CartsysControlPanel.Infrastructure.Hardware;
+using CartsysControlPanel.Infrastructure.Network;
+using CartsysControlPanel.Infrastructure.System;
 using System.Management;
 
 namespace CartsysControlPanel;
@@ -88,7 +91,7 @@ public partial class Form1 : Form
             MessageBox.Show($"Ocorreu um erro ao tentar recuperar as informações de DNS do servidor: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error); ;
         }
 
-        RegeditHandler.CreateRegistryKey(_serverName, "C:\\CARTSYSDADOS\\CARTORIO.FDB");
+        RegistryHandler.CreateRegistryKey(_serverName, "C:\\CARTSYSDADOS\\CARTORIO.FDB");
     }
 
     private async void button3_Click(object sender, EventArgs e)
@@ -215,7 +218,7 @@ public partial class Form1 : Form
     {
         try
         {
-            DependencyManager.setBackupFolder();
+            DependencyManager.SetBackupFolder();
             MessageBox.Show("A pasta de backup foi configurada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch (Exception ex)
@@ -243,7 +246,7 @@ public partial class Form1 : Form
         _finalPath = Path.Combine(_selectedPath, "CARTORIO.FDB");
 
         long fileSize = FileHandler.FileSizeCalculator(_finalPath);
-        long? pages = HqbirdHandler.DefaultDbCacheCalc(fileSize, 16384);
+        long? pages = DatabaseConfigCalculator.DefaultDbCacheCalc(fileSize, 16384);
 
         string message = $"CARTORIO = {_finalPath}\n" +
             "{\n" +

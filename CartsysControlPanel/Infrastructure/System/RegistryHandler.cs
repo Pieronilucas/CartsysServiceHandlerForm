@@ -1,9 +1,9 @@
 ﻿using Microsoft.Win32;
 using System.Security;
 
-namespace CartsysControlPanel.Handlers
+namespace CartsysControlPanel.Infrastructure.System
 {
-    public static class RegeditHandler
+    public static class RegistryHandler
     {
         private readonly static string _userRoot = "HKEY_CURRENT_USER\\Software\\";
         public static void CreateRegistryKey(string serverName, string dbPath)
@@ -35,7 +35,7 @@ namespace CartsysControlPanel.Handlers
                 Registry.SetValue(scSistema + "CNBDI", "CaminhoSaidaXML", "");
                 Registry.SetValue(scSistema + "DAP", "CaminhoSaidaXML", @"C:\Users\Cartorio\Desktop");
                 // Dicionario
-                string dicKey = scSistema + @"Dicionario\%AppName%\Cartorio";
+                string dicKey = scSistema + @"Dicionario\Cartorio";
                 Registry.SetValue(dicKey, "_FirstRun", "+");
                 Registry.SetValue(dicKey, "_Main_count", "1");
                 Registry.SetValue(dicKey, "_Main_0", $"\\\\{serverName}\\cartorio\\Dicionario.adm");
