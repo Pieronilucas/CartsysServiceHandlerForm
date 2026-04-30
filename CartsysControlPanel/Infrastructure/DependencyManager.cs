@@ -8,9 +8,9 @@ namespace CartsysControlPanel.Infrastructure
     public static class DependencyManager
     {
         private static readonly String _firebirdDependency = "CartsysControlPanel.Assets.Firebird.exe";
-        private static readonly String HqbirdPath = ServiceHandler.GetServiceDirectory("FirebirdServerHQBirdInstanceFB3");
+        private static readonly String _HqbirdPath = ServiceHandler.GetServiceDirectory("FirebirdServerHQBirdInstanceFB3");
 
-        public static void FirebirdInstallable()
+        public static void InstallFirebird()
         {
             string tempPath = Path.Combine(Path.GetTempPath(), _firebirdDependency);
             if (!File.Exists(tempPath))
@@ -30,7 +30,6 @@ namespace CartsysControlPanel.Infrastructure
 
             }
 
-            Thread.Sleep(1000);
 
             var process = new ProcessStartInfo
             {
@@ -44,23 +43,13 @@ namespace CartsysControlPanel.Infrastructure
             {
                 p?.WaitForExit();
             }
-            if (File.Exists(tempPath))
-            {
-                try
-                {
-                    File.Delete(tempPath);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ocorreu um erro ao tentar excluir o arquivo temporário do Firebird: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-            }
+            TryDeleteFile(tempPath);
         }
 
-        public static void setUdrDll()
+        public static void SetUdrDll()
         {
 
-            string targetPath = Path.Combine(HqbirdPath, "plugins", "udr", "UDR_SC.dll");
+            string targetPath = Path.Combine(_HqbirdPath, "plugins", "udr", "UDR_SC.dll");
 
             if (!File.Exists(targetPath))
             {
@@ -81,15 +70,15 @@ namespace CartsysControlPanel.Infrastructure
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Ocorreu um erro ao tentar copiar o arquivo udr.dll: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    throw;
                 }
             }
 
         }
 
-        public static void setFirebirdConfig()
+        public static void SetFirebirdConfig()
         {
-            string targetPath = Path.Combine(HqbirdPath, "firebird.conf");
+            string targetPath = Path.Combine(_HqbirdPath, "firebird.conf");
 
             try
             {
@@ -108,15 +97,15 @@ namespace CartsysControlPanel.Infrastructure
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocorreu um erro ao tentar copiar o arquivo firebird.conf: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                throw;
             }
 
 
         }
 
-        public static void setDbCrypt()
+        public static void SetDbCrypt()
         {
-            string targetPath = Path.Combine(HqbirdPath, "plugins", "DbCrypt.conf");
+            string targetPath = Path.Combine(_HqbirdPath, "plugins", "DbCrypt.conf");
 
             try
             {
@@ -135,15 +124,67 @@ namespace CartsysControlPanel.Infrastructure
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocorreu um erro ao tentar copiar o arquivo DbCrypt.conf: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                throw;
             }
 
 
         }
 
+        public static void setBackupFolder()
+        {
+
+            string backupFolderPath = Path.Combine(_HqbirdPath, "backup");
+            string backupFolderZipPath = Path.Combine(_HqbirdPath, "backup.zip");
+
+            if (Directory.Exists(backupFolderPath)) { return; }
+
+            try
+            {
+                using (var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("CartsysControlPanel.Assets.backup.zip"))
+                {
+                    if (resourceStream == null)
+                    {
+                        throw new FileNotFoundException("A pasta de backups não foi encontrada não foi encontrado nos arquivos acoplados.");
+                    }
+                    using (var fileStream = new FileStream(backupFolderZipPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        resourceStream.CopyTo(fileStream);
+                    }
+                }
+                if (File.Exists(backupFolderZipPath))
+                {
+                    System.IO.Compression.ZipFile.ExtractToDirectory(backupFolderZipPath, _HqbirdPath); 
+
+                    TryDeleteFile(backupFolderZipPath);
+                }
+
+                
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Falha ao configurar pasta de backup: {ex.Message}", ex);
+            }
+
+        }
+
+        private static void TryDeleteFile(string filePath)
+        {
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Falha ao tentar excluir o arquivo temporário '{filePath}': {ex.Message}", ex);
+            }
+        }
 
     }
 }
+
 
 
 
