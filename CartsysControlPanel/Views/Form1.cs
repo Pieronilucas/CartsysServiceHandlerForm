@@ -1,5 +1,6 @@
 using CartsysControlPanel.Handlers;
 using CartsysControlPanel.Infrastructure;
+using System.Management;
 
 namespace CartsysControlPanel;
 
@@ -8,6 +9,8 @@ public partial class Form1 : Form
     private int _serviceSelected;
     private string _serialHd;
     private string _serverName;
+    private string _selectedPath;
+    private string _finalPath;
     public Form1()
     {
         InitializeComponent();
@@ -209,16 +212,6 @@ public partial class Form1 : Form
 
     private void button4_Click(object sender, EventArgs e)
     {
-        long? result = HqbirdHandler.DefaultDbCacheCalc(13922660352, 16384);
-        if (result.HasValue)
-        {
-            MessageBox.Show($"O valor calculado para o cache do banco de dados é {result.Value} páginas.", "Informação", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-        else
-        {
-            MessageBox.Show("Não foi possível calcular o valor do cache do banco de dados.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
 
     }
 
@@ -231,9 +224,22 @@ public partial class Form1 : Form
             fdb.ShowNewFolderButton = false;
             if (fdb.ShowDialog() == DialogResult.OK)
             {
-                string selectedPath = fdb.SelectedPath;
-                MessageBox.Show($"O caminho selecionado foi {selectedPath}!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _selectedPath = fdb.SelectedPath;
             }
+
         }
+
+
+        _finalPath = Path.Combine(_selectedPath, "CARTORIO.FDB");
+
+        long fileSize = FileHandler.FileSizeCalculator(_finalPath);
+        long? pages = HqbirdHandler.DefaultDbCacheCalc(fileSize, 16384);
+
+        string message = $"CARTORIO = {_finalPath}\n" +
+            "{\n" +
+            $"DefaultDBCachePages = {pages}\n"+
+            "}";
+        
+        File.AppendAllText("C:\\HQbird\\Firebird30\\databases.conf", message);
     }
 }
