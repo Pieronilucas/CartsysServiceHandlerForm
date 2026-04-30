@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Assets\backup.zip" />
       <None Remove="Assets\DbCrypt.conf" />
       <None Remove="Assets\firebird.conf" />
       <None Remove="Assets\Firebird.exe" />
@@ -29,6 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <EmbeddedResource Include="Assets\backup.zip" />
       <EmbeddedResource Include="Assets\DbCrypt.conf" />
       <EmbeddedResource Include="Assets\firebird.conf" />
       <EmbeddedResource Include="Assets\Firebird.exe" />

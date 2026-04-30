@@ -11,6 +11,7 @@ public partial class Form1 : Form
     private string _serverName;
     private string _selectedPath;
     private string _finalPath;
+    private readonly string _HqbirdDbconf = "C:\\HQbird\\Firebird30\\databases.conf";
     public Form1()
     {
         InitializeComponent();
@@ -212,6 +213,15 @@ public partial class Form1 : Form
 
     private void button4_Click(object sender, EventArgs e)
     {
+        try
+        {
+            DependencyManager.setBackupFolder();
+            MessageBox.Show("A pasta de backup foi configurada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Ocorreu um erro ao tentar configurar a pasta de backup: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
 
     }
 
@@ -237,9 +247,9 @@ public partial class Form1 : Form
 
         string message = $"CARTORIO = {_finalPath}\n" +
             "{\n" +
-            $"DefaultDBCachePages = {pages}\n"+
+            $"DefaultDBCachePages = {pages}\n" +
             "}";
-        
-        File.AppendAllText("C:\\HQbird\\Firebird30\\databases.conf", message);
+
+        FileHandler.AppendTextToFile(_HqbirdDbconf, message);
     }
 }
