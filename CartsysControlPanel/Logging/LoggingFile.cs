@@ -4,7 +4,7 @@ namespace CartsysControlPanel.Logging
 {
     public static class LoggingFile
     {
-        private static readonly string _logDirectory = Path.Combine(Path.GetTempPath(), "CartsysControlPanelLogs", "Logs");
+        private static readonly string _logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CartsysControlPanelLogs", "Logs");
         private static string _logFileName => Path.Combine(_logDirectory, $"log_{DateTime.Now:yyyy-MM-dd}.txt");
 
         static LoggingFile()
