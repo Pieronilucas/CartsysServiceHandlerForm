@@ -1,4 +1,5 @@
-﻿using System.Management;
+﻿using CartsysControlPanel.Logging;
+using System.Management;
 using System.Runtime.InteropServices;
 
 namespace CartsysControlPanel.Infrastructure.Hardware
@@ -20,24 +21,26 @@ namespace CartsysControlPanel.Infrastructure.Hardware
             catch (ManagementException mEx)
             {
                 // Erro específico do WMI (ex: repositório corrompido ou classe não encontrada)
-                MessageBox.Show($"Erro no WMI ao obter serial: {mEx.Message}", "Erro de Gerenciamento", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                LoggingFile.Error("Erro de gerenciamento ao acessar informações de hardware.", mEx);
+                throw;
             }
             catch (COMException comEx)
             {
                 // Erro de comunicação com os componentes do Windows
-                MessageBox.Show($"Erro de comunicação COM: {comEx.Message}", "Erro de Sistema", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggingFile.Error("Erro de comunicação ao acessar informações de hardware.", comEx);
+                throw;
             }
-            catch (UnauthorizedAccessException)
+            catch (UnauthorizedAccessException uEx)
             {
                 // Caso o acesso ao WMI esteja bloqueado por diretivas de segurança
-                MessageBox.Show("Acesso negado ao tentar ler informações de hardware.", "Erro de Permissão", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                LoggingFile.Error("Acesso negado ao obter informações de hardware. Verifique as permissões do aplicativo.", uEx);
+                throw;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Falha inesperada ao obter ID do disco: {ex.Message}", "Erro Crítico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggingFile.Error("Erro inesperado ao obter informações de hardware.", ex);
+                throw;
             }
-
-            return string.Empty;
         }
     }
 }

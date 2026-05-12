@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using CartsysControlPanel.Logging;
+using Microsoft.Win32;
 using System.Security;
 
 namespace CartsysControlPanel.Infrastructure.System
@@ -76,33 +77,38 @@ namespace CartsysControlPanel.Infrastructure.System
                 Registry.SetValue(ibKey, "DBCartorio", dbPath);
                 Registry.SetValue(ibKey, "TipoBanco", "F");
                 Registry.SetValue(ibKey, "Usuario", "SYSDBA");
-                Registry.SetValue(ibKey, "Senha", "?3!&7 97+");
+                Registry.SetValue(ibKey, "Senha", "?3!&7 97+"); 
 
                 // Notificação e SeloE
                 Registry.SetValue(scSistema + "Notificacao", "ExibirNotificacao", 1, RegistryValueKind.DWord);
                 Registry.SetValue(scSistema + "SeloE", "CaminhoSaidaXML", $@"\\{serverName}\cartorio\LOG_SELOE\");
 
-                MessageBox.Show("Configurações de registro aplicadas com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoggingFile.Info("Chaves de registro criadas/atualizadas com sucesso.");
             }
-            catch (SecurityException)
+            catch (SecurityException sEx)
             {
-                MessageBox.Show("O usuário atual não possui permissões suficientes para gravar no Registro do Windows.", "Erro de Segurança", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggingFile.Error($"Permissões insuficientes para gravar no Registro do Windows. {sEx.Message}", sEx);
+                throw;
             }
-            catch (UnauthorizedAccessException)
+            catch (UnauthorizedAccessException uaEx)
             {
-                MessageBox.Show("Acesso negado ao tentar gravar as chaves. Certifique-se de que o programa está rodando como Administrador.", "Acesso Negado", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                LoggingFile.Error($"Acesso negado ao tentar gravar no Registro do Windows. {uaEx.Message}", uaEx);
+                throw;
             }
             catch (IOException ioEx)
             {
-                MessageBox.Show($"Erro de I/O ao acessar o Registro: {ioEx.Message}", "Erro de Sistema", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggingFile.Error($"Erro de I/O ao tentar gravar no Registro do Windows. {ioEx.Message}", ioEx); 
+                throw;
             }
             catch (ArgumentException argEx)
             {
-                MessageBox.Show($"Erro de argumento (Caminho do registro inválido): {argEx.Message}", "Erro de Parâmetro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                LoggingFile.Error($"Argumento inválido ao tentar gravar no Registro do Windows. {argEx.Message}", argEx);
+                throw;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocorreu um erro inesperado ao gravar no registro: {ex.Message}", "Erro Crítico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggingFile.Error($"Erro inesperado ao tentar gravar no Registro do Windows. {ex.Message}", ex);
+                throw;
             }
         }
     }

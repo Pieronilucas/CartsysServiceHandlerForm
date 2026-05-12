@@ -1,4 +1,5 @@
-﻿using NetFwTypeLib;
+﻿using CartsysControlPanel.Logging;
+using NetFwTypeLib;
 using System.Runtime.InteropServices;
 
 namespace CartsysControlPanel.Infrastructure.System
@@ -17,10 +18,8 @@ namespace CartsysControlPanel.Infrastructure.System
                 }
                 catch (COMException comEx)
                 {
-                    MessageBox.Show($"Falha ao acessar as políticas do Firewall. O serviço pode estar desativado. Erro: {comEx.Message}", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    LoggingFile.Error($"Erro ao tentar remover regra de firewall existente. (Código: {comEx.ErrorCode})\nDetalhe: {comEx.Message}");
                 }
-
-                //Type ruleType = Type.GetTypeFromProgID("HNetCfg.FWRule");
 
                 INetFwRule2 firewallRule = (INetFwRule2)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
 
@@ -37,19 +36,22 @@ namespace CartsysControlPanel.Infrastructure.System
 
                 fwPolicy2.Rules.Add(firewallRule);
 
-                MessageBox.Show("Portas 3050-3051 abertas com sucesso no firewall do Windows.", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoggingFile.Info("Regra de firewall para o Firebird configurada com sucesso.");
             }
             catch (UnauthorizedAccessException)
             {
-                MessageBox.Show("Acesso negado. O sistema precisa ser executado como Administrador para modificar o Firewall.", "Acesso Negado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                LoggingFile.Error("Permissão negada ao tentar configurar o firewall. Execute o aplicativo como administrador.");
+                throw;
             }
             catch (COMException comEx)
             {
-                MessageBox.Show($"Erro de integração com o Firewall do Windows. (Código: {comEx.ErrorCode})\nDetalhe: {comEx.Message}", "Erro COM", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggingFile.Error($"Erro ao configurar o firewall (Código: {comEx.ErrorCode}). Detalhe: {comEx.Message}");
+                throw;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocorreu um erro inesperado ao configurar o firewall: {ex.Message}", "Erro Crítico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggingFile.Error($"Erro inesperado ao configurar o firewall. Detalhe: {ex.Message}", ex);
+                throw;
             }
         }
     }

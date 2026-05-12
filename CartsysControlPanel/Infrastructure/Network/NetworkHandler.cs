@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using CartsysControlPanel.Logging;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -12,58 +13,56 @@ namespace CartsysControlPanel.Infrastructure.Network
         private static string _ipAddress;
         private readonly static string _DirectDownloadUrl = "https://ib-aid.com/download/hqbird/hqbirdwindows.zip";
         private readonly static string _downloadPageUrl = "https://ib-aid.com/br/hqbird-download/";
+        private static readonly HttpClient _httpClient = new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(7)
+        };
 
         private static void GetNetworkInfo()
         {
+            var validInterface = NetworkInterface.GetAllNetworkInterfaces()
+        .Where(ni => ni.OperationalStatus == OperationalStatus.Up)
+        .Where(ni => ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+        .Where(ni => !ni.Description.Contains("Virtual", StringComparison.OrdinalIgnoreCase))
+        .Where(ni => !ni.Description.Contains("VPN", StringComparison.OrdinalIgnoreCase))
+        .Where(ni => !ni.Description.Contains("Pseudo", StringComparison.OrdinalIgnoreCase))
+        .FirstOrDefault(ni => ni.GetIPProperties().GatewayAddresses.Any());
+
+            if (validInterface == null)
+            {
+                LoggingFile.Warning("Nenhuma interface de rede válida encontrada.");
+                return;
+            }
+
+            var props = validInterface.GetIPProperties();
+            _ipAddress = props.UnicastAddresses
+                .FirstOrDefault(a => a.Address.AddressFamily == AddressFamily.InterNetwork)
+                ?.Address.ToString();
+
             try
             {
-                var interfaces = NetworkInterface.GetAllNetworkInterfaces()
-                .Where(ni => ni.OperationalStatus == OperationalStatus.Up)
-
-                .Where(ni => ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                .Where(ni => !ni.Description.Contains("Virtual", StringComparison.OrdinalIgnoreCase))
-                .Where(ni => !ni.Description.Contains("VPN", StringComparison.OrdinalIgnoreCase))
-                .Where(ni => !ni.Description.Contains("Pseudo", StringComparison.OrdinalIgnoreCase));
-
-                foreach (var ni in interfaces)
-                {
-                    var props = ni.GetIPProperties();
-
-
-                    var hasGateway = props.GatewayAddresses.Any();
-                    if (!hasGateway) continue;
-                    var ip = props.UnicastAddresses.FirstOrDefault(address =>
-                        address.Address.AddressFamily == AddressFamily.InterNetwork);
-                    _ipAddress = ip?.Address.ToString();
-
-                    try
-                    {
-                        _isDhcpEnabled = props.GetIPv4Properties()?.IsDhcpEnabled ?? false;
-
-                    }
-                    catch (NetworkInformationException)
-                    {
-                        // Falha ao obter propriedades específicas de IPv4
-                        _isDhcpEnabled = false;
-                    }
-                }
+                _isDhcpEnabled = props.GetIPv4Properties()?.IsDhcpEnabled ?? false;
             }
-            catch (NetworkInformationException netEx)
+            catch (NetworkInformationException)
             {
-                MessageBox.Show($"Erro ao acessar informações de rede: {netEx.Message}", "Erro de Rede", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Falha inesperada ao mapear rede: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggingFile.Warning($"Não foi possível determinar DHCP para '{validInterface.Name}'. Assumindo desabilitado.");
+                _isDhcpEnabled = false;
             }
         }
 
-        public static string ServerName()
+
+        public static string? ServerName()
         {
             GetNetworkInfo();
             if (_isDhcpEnabled)
             {
                 return Dns.GetHostName();
+            }
+
+            if (_ipAddress == null)
+            {
+                LoggingFile.Warning("IP não determinado. Nenhuma interface válida com gateway encontrada.");
+                return null;
             }
             return _ipAddress;
         }
@@ -72,23 +71,24 @@ namespace CartsysControlPanel.Infrastructure.Network
 
         public static async Task<bool> IsLinkValid(string url)
         {
-            using var client = new HttpClient();
+            using var client = _httpClient;
+
+            try
             {
-                try
-                {
 
-                    client.Timeout = TimeSpan.FromSeconds(7);
+                client.Timeout = TimeSpan.FromSeconds(7);
 
-                    var request = new HttpRequestMessage(HttpMethod.Head, url);
-                    using var response = await client.SendAsync(request);
+                var request = new HttpRequestMessage(HttpMethod.Head, url);
+                using var response = await client.SendAsync(request);
 
-                    return response.IsSuccessStatusCode;
-                }
-                catch
-                {
-                    return false;
-                }
+                return response.IsSuccessStatusCode;
             }
+            catch
+            {
+                LoggingFile.Warning($"Falha ao validar o link: {url}");
+                return false;
+            }
+
         }
 
         private static async Task<bool> ValidateAndOpen(string url)
@@ -102,6 +102,7 @@ namespace CartsysControlPanel.Infrastructure.Network
                 }
                 catch (Win32Exception)
                 {
+                    LoggingFile.Error($"Falha ao abrir o link: {url}");
                     return false;
                 }
             }

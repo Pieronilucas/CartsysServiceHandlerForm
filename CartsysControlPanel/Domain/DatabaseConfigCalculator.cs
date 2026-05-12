@@ -1,4 +1,5 @@
-﻿using System.Management;
+﻿using CartsysControlPanel.Logging;
+using System.Management;
 
 namespace CartsysControlPanel.Domain
 {
@@ -12,7 +13,7 @@ namespace CartsysControlPanel.Domain
             "SELECT TotalVisibleMemorySize FROM Win32_OperatingSystem");
 
             var os = searcher.Get().Cast<ManagementObject>().FirstOrDefault();
-            if (os == null) return null;
+            if (os == null) {LoggingFile.Error("Não foi possível obter informações do sistema."); return null; }
 
 
             

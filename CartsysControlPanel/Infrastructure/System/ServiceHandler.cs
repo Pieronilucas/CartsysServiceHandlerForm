@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using CartsysControlPanel.Logging;
+using Microsoft.Win32;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Management;
@@ -6,7 +7,7 @@ using System.ServiceProcess;
 
 namespace CartsysControlPanel.Infrastructure.System
 {
-    public class ServiceHandler
+    public static class ServiceHandler
     {
         private static Dictionary<int, string> executaveis = new Dictionary<int, string>
         {
@@ -45,8 +46,7 @@ namespace CartsysControlPanel.Infrastructure.System
 
             if (regValue is null)
             {
-                MessageBox.Show("Não foi encontrado qualquer caminho no Regedit. Verifique se o mesmo foi corretamente criado.",
-                    "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggingFile.Error("Registro de caminho para instalação do serviço não encontrado no Regedit. Verifique se o mesmo foi corretamente criado.");
                 return;
             }
 
@@ -57,7 +57,7 @@ namespace CartsysControlPanel.Infrastructure.System
 
             if (!File.Exists(fullPath))
             {
-                MessageBox.Show($"O executável de instalação do serviço não foi encontrado em {fullPath}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggingFile.Error($"O executável de instalação do serviço não foi encontrado em {fullPath}");
                 return;
             }
 
@@ -81,22 +81,26 @@ namespace CartsysControlPanel.Infrastructure.System
                     process.WaitForExit();
                     if (process.ExitCode != 0)
                     {
-                        MessageBox.Show($"Falha ao instalar {serviceExe}. Código de saída: {process.ExitCode}",
-                                "Erro na Instalação", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        LoggingFile.Error($"Falha ao instalar o serviço {serviceNames[option]}. Código de saída: {process.ExitCode}"); 
+                        return;
                     }
                 }
+                LoggingFile.Info($"Serviço {serviceNames[option]} instalado com sucesso.");
             }
             catch (Win32Exception ex) when (ex.NativeErrorCode == 5) // Erro de Acesso Negado
             {
-                MessageBox.Show("Acesso negado ao executar o InstallUtil. O programa deve ser executado como Administrador.", "Erro de Permissão", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                LoggingFile.Error($"Permissão negada ao tentar instalar o serviço {serviceNames[option]}. Tente executar o programa como administrador. Detalhes: {ex.Message}", ex);
+                throw;
             }
-            catch (Win32Exception ex)
+            catch (Win32Exception wEx)
             {
-                MessageBox.Show($"Erro de sistema ao iniciar instalador: {ex.Message}", "Erro Win32", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggingFile.Error($"Erro de sistema ao iniciar instalador: {wEx.Message}", wEx);
+                throw;  
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Falha inesperada na instalação: {ex.Message}", "Erro Crítico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggingFile.Error($"Falha inesperada na instalação do serviço {serviceNames[option]}. Erro: {ex.Message}", ex);
+                throw;
             }
 
         }
@@ -111,10 +115,10 @@ namespace CartsysControlPanel.Infrastructure.System
         }
 
         // Para os serviços e desinstala eles através do sc delete.
-        public static void ServiceUninstaller(int option)
+        public static async Task ServiceUninstaller(int option)
         {
             string service = serviceNames[option];
-            ServiceStop(option);
+            await ServiceStop(option);
 
             var startInfo = new ProcessStartInfo
             {
@@ -133,18 +137,21 @@ namespace CartsysControlPanel.Infrastructure.System
                     process.WaitForExit();
                     if (process.ExitCode != 0)
                     {
-                        MessageBox.Show($"Falha ao desinstalar {service}. Código: {process.ExitCode}",
-                            "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        LoggingFile.Error($"Falha ao desinstalar o serviço {service}. Código de saída: {process.ExitCode}");
+                        return;
                     }
                 }
+                LoggingFile.Info($"Serviço {service} desinstalado com sucesso.");
             }
-            catch (Win32Exception ex)
+            catch (Win32Exception wEx)
             {
-                MessageBox.Show($"Não foi possível executar o 'sc.exe': {ex.Message}", "Erro de Execução", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggingFile.Error($"Não foi possível executar o 'sc.exe': {wEx.Message}", wEx);
+                throw;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro inesperado na desinstalação: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggingFile.Error($"Erro inesperado na desinstalação do serviço {service}: {ex.Message}", ex);
+                throw;
             }
 
 
@@ -163,7 +170,7 @@ namespace CartsysControlPanel.Infrastructure.System
         {
             foreach (var service in serviceNames)
             {
-                string serviceName = Path.GetFileNameWithoutExtension(serviceNames[service.Key]);
+                string serviceName = serviceNames[service.Key];
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = "sc.exe",
@@ -181,15 +188,21 @@ namespace CartsysControlPanel.Infrastructure.System
                         process.WaitForExit();
                         if (process.ExitCode != 0)
                         {
-                            MessageBox.Show($"Falha ao colocar o serviço {service} para reinicializar. Código: {process.ExitCode}",
-                                "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            LoggingFile.Error($"Falha ao configurar o serviço {service} para reinicializar. Código de saída: {process.ExitCode}");
+                            return; 
                         }
                     }
+                    LoggingFile.Info($"Serviço {service} configurado para reinicializar em caso de falha.");
+                }
+                catch (Win32Exception wEx)
+                {
+                    LoggingFile.Error($"Não foi possível executar o 'sc.exe' para configurar o serviço {service}: {wEx.Message}", wEx);
+                    throw;
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Falha ao colocar o serviço {service} para reinicializar. Erro: {ex.Message}.", $"Erro",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoggingFile.Error($"Falha ao configurar o serviço {service} para reinicializar. Erro: {ex.Message}", ex);
+                    throw;
                 }
             }
         }
@@ -207,19 +220,18 @@ namespace CartsysControlPanel.Infrastructure.System
                 }
                 catch
                 {
-
+                    LoggingFile.Warning($"Não foi possível parar o serviço {serviceNames[option]}. Ele pode não estar em execução ou pode ter sido desinstalado.");
                 }
                 
             });
-            await Task.WhenAll(task);
+            await task;
         }
 
 
 
         // Tenta pegar a pasta raiz do executável do serviço.
-        // O caminho é obtido de registry ou através do WMI, e o nome do executável é extraído usando Regex.
         // Metodo irá retornar null caso o serviço não seja encontrado ou ocorra algum erro durante a consulta WMI.
-        public static string GetServiceDirectory(string serviceName)
+        public static string? GetServiceDirectory(string serviceName)
         {
             try
             {     
@@ -229,22 +241,30 @@ namespace CartsysControlPanel.Infrastructure.System
                 using var collection = searcher.Get();
                 var service = collection.Cast<ManagementObject>().FirstOrDefault();
 
-                if (service == null) return null;
+                if (service == null) { LoggingFile.Error($"Serviço {serviceName} não encontrado via WMI."); return null; }
 
                 string rawPath = service["PathName"]?.ToString();
-                if (string.IsNullOrWhiteSpace(rawPath)) return null;
+                if (string.IsNullOrWhiteSpace(rawPath)) { LoggingFile.Error($"Caminho do serviço {serviceName} não encontrado via WMI."); return null; }
 
                 // Limpeza de aspas e argumentos
                 string cleanPath = rawPath.StartsWith("\"")
                     ? rawPath.Split('\"')[1]
                     : rawPath.Split(' ')[0];
 
+
+                LoggingFile.Info($"Caminho do serviço {serviceName} obtido com sucesso via WMI: {cleanPath}");
                 return Path.GetDirectoryName(cleanPath);
+                
             }
-            catch (Exception)
+            catch (ManagementException mEx)
             {
+                LoggingFile.Error($"Erro de gerenciamento ao obter o caminho do serviço {serviceName} via WMI: {mEx.Message}", mEx);
                 throw;
-                return null;
+            }
+            catch (Exception ex)
+            {
+                LoggingFile.Error($"Erro ao obter o caminho do serviço {serviceName} via WMI: {ex.Message}", ex);
+                throw;
             }
         }
     }
