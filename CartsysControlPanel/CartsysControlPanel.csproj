@@ -15,6 +15,7 @@
       <None Remove="Assets\firebird.conf" />
       <None Remove="Assets\Firebird.exe" />
       <None Remove="Assets\UDR_SC.dll" />
+      <None Remove="Resources\Cartsys_logo.png" />
     </ItemGroup>
 
     <ItemGroup>
@@ -35,9 +36,11 @@
       <EmbeddedResource Include="Assets\firebird.conf" />
       <EmbeddedResource Include="Assets\Firebird.exe" />
       <EmbeddedResource Include="Assets\UDR_SC.dll" />
+      <EmbeddedResource Include="Resources\Cartsys_logo.png" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="FontAwesome.Sharp" Version="6.6.0" />
       <PackageReference Include="System.Management" Version="10.0.6" />
       <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.7" />
     </ItemGroup>
@@ -48,6 +51,11 @@
         <AutoGen>True</AutoGen>
         <DependentUpon>Resources.resx</DependentUpon>
       </Compile>
+      <Compile Update="Properties\Settings.Designer.cs">
+        <DesignTimeSharedInput>True</DesignTimeSharedInput>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Settings.settings</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -55,6 +63,13 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Properties\Settings.settings">
+        <Generator>SettingsSingleFileGenerator</Generator>
+        <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      </None>
     </ItemGroup>
 
 </Project>

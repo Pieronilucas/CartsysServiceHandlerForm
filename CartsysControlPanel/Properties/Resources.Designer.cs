@@ -63,9 +63,9 @@ namespace CartsysControlPanel.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap images {
+        internal static System.Drawing.Bitmap Cartsys_logo {
             get {
-                object obj = ResourceManager.GetObject("images", resourceCulture);
+                object obj = ResourceManager.GetObject("Cartsys_logo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
