@@ -36,7 +36,7 @@
             regeditButton = new FontAwesome.Sharp.IconButton();
             logoPanel = new Panel();
             btnHome = new PictureBox();
-            panel1 = new Panel();
+            panelDesktop = new Panel();
             menuPanel.SuspendLayout();
             logoPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)btnHome).BeginInit();
@@ -54,7 +54,7 @@
             menuPanel.Dock = DockStyle.Left;
             menuPanel.Location = new Point(0, 0);
             menuPanel.Name = "menuPanel";
-            menuPanel.Size = new Size(220, 631);
+            menuPanel.Size = new Size(220, 681);
             menuPanel.TabIndex = 0;
             // 
             // hqBirdCalculator
@@ -68,7 +68,7 @@
             hqBirdCalculator.IconFont = FontAwesome.Sharp.IconFont.Auto;
             hqBirdCalculator.IconSize = 32;
             hqBirdCalculator.ImageAlign = ContentAlignment.MiddleLeft;
-            hqBirdCalculator.Location = new Point(0, 380);
+            hqBirdCalculator.Location = new Point(0, 340);
             hqBirdCalculator.Name = "hqBirdCalculator";
             hqBirdCalculator.Padding = new Padding(10, 0, 20, 0);
             hqBirdCalculator.Size = new Size(220, 60);
@@ -90,7 +90,7 @@
             firebirdHqbird.IconFont = FontAwesome.Sharp.IconFont.Auto;
             firebirdHqbird.IconSize = 32;
             firebirdHqbird.ImageAlign = ContentAlignment.MiddleLeft;
-            firebirdHqbird.Location = new Point(0, 320);
+            firebirdHqbird.Location = new Point(0, 280);
             firebirdHqbird.Name = "firebirdHqbird";
             firebirdHqbird.Padding = new Padding(10, 0, 20, 0);
             firebirdHqbird.Size = new Size(220, 60);
@@ -112,7 +112,7 @@
             networkHandler.IconFont = FontAwesome.Sharp.IconFont.Auto;
             networkHandler.IconSize = 32;
             networkHandler.ImageAlign = ContentAlignment.MiddleLeft;
-            networkHandler.Location = new Point(0, 260);
+            networkHandler.Location = new Point(0, 220);
             networkHandler.Name = "networkHandler";
             networkHandler.Padding = new Padding(10, 0, 20, 0);
             networkHandler.Size = new Size(220, 60);
@@ -134,7 +134,7 @@
             servicesHandler.IconFont = FontAwesome.Sharp.IconFont.Auto;
             servicesHandler.IconSize = 32;
             servicesHandler.ImageAlign = ContentAlignment.MiddleLeft;
-            servicesHandler.Location = new Point(0, 200);
+            servicesHandler.Location = new Point(0, 160);
             servicesHandler.Name = "servicesHandler";
             servicesHandler.Padding = new Padding(10, 0, 20, 0);
             servicesHandler.Size = new Size(220, 60);
@@ -156,7 +156,7 @@
             regeditButton.IconFont = FontAwesome.Sharp.IconFont.Auto;
             regeditButton.IconSize = 32;
             regeditButton.ImageAlign = ContentAlignment.MiddleLeft;
-            regeditButton.Location = new Point(0, 140);
+            regeditButton.Location = new Point(0, 100);
             regeditButton.Name = "regeditButton";
             regeditButton.Padding = new Padding(10, 0, 20, 0);
             regeditButton.Size = new Size(220, 60);
@@ -173,7 +173,7 @@
             logoPanel.Dock = DockStyle.Top;
             logoPanel.Location = new Point(0, 0);
             logoPanel.Name = "logoPanel";
-            logoPanel.Size = new Size(220, 140);
+            logoPanel.Size = new Size(220, 100);
             logoPanel.TabIndex = 0;
             // 
             // btnHome
@@ -182,31 +182,33 @@
             btnHome.Image = Properties.Resources.Cartsys_logo;
             btnHome.Location = new Point(0, 0);
             btnHome.Name = "btnHome";
-            btnHome.Size = new Size(220, 140);
+            btnHome.Size = new Size(220, 100);
             btnHome.SizeMode = PictureBoxSizeMode.Zoom;
             btnHome.TabIndex = 0;
             btnHome.TabStop = false;
             btnHome.Click += btnHome_Click;
             // 
-            // panel1
+            // panelDesktop
             // 
-            panel1.BackColor = Color.FromArgb(30, 42, 56);
-            panel1.Dock = DockStyle.Top;
-            panel1.Location = new Point(220, 0);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(964, 100);
-            panel1.TabIndex = 1;
+            panelDesktop.Anchor = AnchorStyles.None;
+            panelDesktop.Location = new Point(260, 25);
+            panelDesktop.Name = "panelDesktop";
+            panelDesktop.Size = new Size(0, 0);
+            panelDesktop.TabIndex = 1;
             // 
             // MenuPrincipal
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(11, 25, 44);
-            ClientSize = new Size(1184, 631);
-            Controls.Add(panel1);
+            ClientSize = new Size(1264, 681);
+            Controls.Add(panelDesktop);
             Controls.Add(menuPanel);
             Name = "MenuPrincipal";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Form2";
+            WindowState = FormWindowState.Maximized;
+            Load += MenuPrincipal_Load;
             menuPanel.ResumeLayout(false);
             logoPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)btnHome).EndInit();
@@ -223,6 +225,6 @@
         private FontAwesome.Sharp.IconButton networkHandler;
         private FontAwesome.Sharp.IconButton servicesHandler;
         private PictureBox btnHome;
-        private Panel panel1;
+        private Panel panelDesktop;
     }
 }

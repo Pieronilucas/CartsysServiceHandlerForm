@@ -1,12 +1,4 @@
 ﻿using FontAwesome.Sharp;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using System.Windows.Media;
 
 namespace CartsysControlPanel.Views
 {
@@ -14,12 +6,16 @@ namespace CartsysControlPanel.Views
     {
         private IconButton currentBtn;
         private Panel leftBorderBtn;
+        private Form currentChildForm;
         public MenuPrincipal()
         {
             InitializeComponent();
             leftBorderBtn = new Panel();
             leftBorderBtn.Size = new Size(7, 60);
             menuPanel.Controls.Add(leftBorderBtn);
+
+            panelDesktop.Dock = DockStyle.Fill;
+            panelDesktop.AutoSize = false;
         }
 
 
@@ -58,6 +54,22 @@ namespace CartsysControlPanel.Views
 
         }
 
+        private void OpenChildForm(Form childForm)
+        {
+            if (currentChildForm != null)
+            {
+                currentChildForm.Close();
+            }
+            currentChildForm = childForm;
+            childForm.TopLevel = false;
+            childForm.FormBorderStyle = FormBorderStyle.None;
+            childForm.Dock = DockStyle.Fill;
+            panelDesktop.Controls.Add(childForm);
+            panelDesktop.Tag = childForm;
+            childForm.BringToFront();
+            childForm.Show();
+        }
+
         private void regeditButton_Click(object sender, EventArgs e)
         {
             ActivateButton(sender);
@@ -66,6 +78,7 @@ namespace CartsysControlPanel.Views
         private void servicesHandler_Click(object sender, EventArgs e)
         {
             ActivateButton(sender);
+            OpenChildForm(new ServiceForm());
         }
 
         private void networkHandler_Click(object sender, EventArgs e)
@@ -85,13 +98,19 @@ namespace CartsysControlPanel.Views
 
         private void btnHome_Click(object sender, EventArgs e)
         {
-            Reset();   
+            currentChildForm?.Close();
+            Reset();
         }
 
         private void Reset()
         {
             DisableButton();
             leftBorderBtn.Visible = false;
+        }
+
+        private void MenuPrincipal_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
