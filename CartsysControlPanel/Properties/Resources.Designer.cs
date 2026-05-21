@@ -73,9 +73,9 @@ namespace CartsysControlPanel.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap cartsysIco {
+        internal static System.Drawing.Bitmap cartsys {
             get {
-                object obj = ResourceManager.GetObject("cartsysIco", resourceCulture);
+                object obj = ResourceManager.GetObject("cartsys", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -97,6 +97,16 @@ namespace CartsysControlPanel.Properties {
             get {
                 object obj = ResourceManager.GetObject("guardian", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Byte[].
+        /// </summary>
+        internal static byte[] logoIcon {
+            get {
+                object obj = ResourceManager.GetObject("logoIcon", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         

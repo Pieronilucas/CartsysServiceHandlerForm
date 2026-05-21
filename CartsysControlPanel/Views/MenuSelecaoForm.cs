@@ -116,7 +116,7 @@ namespace CartsysControlPanel.Views
         private void UpdateMenu()
         {
             menuPanel.Width = _isOpenMenu ? _widthOpen : _widthClosed;
-            btnIcon.Image = _isOpenMenu ? Properties.Resources.cartsysLogo : Properties.Resources.cartsysIco;
+            btnIcon.Image = _isOpenMenu ? Properties.Resources.cartsysLogo : Properties.Resources.cartsys;
             btnHome.Text = _isOpenMenu ? "Menu Iniciar" : "";
             servicesHandlerBtn.Text = _isOpenMenu ? "Serviços" : "";
             networkHandlerBtn.Text = _isOpenMenu ? "Rede" : "";

@@ -21,16 +21,16 @@ namespace CartsysControlPanel.Views
 
         private static readonly Dictionary<int, (string name, Image Icone)> _serviceNames = new()
     {
-        {1, ("Executa", Properties.Resources.cartsysIco)},
+        {1, ("Executa", Properties.Resources.cartsys)},
         {2, ("Guardian", Properties.Resources.guardian)},
         {3, ("Notificação", Properties.Resources.notificacao)},
         {4, ("NFS-e", Properties.Resources.nfs)},
         {5, ("Tarefas", Properties.Resources.tarefas)},
-        {6, ("WhatsApp", Properties.Resources.cartsysIco)},
-        {7, ("Update", Properties.Resources.cartsysIco)},
-        {8, ("Parcela Express", Properties.Resources.cartsysIco)},
+        {6, ("WhatsApp", Properties.Resources.cartsys)},
+        {7, ("Update", Properties.Resources.cartsys)},
+        {8, ("Parcela Express", Properties.Resources.cartsys)},
         {9, ("SignalR Cliente", Properties.Resources.signalr)},
-        {10, ("Alertas", Properties.Resources.cartsysIco)}
+        {10, ("Alertas", Properties.Resources.cartsys)}
     };
         public ServiceForm()
         {

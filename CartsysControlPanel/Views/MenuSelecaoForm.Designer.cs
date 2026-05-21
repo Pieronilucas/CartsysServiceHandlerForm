@@ -221,7 +221,7 @@
             panelDesktop.Size = new Size(0, 0);
             panelDesktop.TabIndex = 1;
             // 
-            // MenuPrincipal
+            // MenuSelecaoForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -230,7 +230,7 @@
             Controls.Add(panelDesktop);
             Controls.Add(menuPanel);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Name = "MenuPrincipal";
+            Name = "MenuSelecaoForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Suporte Cartsys";
             WindowState = FormWindowState.Maximized;
