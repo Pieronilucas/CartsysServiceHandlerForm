@@ -61,11 +61,61 @@ namespace CartsysControlPanel.Properties {
         }
         
         /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Byte[].
+        /// </summary>
+        internal static byte[] cartorioIco {
+            get {
+                object obj = ResourceManager.GetObject("cartorioIco", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Cartsys_logo {
+        internal static System.Drawing.Bitmap cartsysIco {
             get {
-                object obj = ResourceManager.GetObject("Cartsys_logo", resourceCulture);
+                object obj = ResourceManager.GetObject("cartsysIco", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap cartsysLogo {
+            get {
+                object obj = ResourceManager.GetObject("cartsysLogo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap guardian {
+            get {
+                object obj = ResourceManager.GetObject("guardian", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap nfs {
+            get {
+                object obj = ResourceManager.GetObject("nfs", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap notificacao {
+            get {
+                object obj = ResourceManager.GetObject("notificacao", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -76,6 +126,16 @@ namespace CartsysControlPanel.Properties {
         internal static System.Drawing.Bitmap signalr {
             get {
                 object obj = ResourceManager.GetObject("signalr", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap tarefas {
+            get {
+                object obj = ResourceManager.GetObject("tarefas", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

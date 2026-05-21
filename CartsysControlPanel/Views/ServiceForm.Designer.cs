@@ -49,6 +49,7 @@
             panelServicos.Name = "panelServicos";
             panelServicos.Size = new Size(280, 450);
             panelServicos.TabIndex = 2;
+            panelServicos.Paint += panelServicos_Paint;
             // 
             // panelActions
             // 

@@ -1,4 +1,6 @@
 ﻿using CartsysControlPanel.Infrastructure.System;
+using CartsysControlPanel.Logging;
+using System.ComponentModel;
 
 namespace CartsysControlPanel.Views
 {
@@ -19,16 +21,16 @@ namespace CartsysControlPanel.Views
 
         private static readonly Dictionary<int, (string name, Image Icone)> _serviceNames = new()
     {
-        {1, ("Executa", Properties.Resources.signalr)},
-        {2, ("Guardian", Properties.Resources.signalr)},
-        {3, ("Notificação", Properties.Resources.signalr)},
-        {4, ("NFS-e", Properties.Resources.signalr)},
-        {5, ("Tarefas", Properties.Resources.signalr)},
-        {6, ("WhatsApp", Properties.Resources.signalr)},
-        {7, ("Update", Properties.Resources.signalr)},
-        {8, ("Parcela Express", Properties.Resources.signalr)},
+        {1, ("Executa", Properties.Resources.cartsysIco)},
+        {2, ("Guardian", Properties.Resources.guardian)},
+        {3, ("Notificação", Properties.Resources.notificacao)},
+        {4, ("NFS-e", Properties.Resources.nfs)},
+        {5, ("Tarefas", Properties.Resources.tarefas)},
+        {6, ("WhatsApp", Properties.Resources.cartsysIco)},
+        {7, ("Update", Properties.Resources.cartsysIco)},
+        {8, ("Parcela Express", Properties.Resources.cartsysIco)},
         {9, ("SignalR Cliente", Properties.Resources.signalr)},
-        {10, ("Alertas", Properties.Resources.signalr)}
+        {10, ("Alertas", Properties.Resources.cartsysIco)}
     };
         public ServiceForm()
         {
@@ -211,9 +213,17 @@ namespace CartsysControlPanel.Views
                     ServiceHandler.ServiceInstallAll();
                     MessageBox.Show("Todos os serviços foram instalados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+                catch (Win32Exception ex) when (ex.NativeErrorCode == 5) // Erro de Acesso Negado
+                {
+                    MessageBox.Show("Acesso negado. Por favor, execute o painel de controle como administrador para instalar o serviço.", "Permissão Negada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                catch (Win32Exception wEx)
+                {
+                    MessageBox.Show($"Erro de sistema ao tentar instalar o serviço: {wEx.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Erro ao instalar todos os serviços: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Ocorreu um erro ao tentar instalar o serviço: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             });
 
@@ -233,9 +243,13 @@ namespace CartsysControlPanel.Views
                     ServiceHandler.ServiceUninstallAll();
                     MessageBox.Show("Todos os serviços foram desinstalados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+                catch (Win32Exception wEx)
+                {
+                    MessageBox.Show($"Erro de sistema ao tentar desinstalar o serviço: {wEx.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Ocorreu um erro ao tentar desinstalar os serviços: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Ocorreu um erro ao tentar desinstalar o serviço: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             });
             btnUninstallAll.Enabled = true;
@@ -252,6 +266,14 @@ namespace CartsysControlPanel.Views
                 {
                     ServiceHandler.ServiceInstaller(_selectedService);
                     MessageBox.Show("Serviço instalado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Win32Exception ex) when (ex.NativeErrorCode == 5) // Erro de Acesso Negado
+                {
+                    MessageBox.Show("Acesso negado. Por favor, execute o painel de controle como administrador para instalar o serviço.", "Permissão Negada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                catch (Win32Exception wEx)
+                {
+                    MessageBox.Show($"Erro de sistema ao tentar instalar o serviço: {wEx.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 catch (Exception ex)
                 {
@@ -274,6 +296,10 @@ namespace CartsysControlPanel.Views
                     ServiceHandler.ServiceUninstaller(_selectedService);
                     MessageBox.Show("Serviço desinstalado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+                catch (Win32Exception wEx)
+                {
+                    MessageBox.Show($"Erro de sistema ao tentar desinstalar o serviço: {wEx.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Ocorreu um erro ao tentar desinstalar o serviço: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -281,6 +307,11 @@ namespace CartsysControlPanel.Views
             });
             btnUninstall.Enabled = true;
             btnUninstall.Text = "Desinstalar Serviço";
+
+        }
+
+        private void panelServicos_Paint(object sender, PaintEventArgs e)
+        {
 
         }
     }

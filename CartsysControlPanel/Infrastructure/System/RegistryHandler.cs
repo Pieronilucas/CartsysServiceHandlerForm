@@ -1,4 +1,5 @@
-﻿using CartsysControlPanel.Logging;
+﻿using CartsysControlPanel.Infrastructure.Network;
+using CartsysControlPanel.Logging;
 using Microsoft.Win32;
 using System.Security;
 
@@ -7,10 +8,17 @@ namespace CartsysControlPanel.Infrastructure.System
     public static class RegistryHandler
     {
         private readonly static string _userRoot = "HKEY_CURRENT_USER\\Software\\";
-        public static void CreateRegistryKey(string serverName, string dbPath)
+        public static void CreateRegistryKey(string dbPath, string? cartorioPath = null)
         {
             try
             {
+                string _serverName = NetworkHandler.ServerName();
+
+                if (_serverName == null)
+                {
+                    LoggingFile.Error("Não foi possível obter o nome do servidor. Verifique a conexão de rede e as configurações do sistema.");
+                }
+
                 string scSistema = _userRoot + @"SC Sistemas\";
 
                 // ACESSO
@@ -27,8 +35,8 @@ namespace CartsysControlPanel.Infrastructure.System
                 Registry.SetValue(arispRetorno, "Tentativas", 60, RegistryValueKind.DWord);
 
                 // Atualiza e BDS
-                Registry.SetValue(scSistema + "Atualiza", "Caminho", $@"\\{serverName}\cartorio\");
-                Registry.SetValue(scSistema + "BDS", "CaminhoSaidaArquivo", $@"\\{serverName}\cartorio\BDS\");
+                Registry.SetValue(scSistema + "Atualiza", "Caminho", cartorioPath);
+                Registry.SetValue(scSistema + "BDS", "CaminhoSaidaArquivo", $@"\\{_serverName}\cartorio\BDS\");
 
                 // Biometria, Certificado, DAP
                 Registry.SetValue(scSistema + "BIOMETRIA", "ATIVADO", "0");
@@ -39,11 +47,11 @@ namespace CartsysControlPanel.Infrastructure.System
                 string dicKey = scSistema + @"Dicionario\Cartorio";
                 Registry.SetValue(dicKey, "_FirstRun", "+");
                 Registry.SetValue(dicKey, "_Main_count", "1");
-                Registry.SetValue(dicKey, "_Main_0", $"\\\\{serverName}\\cartorio\\Dicionario.adm");
+                Registry.SetValue(dicKey, "_Main_0", $"\\\\{_serverName}\\cartorio\\Dicionario.adm");
                 Registry.SetValue(dicKey, "_Custom_count", "1");
-                Registry.SetValue(dicKey, "_Custom_0", $"\\\\{serverName}\\cartorio\\DicPersonal.adu");
+                Registry.SetValue(dicKey, "_Custom_0", $"\\\\{_serverName}\\cartorio\\DicPersonal.adu");
                 Registry.SetValue(dicKey, "_MSWordCustom_count", "0");
-                Registry.SetValue(dicKey, "_ActiveCustom", $"\\\\{serverName}\\cartorio\\DicPersonal.adu");
+                Registry.SetValue(dicKey, "_ActiveCustom", $"\\\\{_serverName}\\cartorio\\DicPersonal.adu");
                 Registry.SetValue(dicKey, "_soUpcase", "-");
                 Registry.SetValue(dicKey, "_soNumbers", "-");
                 Registry.SetValue(dicKey, "_soHTML", "-");
@@ -73,15 +81,15 @@ namespace CartsysControlPanel.Infrastructure.System
                 string ibKey = scSistema + "INTERBASE";
                 Registry.SetValue(ibKey, "Conexao", 2, RegistryValueKind.DWord);
                 Registry.SetValue(ibKey, "Protocolo", 2, RegistryValueKind.DWord);
-                Registry.SetValue(ibKey, "Servidor", serverName);
+                Registry.SetValue(ibKey, "Servidor", _serverName);
                 Registry.SetValue(ibKey, "DBCartorio", dbPath);
                 Registry.SetValue(ibKey, "TipoBanco", "F");
                 Registry.SetValue(ibKey, "Usuario", "SYSDBA");
-                Registry.SetValue(ibKey, "Senha", "?3!&7 97+"); 
+                Registry.SetValue(ibKey, "Senha", "?3!&7 97+");
 
                 // Notificação e SeloE
                 Registry.SetValue(scSistema + "Notificacao", "ExibirNotificacao", 1, RegistryValueKind.DWord);
-                Registry.SetValue(scSistema + "SeloE", "CaminhoSaidaXML", $@"\\{serverName}\cartorio\LOG_SELOE\");
+                Registry.SetValue(scSistema + "SeloE", "CaminhoSaidaXML", $@"\\{_serverName}\cartorio\LOG_SELOE\");
 
                 LoggingFile.Info("Chaves de registro criadas/atualizadas com sucesso.");
             }
@@ -97,7 +105,7 @@ namespace CartsysControlPanel.Infrastructure.System
             }
             catch (IOException ioEx)
             {
-                LoggingFile.Error($"Erro de I/O ao tentar gravar no Registro do Windows. {ioEx.Message}", ioEx); 
+                LoggingFile.Error($"Erro de I/O ao tentar gravar no Registro do Windows. {ioEx.Message}", ioEx);
                 throw;
             }
             catch (ArgumentException argEx)
