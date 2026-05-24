@@ -1,41 +1,39 @@
 ﻿using CartsysControlPanel.Logging;
-using NetFwTypeLib;
 using System.Runtime.InteropServices;
 
 namespace CartsysControlPanel.Infrastructure.System
 {
     public static class FirewallHandler
     {
-        private static Type type = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
         public static void OpenFirebirdPort()
         {
-            INetFwPolicy2 fwPolicy2 = (INetFwPolicy2)Activator.CreateInstance(type);
             try
             {
+                Type fwPolicyType = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
+                dynamic fwPolicy = Activator.CreateInstance(fwPolicyType);
+
                 try
                 {
-                    fwPolicy2.Rules.Remove("Cartsys");
+                    fwPolicy.Rules.Remove("Cartsys");
+                    LoggingFile.Info("Regra de firewall anterior removida.");
                 }
                 catch (COMException comEx)
                 {
-                    LoggingFile.Error($"Erro ao tentar remover regra de firewall existente. (Código: {comEx.ErrorCode})\nDetalhe: {comEx.Message}");
+                    LoggingFile.Warning($"Não foi possível remover regra anterior — pode não existir. (Código: {comEx.ErrorCode})");
                 }
 
-                INetFwRule2 firewallRule = (INetFwRule2)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
+                dynamic rule = Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
 
-                firewallRule.Name = "Cartsys";
-                firewallRule.Description = "Permite o tráfego na porta 3050-3051 para o Firebird";
-                firewallRule.Protocol = (int)NET_FW_IP_PROTOCOL_.NET_FW_IP_PROTOCOL_TCP;
+                rule.Name = "Cartsys";
+                rule.Description = "Permite o tráfego na porta 3050-3051 para o Firebird";
+                rule.Protocol = 6;    // TCP
+                rule.LocalPorts = "3050-3051";
+                rule.Direction = 1;   // Inbound
+                rule.Action = 1;      // Allow
+                rule.Enabled = true;
+                rule.InterfaceTypes = "All";
 
-                firewallRule.LocalPorts = "3050-3051";
-
-                firewallRule.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN;
-                firewallRule.Action = NET_FW_ACTION_.NET_FW_ACTION_ALLOW;
-                firewallRule.Enabled = true;
-                firewallRule.InterfaceTypes = "All";
-
-                fwPolicy2.Rules.Add(firewallRule);
-
+                fwPolicy.Rules.Add(rule);
                 LoggingFile.Info("Regra de firewall para o Firebird configurada com sucesso.");
             }
             catch (UnauthorizedAccessException)
@@ -50,7 +48,7 @@ namespace CartsysControlPanel.Infrastructure.System
             }
             catch (Exception ex)
             {
-                LoggingFile.Error($"Erro inesperado ao configurar o firewall. Detalhe: {ex.Message}", ex);
+                LoggingFile.Error($"Erro inesperado ao configurar o firewall.", ex);
                 throw;
             }
         }
