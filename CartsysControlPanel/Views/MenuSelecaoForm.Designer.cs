@@ -30,10 +30,9 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MenuSelecaoForm));
             menuPanel = new Panel();
-            regeditBtn = new FontAwesome.Sharp.IconButton();
             hqBirdCalculatorBtn = new FontAwesome.Sharp.IconButton();
             firebirdHqbirdBtn = new FontAwesome.Sharp.IconButton();
-            networkHandlerBtn = new FontAwesome.Sharp.IconButton();
+            configsHandlerBtn = new FontAwesome.Sharp.IconButton();
             servicesHandlerBtn = new FontAwesome.Sharp.IconButton();
             btnHome = new FontAwesome.Sharp.IconButton();
             logoPanel = new Panel();
@@ -47,10 +46,9 @@
             // menuPanel
             // 
             menuPanel.BackColor = Color.FromArgb(30, 42, 56);
-            menuPanel.Controls.Add(regeditBtn);
             menuPanel.Controls.Add(hqBirdCalculatorBtn);
             menuPanel.Controls.Add(firebirdHqbirdBtn);
-            menuPanel.Controls.Add(networkHandlerBtn);
+            menuPanel.Controls.Add(configsHandlerBtn);
             menuPanel.Controls.Add(servicesHandlerBtn);
             menuPanel.Controls.Add(btnHome);
             menuPanel.Controls.Add(logoPanel);
@@ -59,28 +57,6 @@
             menuPanel.Name = "menuPanel";
             menuPanel.Size = new Size(220, 681);
             menuPanel.TabIndex = 0;
-            // 
-            // regeditBtn
-            // 
-            regeditBtn.Dock = DockStyle.Top;
-            regeditBtn.FlatAppearance.BorderSize = 0;
-            regeditBtn.FlatStyle = FlatStyle.Flat;
-            regeditBtn.ForeColor = Color.FromArgb(226, 232, 240);
-            regeditBtn.IconChar = FontAwesome.Sharp.IconChar.Tools;
-            regeditBtn.IconColor = Color.FromArgb(100, 116, 139);
-            regeditBtn.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            regeditBtn.IconSize = 32;
-            regeditBtn.ImageAlign = ContentAlignment.MiddleLeft;
-            regeditBtn.Location = new Point(0, 400);
-            regeditBtn.Name = "regeditBtn";
-            regeditBtn.Padding = new Padding(10, 0, 20, 0);
-            regeditBtn.Size = new Size(220, 60);
-            regeditBtn.TabIndex = 7;
-            regeditBtn.Text = "Editor de Registro";
-            regeditBtn.TextAlign = ContentAlignment.MiddleLeft;
-            regeditBtn.TextImageRelation = TextImageRelation.ImageBeforeText;
-            regeditBtn.UseVisualStyleBackColor = true;
-            regeditBtn.Click += regeditBtn_Click;
             // 
             // hqBirdCalculatorBtn
             // 
@@ -102,7 +78,7 @@
             hqBirdCalculatorBtn.TextAlign = ContentAlignment.MiddleLeft;
             hqBirdCalculatorBtn.TextImageRelation = TextImageRelation.ImageBeforeText;
             hqBirdCalculatorBtn.UseVisualStyleBackColor = true;
-            hqBirdCalculatorBtn.Click += hqBirdCalculator_Click;
+            hqBirdCalculatorBtn.Click += hqBirdCalculatorBtn_Click;
             // 
             // firebirdHqbirdBtn
             // 
@@ -124,29 +100,29 @@
             firebirdHqbirdBtn.TextAlign = ContentAlignment.MiddleLeft;
             firebirdHqbirdBtn.TextImageRelation = TextImageRelation.ImageBeforeText;
             firebirdHqbirdBtn.UseVisualStyleBackColor = true;
-            firebirdHqbirdBtn.Click += firebirdHqbird_Click;
+            firebirdHqbirdBtn.Click += firebirdHqbirdBtn_Click;
             // 
-            // networkHandlerBtn
+            // configsHandlerBtn
             // 
-            networkHandlerBtn.Dock = DockStyle.Top;
-            networkHandlerBtn.FlatAppearance.BorderSize = 0;
-            networkHandlerBtn.FlatStyle = FlatStyle.Flat;
-            networkHandlerBtn.ForeColor = Color.FromArgb(226, 232, 240);
-            networkHandlerBtn.IconChar = FontAwesome.Sharp.IconChar.NetworkWired;
-            networkHandlerBtn.IconColor = Color.FromArgb(100, 116, 139);
-            networkHandlerBtn.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            networkHandlerBtn.IconSize = 32;
-            networkHandlerBtn.ImageAlign = ContentAlignment.MiddleLeft;
-            networkHandlerBtn.Location = new Point(0, 220);
-            networkHandlerBtn.Name = "networkHandlerBtn";
-            networkHandlerBtn.Padding = new Padding(10, 0, 20, 0);
-            networkHandlerBtn.Size = new Size(220, 60);
-            networkHandlerBtn.TabIndex = 3;
-            networkHandlerBtn.Text = "Rede";
-            networkHandlerBtn.TextAlign = ContentAlignment.MiddleLeft;
-            networkHandlerBtn.TextImageRelation = TextImageRelation.ImageBeforeText;
-            networkHandlerBtn.UseVisualStyleBackColor = true;
-            networkHandlerBtn.Click += networkHandler_Click;
+            configsHandlerBtn.Dock = DockStyle.Top;
+            configsHandlerBtn.FlatAppearance.BorderSize = 0;
+            configsHandlerBtn.FlatStyle = FlatStyle.Flat;
+            configsHandlerBtn.ForeColor = Color.FromArgb(226, 232, 240);
+            configsHandlerBtn.IconChar = FontAwesome.Sharp.IconChar.Sliders;
+            configsHandlerBtn.IconColor = Color.FromArgb(100, 116, 139);
+            configsHandlerBtn.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            configsHandlerBtn.IconSize = 32;
+            configsHandlerBtn.ImageAlign = ContentAlignment.MiddleLeft;
+            configsHandlerBtn.Location = new Point(0, 220);
+            configsHandlerBtn.Name = "configsHandlerBtn";
+            configsHandlerBtn.Padding = new Padding(10, 0, 20, 0);
+            configsHandlerBtn.Size = new Size(220, 60);
+            configsHandlerBtn.TabIndex = 3;
+            configsHandlerBtn.Text = "Configurações";
+            configsHandlerBtn.TextAlign = ContentAlignment.MiddleLeft;
+            configsHandlerBtn.TextImageRelation = TextImageRelation.ImageBeforeText;
+            configsHandlerBtn.UseVisualStyleBackColor = true;
+            configsHandlerBtn.Click += configsHandlerBtn_Click;
             // 
             // servicesHandlerBtn
             // 
@@ -168,7 +144,7 @@
             servicesHandlerBtn.TextAlign = ContentAlignment.MiddleLeft;
             servicesHandlerBtn.TextImageRelation = TextImageRelation.ImageBeforeText;
             servicesHandlerBtn.UseVisualStyleBackColor = true;
-            servicesHandlerBtn.Click += servicesHandler_Click;
+            servicesHandlerBtn.Click += servicesHandlerBtn_Click;
             // 
             // btnHome
             // 
@@ -229,6 +205,7 @@
             ClientSize = new Size(1264, 681);
             Controls.Add(panelDesktop);
             Controls.Add(menuPanel);
+            ForeColor = Color.FromArgb(226, 232, 240);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MenuSelecaoForm";
             StartPosition = FormStartPosition.CenterScreen;
@@ -241,6 +218,7 @@
             ResumeLayout(false);
         }
 
+
         #endregion
 
         private Panel menuPanel;
@@ -248,10 +226,9 @@
         private FontAwesome.Sharp.IconButton btnHome;
         private FontAwesome.Sharp.IconButton hqBirdCalculatorBtn;
         private FontAwesome.Sharp.IconButton firebirdHqbirdBtn;
-        private FontAwesome.Sharp.IconButton networkHandlerBtn;
+        private FontAwesome.Sharp.IconButton configsHandlerBtn;
         private FontAwesome.Sharp.IconButton servicesHandlerBtn;
         private PictureBox btnIcon;
         private Panel panelDesktop;
-        private FontAwesome.Sharp.IconButton regeditBtn;
     }
 }

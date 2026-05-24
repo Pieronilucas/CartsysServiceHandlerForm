@@ -24,6 +24,7 @@ namespace CartsysControlPanel.Views
 
 
             UpdateMenu();
+            OpenChildForm(new MenuPrincipal());
         }
 
 
@@ -83,27 +84,31 @@ namespace CartsysControlPanel.Views
             ActivateButton(sender);
             _currentChildForm?.Close();
             Reset();
+            OpenChildForm(new MenuPrincipal());
         }
 
-        private void servicesHandler_Click(object sender, EventArgs e)
+        private void servicesHandlerBtn_Click(object sender, EventArgs e)
         {
             ActivateButton(sender);
             OpenChildForm(new ServiceForm());
         }
 
-        private void networkHandler_Click(object sender, EventArgs e)
+        private void configsHandlerBtn_Click(object sender, EventArgs e)
         {
             ActivateButton(sender);
+            OpenChildForm(new ConfigsForm());
         }
 
-        private void firebirdHqbird_Click(object sender, EventArgs e)
+        private void firebirdHqbirdBtn_Click(object sender, EventArgs e)
         {
             ActivateButton(sender);
+            OpenChildForm(new FirebirdHqbirdForm());
         }
 
-        private void hqBirdCalculator_Click(object sender, EventArgs e)
+        private void hqBirdCalculatorBtn_Click(object sender, EventArgs e)
         {
             ActivateButton(sender);
+            OpenChildForm(new HqbirdCalculatorForm());
         }
 
         private void btnIcon_Click(object sender, EventArgs e)
@@ -119,10 +124,9 @@ namespace CartsysControlPanel.Views
             btnIcon.Image = _isOpenMenu ? Properties.Resources.cartsysLogo : Properties.Resources.cartsys;
             btnHome.Text = _isOpenMenu ? "Menu Iniciar" : "";
             servicesHandlerBtn.Text = _isOpenMenu ? "Serviços" : "";
-            networkHandlerBtn.Text = _isOpenMenu ? "Rede" : "";
+            configsHandlerBtn.Text = _isOpenMenu ? "Configurações" : "";
             firebirdHqbirdBtn.Text = _isOpenMenu ? "Firebird/HQbird" : "";
             hqBirdCalculatorBtn.Text = _isOpenMenu ? "Calculadora HQbird" : "";
-            regeditBtn.Text = _isOpenMenu ? "Editor de Registro" : "";
 
 
             btnIcon.Width = _isOpenMenu ? _widthOpen : _widthClosed;
@@ -143,7 +147,7 @@ namespace CartsysControlPanel.Views
         private void regeditBtn_Click(object sender, EventArgs e)
         {
             ActivateButton(sender);
-            OpenChildForm(new RegeditForm());
+           
         }
     }
 }

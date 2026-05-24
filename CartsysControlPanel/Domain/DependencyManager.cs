@@ -219,10 +219,19 @@ namespace CartsysControlPanel.Domain
                 LoggingFile.Error($"Erro inesperado ao tentar excluir o arquivo temporário '{filePath}'. Detalhes: {ex.Message}", ex);
             }
         }
-        private static string HqbirdPath =>
-            ServiceHandler.GetServiceDirectory("FirebirdServerHQBirdInstanceFB3")
-            ?? throw new InvalidOperationException(
-            "Diretório do HQBird não encontrado. O serviço 'FirebirdServerHQBirdInstanceFB3' está instalado?");
+        private static string HqbirdPath
+        {
+            get
+            {
+                string? path = ServiceHandler.GetServiceDirectory("FirebirdServerHQBirdInstanceFB3");
+                if (path == null)
+                {
+                    LoggingFile.Error("Diretório do HQBird não encontrado. O serviço 'FirebirdServerHQBirdInstanceFB3' está instalado?");
+                    throw new InvalidOperationException("Diretório do HQBird não encontrado.");
+                }
+                return path;
+            }
+        }
     }
 }
 

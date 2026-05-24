@@ -81,7 +81,7 @@ namespace CartsysControlPanel.Infrastructure.System
                     process.WaitForExit();
                     if (process.ExitCode != 0)
                     {
-                        LoggingFile.Error($"Falha ao instalar o serviço {serviceNames[option]}. Código de saída: {process.ExitCode}"); 
+                        LoggingFile.Error($"Falha ao instalar o serviço {serviceNames[option]}. Código de saída: {process.ExitCode}");
                         return;
                     }
                 }
@@ -95,7 +95,7 @@ namespace CartsysControlPanel.Infrastructure.System
             catch (Win32Exception wEx)
             {
                 LoggingFile.Error($"Erro de sistema ao iniciar instalador: {wEx.Message}", wEx);
-                throw;  
+                throw;
             }
             catch (Exception ex)
             {
@@ -189,7 +189,7 @@ namespace CartsysControlPanel.Infrastructure.System
                         if (process.ExitCode != 0)
                         {
                             LoggingFile.Error($"Falha ao configurar o serviço {service} para reinicializar. Código de saída: {process.ExitCode}");
-                            return; 
+                            return;
                         }
                     }
                     LoggingFile.Info($"Serviço {service} configurado para reinicializar em caso de falha.");
@@ -222,7 +222,7 @@ namespace CartsysControlPanel.Infrastructure.System
                 {
                     LoggingFile.Warning($"Não foi possível parar o serviço {serviceNames[option]}. Ele pode não estar em execução ou pode ter sido desinstalado.");
                 }
-                
+
             });
             await task;
         }
@@ -234,7 +234,7 @@ namespace CartsysControlPanel.Infrastructure.System
         public static string? GetServiceDirectory(string serviceName)
         {
             try
-            {     
+            {
                 using var searcher = new ManagementObjectSearcher(
                     $"SELECT PathName FROM Win32_Service WHERE Name = '{serviceName}'");
 
@@ -254,7 +254,7 @@ namespace CartsysControlPanel.Infrastructure.System
 
                 LoggingFile.Info($"Caminho do serviço {serviceName} obtido com sucesso via WMI: {cleanPath}");
                 return Path.GetDirectoryName(cleanPath);
-                
+
             }
             catch (ManagementException mEx)
             {
@@ -266,6 +266,29 @@ namespace CartsysControlPanel.Infrastructure.System
                 LoggingFile.Error($"Erro ao obter o caminho do serviço {serviceName} via WMI: {ex.Message}", ex);
                 throw;
             }
+        }
+
+        public static bool IsServiceInstalled(string serviceName)
+        {
+            ServiceController ctl = ServiceController.GetServices()
+            .FirstOrDefault(s => s.ServiceName == serviceName);
+            if (ctl == null) { return false; }
+
+            return true;
+        }
+
+        public static int CartsysServicesInstalled()
+        {
+
+            int quantity = 0;
+            foreach (var service in serviceNames)
+            {
+                if (IsServiceInstalled(service.Value))
+                {
+                    quantity++; 
+                }
+            }
+            return quantity;
         }
     }
 }
