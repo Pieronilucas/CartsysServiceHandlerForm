@@ -43,6 +43,7 @@
             if (tbPassword.Text == _password)
             {
                 MenuSelecaoForm menuSelecaoForm = new MenuSelecaoForm();
+                menuSelecaoForm.FormClosed += (s, args) => this.Close();
                 menuSelecaoForm.Show();
                 this.Hide();
             }

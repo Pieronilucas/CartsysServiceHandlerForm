@@ -86,6 +86,7 @@ namespace CartsysControlPanel.Infrastructure.System
                     }
                 }
                 LoggingFile.Info($"Serviço {serviceNames[option]} instalado com sucesso.");
+               
             }
             catch (Win32Exception ex) when (ex.NativeErrorCode == 5) // Erro de Acesso Negado
             {
@@ -102,7 +103,8 @@ namespace CartsysControlPanel.Infrastructure.System
                 LoggingFile.Error($"Falha inesperada na instalação do serviço {serviceNames[option]}. Erro: {ex.Message}", ex);
                 throw;
             }
-
+            ServiceRestartAtFailure(option);
+            LoggingFile.Info($"Serviço {serviceNames[option]} configurado para reiniciar em caso de falha.");
         }
 
 
@@ -137,11 +139,11 @@ namespace CartsysControlPanel.Infrastructure.System
                     process.WaitForExit();
                     if (process.ExitCode != 0)
                     {
-                        LoggingFile.Error($"Falha ao desinstalar o serviço {service}. Código de saída: {process.ExitCode}");
+                        LoggingFile.Error($"Falha ao desinstalar o serviço {serviceNames[option]}. Código de saída: {process.ExitCode}");
                         return;
                     }
                 }
-                LoggingFile.Info($"Serviço {service} desinstalado com sucesso.");
+                LoggingFile.Info($"Serviço {serviceNames[option]} desinstalado com sucesso.");
             }
             catch (Win32Exception wEx)
             {
@@ -150,27 +152,26 @@ namespace CartsysControlPanel.Infrastructure.System
             }
             catch (Exception ex)
             {
-                LoggingFile.Error($"Erro inesperado na desinstalação do serviço {service}: {ex.Message}", ex);
+                LoggingFile.Error($"Erro inesperado na desinstalação do serviço {serviceNames[option]}: {ex.Message}", ex);
                 throw;
             }
 
 
         }
 
-        public static void ServiceUninstallAll()
+        public static  async void ServiceUninstallAll()
         {
             foreach (var service in serviceNames)
             {
-                ServiceUninstaller(service.Key);
+                await ServiceUninstaller(service.Key);
             }
         }
 
         // setta os serviçs para reiniciar em caso de falha.
-        public static void ServiceRestartAtFailure()
+        public static void ServiceRestartAtFailure(int option)
         {
-            foreach (var service in serviceNames)
-            {
-                string serviceName = serviceNames[service.Key];
+           
+                string serviceName = serviceNames[option    ];
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = "sc.exe",
@@ -188,23 +189,23 @@ namespace CartsysControlPanel.Infrastructure.System
                         process.WaitForExit();
                         if (process.ExitCode != 0)
                         {
-                            LoggingFile.Error($"Falha ao configurar o serviço {service} para reinicializar. Código de saída: {process.ExitCode}");
+                            LoggingFile.Error($"Falha ao configurar o serviço {serviceNames[option]} para reinicializar. Código de saída: {process.ExitCode}");
                             return;
                         }
                     }
-                    LoggingFile.Info($"Serviço {service} configurado para reinicializar em caso de falha.");
+                    LoggingFile.Info($"Serviço {serviceNames[option]} configurado para reinicializar em caso de falha.");
                 }
                 catch (Win32Exception wEx)
                 {
-                    LoggingFile.Error($"Não foi possível executar o 'sc.exe' para configurar o serviço {service}: {wEx.Message}", wEx);
+                    LoggingFile.Error($"Não foi possível executar o 'sc.exe' para configurar o serviço {serviceNames[option]}: {wEx.Message}", wEx);
                     throw;
                 }
                 catch (Exception ex)
                 {
-                    LoggingFile.Error($"Falha ao configurar o serviço {service} para reinicializar. Erro: {ex.Message}", ex);
+                    LoggingFile.Error($"Falha ao configurar o serviço {serviceNames[option]} para reinicializar. Erro: {ex.Message}", ex);
                     throw;
                 }
-            }
+            
         }
 
 

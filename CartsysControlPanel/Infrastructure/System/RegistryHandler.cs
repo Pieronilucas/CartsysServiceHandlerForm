@@ -35,7 +35,7 @@ namespace CartsysControlPanel.Infrastructure.System
                 Registry.SetValue(arispRetorno, "Tentativas", 60, RegistryValueKind.DWord);
 
                 // Atualiza e BDS
-                Registry.SetValue(scSistema + "Atualiza", "Caminho", cartorioPath);
+                Registry.SetValue(scSistema + "Atualiza", "Caminho", $@"{cartorioPath}\");
                 Registry.SetValue(scSistema + "BDS", "CaminhoSaidaArquivo", $@"\\{_serverName}\cartorio\BDS\");
 
                 // Biometria, Certificado, DAP

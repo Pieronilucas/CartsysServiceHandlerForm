@@ -10,6 +10,7 @@
         <ApplicationIcon>Resources\logoIcon.ico</ApplicationIcon>
         <AssemblyTitle>Cartsys Suporte</AssemblyTitle>
         <AssemblyName>Cartsys Suporte</AssemblyName>
+		<DebugType>none</DebugType>
     </PropertyGroup>
 
     <ItemGroup>

@@ -4,8 +4,10 @@ namespace CartsysControlPanel.Logging
 {
     public static class LoggingFile
     {
-        private static readonly string _logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CartsysControlPanelLogs", "Logs");
+        private static readonly string _logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Temp", "Cartsys Suporte", "Logs");
         private static string _logFileName => Path.Combine(_logDirectory, $"log_{DateTime.Now:yyyy-MM-dd}.txt");
+
+        private static readonly object _lock = new();
 
         static LoggingFile()
         {
@@ -30,13 +32,14 @@ namespace CartsysControlPanel.Logging
 
         private static void WriteLog(string level, string message)
         {
-            string entry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{level}] {message}";
+            string entry = $"\n{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{level}] {message}";
             try
             {
                 FileHandler.AppendTextToFile(_logFileName, entry);
             }
             catch (IOException)
             {
+                lock (_lock)
                 try
                 {
                     string fallbackLogFileName = Path.Combine(_logDirectory, $"log_fallback_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.txt");
