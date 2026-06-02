@@ -74,6 +74,9 @@ namespace CartsysControlPanel.Views
 
             btnUninstallAll.Size = new Size(btnWidth, btnHeight);
             btnUninstallAll.Location = new Point(centerX - btnWidth / 2, startY + individualBlockHeight + separatorHeight + btnHeight + spacing);
+
+            btnReboot.Size = new Size(btnWidth, btnHeight);
+            btnReboot.Location = new Point(centerX - btnWidth / 2, startY + individualBlockHeight + separatorHeight + btnHeight + spacing + 60);
         }
 
 
@@ -98,10 +101,12 @@ namespace CartsysControlPanel.Views
         {
             btnInstall.Enabled = false;
             btnUninstall.Enabled = false;
+            btnReboot.Enabled = true;
             btnInstall.Size = new Size(200, 40);
             btnUninstall.Size = new Size(200, 40);
             btnInstallAll.Size = new Size(200, 40);
             btnUninstallAll.Size = new Size(200, 40);
+            btnReboot.Size = new Size(200, 40);
         }
         private void LoadServiceButtons()
         {
@@ -311,6 +316,31 @@ namespace CartsysControlPanel.Views
         }
 
         private void panelServicos_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private async void button1_Click(object sender, EventArgs e)
+        {
+            btnReboot.Enabled = false;
+            btnReboot.Text = "Reiniciando...";
+            await Task.Run(() =>
+            {
+                try
+                {
+                    ServiceHandler.SetAllToRestart();
+                    MessageBox.Show("Todos os serviços configurados para reiniciar em caso de falha.", "Configuração Aplicada", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ocorreu um erro ao tentar configurar os serviços: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            });
+            btnReboot.Enabled = true;
+            btnReboot.Text = "Colocar serviços para reinicializar";
+        }
+
+        private void panelActions_Paint(object sender, PaintEventArgs e)
         {
 
         }

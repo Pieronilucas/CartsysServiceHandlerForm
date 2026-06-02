@@ -30,6 +30,7 @@
         {
             panelServicos = new FlowLayoutPanel();
             panelActions = new Panel();
+            btnReboot = new Button();
             btnUninstallAll = new Button();
             btnInstall = new Button();
             btnInstallAll = new Button();
@@ -54,6 +55,7 @@
             // panelActions
             // 
             panelActions.BackColor = Color.FromArgb(17, 24, 39);
+            panelActions.Controls.Add(btnReboot);
             panelActions.Controls.Add(btnUninstallAll);
             panelActions.Controls.Add(btnInstall);
             panelActions.Controls.Add(btnInstallAll);
@@ -65,7 +67,23 @@
             panelActions.Name = "panelActions";
             panelActions.Size = new Size(280, 450);
             panelActions.TabIndex = 3;
+            panelActions.Paint += panelActions_Paint;
             panelActions.Resize += panelActions_Resize;
+            // 
+            // btnReboot
+            // 
+            btnReboot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnReboot.BackColor = Color.FromArgb(212, 175, 55);
+            btnReboot.FlatAppearance.BorderSize = 0;
+            btnReboot.FlatStyle = FlatStyle.Flat;
+            btnReboot.ForeColor = Color.FromArgb(226, 232, 240);
+            btnReboot.Location = new Point(43, 350);
+            btnReboot.Name = "btnReboot";
+            btnReboot.Size = new Size(200, 40);
+            btnReboot.TabIndex = 8;
+            btnReboot.Text = "Colocar serviços para reinicializar";
+            btnReboot.UseVisualStyleBackColor = false;
+            btnReboot.Click += button1_Click;
             // 
             // btnUninstallAll
             // 
@@ -150,5 +168,6 @@
         private Button btnUninstall;
         private Button btnInstallAll;
         private Button btnUninstallAll;
+        private Button btnReboot;
     }
 }

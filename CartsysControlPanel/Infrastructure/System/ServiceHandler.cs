@@ -208,6 +208,13 @@ namespace CartsysControlPanel.Infrastructure.System
             
         }
 
+        public async static Task SetAllToRestart()
+        {
+            foreach (var service in serviceNames)
+            {
+                await Task.Run(() => ServiceRestartAtFailure(service.Key));
+            }
+        }
 
         public async static Task ServiceStop(int option)
         {
