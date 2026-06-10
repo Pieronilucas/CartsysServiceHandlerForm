@@ -117,7 +117,7 @@ namespace CartsysControlPanel.Views
 
                  try
                  {
-                     FirewallHandler.OpenFirebirdPort();
+                     FirewallHandler.OpenFirebirdPort(int.Parse(tbPort.Text), int.Parse(tbAuxPort.Text));
                      MessageBox.Show("Porta do Firebird configurada com sucesso no firewall do Windows!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                  }
                  catch (UnauthorizedAccessException)
@@ -142,5 +142,23 @@ namespace CartsysControlPanel.Views
         {
 
         }
+
+        private void tbPort_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if(!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+            tbPort.MaxLength = 5;
+        }
+
+        private void tbAuxPort_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if(!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+            tbAuxPort.MaxLength = 5;    
+            }
     }
 }

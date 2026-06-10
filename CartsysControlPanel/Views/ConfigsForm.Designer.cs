@@ -39,6 +39,10 @@
             label4 = new Label();
             label5 = new Label();
             btnFirewall = new Button();
+            tbPort = new TextBox();
+            label6 = new Label();
+            label7 = new Label();
+            tbAuxPort = new TextBox();
             SuspendLayout();
             // 
             // textBox1
@@ -161,7 +165,7 @@
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label5.ForeColor = Color.FromArgb(226, 232, 240);
-            label5.Location = new Point(12, 361);
+            label5.Location = new Point(12, 340);
             label5.Name = "label5";
             label5.Size = new Size(136, 20);
             label5.TabIndex = 9;
@@ -173,13 +177,59 @@
             btnFirewall.FlatAppearance.BorderSize = 0;
             btnFirewall.FlatStyle = FlatStyle.Flat;
             btnFirewall.ForeColor = Color.FromArgb(226, 232, 240);
-            btnFirewall.Location = new Point(12, 396);
+            btnFirewall.Location = new Point(12, 494);
             btnFirewall.Name = "btnFirewall";
             btnFirewall.Size = new Size(119, 38);
             btnFirewall.TabIndex = 10;
-            btnFirewall.Text = "Liberar portas 3050-3051";
+            btnFirewall.Text = "Liberar portas";
             btnFirewall.UseVisualStyleBackColor = false;
             btnFirewall.Click += btnFirewall_Click_1;
+            // 
+            // tbPort
+            // 
+            tbPort.BackColor = Color.FromArgb(30, 42, 56);
+            tbPort.BorderStyle = BorderStyle.FixedSingle;
+            tbPort.ForeColor = Color.FromArgb(226, 232, 240);
+            tbPort.Location = new Point(12, 396);
+            tbPort.Name = "tbPort";
+            tbPort.PlaceholderText = "Porta Padrão = 3050";
+            tbPort.Size = new Size(136, 23);
+            tbPort.TabIndex = 11;
+            tbPort.KeyPress += tbPort_KeyPress;
+            // 
+            // label6
+            // 
+            label6.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label6.ForeColor = Color.FromArgb(226, 232, 240);
+            label6.Location = new Point(12, 371);
+            label6.Name = "label6";
+            label6.Size = new Size(148, 23);
+            label6.TabIndex = 12;
+            label6.Text = "Porta de serviço";
+            label6.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label7
+            // 
+            label7.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label7.ForeColor = Color.FromArgb(226, 232, 240);
+            label7.Location = new Point(12, 422);
+            label7.Name = "label7";
+            label7.Size = new Size(148, 23);
+            label7.TabIndex = 14;
+            label7.Text = "Porta Auxiliar";
+            label7.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // tbAuxPort
+            // 
+            tbAuxPort.BackColor = Color.FromArgb(30, 42, 56);
+            tbAuxPort.BorderStyle = BorderStyle.FixedSingle;
+            tbAuxPort.ForeColor = Color.FromArgb(226, 232, 240);
+            tbAuxPort.Location = new Point(12, 447);
+            tbAuxPort.Name = "tbAuxPort";
+            tbAuxPort.PlaceholderText = "Porta Padrão = 3051";
+            tbAuxPort.Size = new Size(136, 23);
+            tbAuxPort.TabIndex = 13;
+            tbAuxPort.KeyPress += tbAuxPort_KeyPress;
             // 
             // ConfigsForm
             // 
@@ -187,6 +237,10 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(17, 24, 39);
             ClientSize = new Size(991, 626);
+            Controls.Add(label7);
+            Controls.Add(tbAuxPort);
+            Controls.Add(label6);
+            Controls.Add(tbPort);
             Controls.Add(btnFbdCartorio);
             Controls.Add(textBox1);
             Controls.Add(btnFirewall);
@@ -218,5 +272,9 @@
         private Label label4;
         private Label label5;
         private Button btnFirewall;
+        private TextBox tbPort;
+        private Label label6;
+        private Label label7;
+        private TextBox tbAuxPort;
     }
 }

@@ -5,7 +5,7 @@ namespace CartsysControlPanel.Infrastructure.System
 {
     public static class FirewallHandler
     {
-        public static void OpenFirebirdPort()
+        public static void OpenFirebirdPort(int port, int auxPort)
         {
             try
             {
@@ -25,9 +25,9 @@ namespace CartsysControlPanel.Infrastructure.System
                 dynamic rule = Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
 
                 rule.Name = "Cartsys";
-                rule.Description = "Permite o tráfego na porta 3050-3051 para o Firebird";
+                rule.Description = $"Permite o tráfego na porta {port},{auxPort} para o Firebird";
                 rule.Protocol = 6;    // TCP
-                rule.LocalPorts = "3050-3051";
+                rule.LocalPorts = $"{port},{auxPort}";
                 rule.Direction = 1;   // Inbound
                 rule.Action = 1;      // Allow
                 rule.Enabled = true;
