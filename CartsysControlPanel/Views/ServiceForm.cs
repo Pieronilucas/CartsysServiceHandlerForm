@@ -1,8 +1,6 @@
 ﻿using CartsysControlPanel.Infrastructure.System;
-using CartsysControlPanel.Logging;
 using System.ComponentModel;
 using static CartsysControlPanel.Infrastructure.System.ServiceHandler;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace CartsysControlPanel.Views
 {
@@ -476,10 +474,7 @@ namespace CartsysControlPanel.Views
         }
 
 
-        private void panelActions_Paint(object sender, PaintEventArgs e)
-        {
 
-        }
 
         private async void btnInitService_Click(object sender, EventArgs e)
         {

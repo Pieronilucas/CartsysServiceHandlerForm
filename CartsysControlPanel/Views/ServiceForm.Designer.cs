@@ -75,7 +75,6 @@
             panelActions.Name = "panelActions";
             panelActions.Size = new Size(480, 480);
             panelActions.TabIndex = 3;
-            panelActions.Paint += panelActions_Paint;
             panelActions.Resize += panelActions_Resize;
             // 
             // btnInitAllServices

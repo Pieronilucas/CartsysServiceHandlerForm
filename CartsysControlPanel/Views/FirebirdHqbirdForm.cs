@@ -7,9 +7,18 @@ namespace CartsysControlPanel.Views
 {
     public partial class FirebirdHqbirdForm : Form
     {
+        private readonly Lazy<FirebirdPortForm> _portForm = new Lazy<FirebirdPortForm>(() => new FirebirdPortForm(), LazyThreadSafetyMode.None);
         public FirebirdHqbirdForm()
         {
             InitializeComponent();
+        }
+
+        private bool EnsurePortsConfigured()
+        {
+            if (_portForm.Value.DialogResult == DialogResult.OK)
+                return true;
+
+            return _portForm.Value.ShowDialog() == DialogResult.OK;
         }
 
         private async void btnDirectDownload_Click(object sender, EventArgs e)
@@ -59,8 +68,7 @@ namespace CartsysControlPanel.Views
             btnFirebirdConfig.Text = "Configurando...";
             await Task.Run((() =>
             {
-                using var portForm = new FirebirdPortForm();
-                if(!portForm.ShowDialog().Equals(DialogResult.OK))
+                if (!EnsurePortsConfigured())
                 {
                     LoggingFile.Info("Configuração do 'firebird.conf' cancelada pelo usuário.");
                     Invoke(() =>
@@ -69,10 +77,10 @@ namespace CartsysControlPanel.Views
                 }
                 try
                 {
-                    DependencyManager.SetFirebirdConfig(portForm.ServicePort, portForm.AuxPort);
-                    LoggingFile.Info($"Configuração do 'firebird.conf' concluída com sucesso. \nPorta de serviço: {portForm.ServicePort}\nPorta auxiliar: {portForm.AuxPort}");
+                    DependencyManager.SetFirebirdConfig(_portForm.Value.ServicePort, _portForm.Value.AuxPort);
+                    LoggingFile.Info($"Configuração do 'firebird.conf' concluída com sucesso. \nPorta de serviço: {_portForm.Value.ServicePort}\nPorta auxiliar: {_portForm.Value.AuxPort}");
                     Invoke(() =>
-                   MessageBox.Show($"Configuração do 'firebird.conf' concluída com sucesso. \nPorta de serviço: {portForm.ServicePort}\nPorta auxiliar: {portForm.AuxPort}"));
+                   MessageBox.Show($"Configuração do 'firebird.conf' concluída com sucesso. \nPorta de serviço: {_portForm.Value.ServicePort}\nPorta auxiliar: {_portForm.Value.AuxPort}"));
                 }
                 catch (IOException iEx)
                 {
@@ -126,9 +134,17 @@ namespace CartsysControlPanel.Views
             btnBackupFolder.Text = "Configurando...";
             await Task.Run((() =>
             {
+
+                if (!EnsurePortsConfigured()) {
+                    LoggingFile.Info("Configuração do 'firebird.conf' cancelada pelo usuário.");
+                    Invoke(() =>
+                   MessageBox.Show("Configuração do 'firebird.conf' cancelada."));
+                    return;
+                }
+              
                 try
                 {
-                    DependencyManager.SetBackupFolder();
+                    DependencyManager.SetBackupFolder(_portForm.Value.ServicePort);
                     LoggingFile.Info("Configuração da pasta de backup concluída com sucesso.");
                     Invoke(() =>
                    MessageBox.Show("Configuração da pasta de backup concluída com sucesso."));
@@ -160,7 +176,7 @@ namespace CartsysControlPanel.Views
                     DependencyManager.SetUdrDll();
                     LoggingFile.Info("Configuração do UDR concluída com sucesso.");
                     Invoke(() =>
-                   MessageBox.Show("Configuração do UDR concluída com sucesso."));  
+                   MessageBox.Show("Configuração do UDR concluída com sucesso."));
                 }
                 catch (IOException iEx)
                 {
@@ -182,21 +198,27 @@ namespace CartsysControlPanel.Views
             LoggingFile.Info("Iniciando configuração de todas as dependências.");
             btnAllConfig.Enabled = false;
             btnAllConfig.Text = "Configurando...";
+
+
+            if (!_portForm.Value.ShowDialog().Equals(DialogResult.OK))
+            {
+                LoggingFile.Info("Configuração do 'firebird.conf' cancelada pelo usuário.");
+                Invoke(() =>
+               MessageBox.Show("Configuração do 'firebird.conf' cancelada."));
+                return;
+            }
+
+            int servicePort = _portForm.Value.ServicePort;
+            int auxPort = _portForm.Value.AuxPort;
             await Task.Run((() =>
             {
                 using var portForm = new FirebirdPortForm();
-                if (!portForm.ShowDialog().Equals(DialogResult.OK))
-                {
-                    LoggingFile.Info("Configuração do 'firebird.conf' cancelada pelo usuário.");
-                    Invoke(() =>
-                   MessageBox.Show("Configuração do 'firebird.conf' cancelada."));
-                    return;
-                }
+
                 try
                 {
-                    DependencyManager.SetFirebirdConfig(portForm.ServicePort, portForm.AuxPort);
+                    DependencyManager.SetFirebirdConfig(servicePort, auxPort);
                     DependencyManager.SetDbCrypt();
-                    DependencyManager.SetBackupFolder();
+                    DependencyManager.SetBackupFolder(servicePort);
                     DependencyManager.SetUdrDll();
                     LoggingFile.Info("Configuração de todas as dependências concluída com sucesso.");
                     Invoke(() =>
@@ -214,10 +236,7 @@ namespace CartsysControlPanel.Views
             btnAllConfig.Text = "Aplicar Todas as Configurações";
         }
 
-        private void FirebirdHqbirdForm_Load(object sender, EventArgs e)
-        {
 
-        }
     }
 }
 

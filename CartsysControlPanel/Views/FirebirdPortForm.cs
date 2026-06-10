@@ -59,8 +59,12 @@ namespace CartsysControlPanel.Views
             }
             if (!int.TryParse(tbAuxPort.Text, out int auxPort) || auxPort < 1 || auxPort > 65535)
             {
-                MessageBox.Show("Por favor, insira um número válido para a porta auxiliar.", "Entrada Inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                var result = MessageBox.Show("Porta auxiliar informada é inválida. Deseja utilizar a porta remota auxiliar padrão? (3051)", "Entrada Inválida", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
+                AuxPort = 3051;
             }
             if (servicePort == auxPort)
             {

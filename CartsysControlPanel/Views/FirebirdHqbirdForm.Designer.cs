@@ -187,7 +187,6 @@
             ForeColor = Color.FromArgb(226, 232, 240);
             Name = "FirebirdHqbirdForm";
             Text = "FirebirdHqbirdForm";
-            Load += FirebirdHqbirdForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }

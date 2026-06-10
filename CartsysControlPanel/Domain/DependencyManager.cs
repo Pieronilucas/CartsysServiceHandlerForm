@@ -157,11 +157,12 @@ namespace CartsysControlPanel.Domain
 
         }
 
-        public static void SetBackupFolder()
+        public static void SetBackupFolder(int servicePort)
         {
 
             string backupFolderPath = Path.Combine(HqbirdPath, "backup");
             string backupFolderZipPath = Path.Combine(HqbirdPath, "backup.zip");
+            string tempExtractPath = Path.Combine(Path.GetTempPath(), "backup_temp");
 
             if (Directory.Exists(backupFolderPath)) { return; }
 
@@ -176,17 +177,26 @@ namespace CartsysControlPanel.Domain
                     using (var fileStream = new FileStream(backupFolderZipPath, FileMode.Create, FileAccess.Write, FileShare.None))
                     {
                         resourceStream.CopyTo(fileStream);
-                    }
-                    LoggingFile.Info($"A pasta de backup foi copiada para '{backupFolderZipPath}'.");
+                    } 
                 }
-                if (File.Exists(backupFolderZipPath))
+                System.IO.Compression.ZipFile.ExtractToDirectory(backupFolderZipPath, tempExtractPath);
+                LoggingFile.Info($"backup.zip extraído para temp em '{tempExtractPath}'.");
+
+                string tempConfig = Path.Combine(tempExtractPath, "backup", "firebird.conf");
+                if (File.Exists(tempConfig))
                 {
-                    System.IO.Compression.ZipFile.ExtractToDirectory(backupFolderZipPath, HqbirdPath);
-                    LoggingFile.Info($"A pasta de backup foi extraída para '{HqbirdPath}'.");
-                    TryDeleteFile(backupFolderZipPath);
+                   string content = File.ReadAllText(tempConfig, Encoding.UTF8);
+                   content = content.Replace("{servicePort}", servicePort.ToString());
+                   File.WriteAllText(tempConfig, content, Encoding.UTF8);
+                   LoggingFile.Info($"Configuração de 'firebird.conf' utilizando a porta {servicePort} dentro do backup ajustada com sucesso.");
                 }
 
-
+                string tempBackupFolderPath = Path.Combine(tempExtractPath, "backup");
+                if (Path.Exists(backupFolderPath)) { 
+                Directory.Delete(backupFolderPath, true);
+                }
+                Directory.Move(tempBackupFolderPath, backupFolderPath);
+                LoggingFile.Info($"Pasta de backup movida para '{backupFolderPath}' com sucesso.");
             }
             catch (IOException iEx)
             {
@@ -198,7 +208,26 @@ namespace CartsysControlPanel.Domain
                 LoggingFile.Error($"Erro ao configurar a pasta de backup. Detalhes: {ex.Message}", ex);
                 throw;
             }
-
+            finally
+            {
+                TryDeleteFile(backupFolderZipPath);
+                if (Directory.Exists(tempExtractPath))
+                {
+                    try
+                    {
+                        Directory.Delete(tempExtractPath, true);
+                        LoggingFile.Info($"Pasta temporária '{tempExtractPath}' excluída com sucesso.");
+                    }
+                    catch (IOException iEx)
+                    {
+                        LoggingFile.Error($"Falha de I/O ao excluir a pasta temporária '{tempExtractPath}'. Detalhes: {iEx.Message}", iEx);
+                    }
+                    catch (Exception ex)
+                    {
+                        LoggingFile.Error($"Erro inesperado ao excluir a pasta temporária '{tempExtractPath}'. Detalhes: {ex.Message}", ex);
+                    }
+                }
+            }
         }
 
         private static void TryDeleteFile(string filePath)
