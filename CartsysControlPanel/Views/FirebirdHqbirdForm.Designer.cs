@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             btnDirectDownload = new Button();
-            btnHqbirdPage = new Button();
             label1 = new Label();
             label2 = new Label();
             btnFirebirdInstall = new Button();
@@ -54,20 +53,6 @@
             btnDirectDownload.Text = "Download Direto";
             btnDirectDownload.UseVisualStyleBackColor = false;
             btnDirectDownload.Click += btnDirectDownload_Click;
-            // 
-            // btnHqbirdPage
-            // 
-            btnHqbirdPage.BackColor = Color.FromArgb(100, 116, 139);
-            btnHqbirdPage.FlatAppearance.BorderSize = 0;
-            btnHqbirdPage.FlatStyle = FlatStyle.Flat;
-            btnHqbirdPage.ForeColor = Color.FromArgb(226, 232, 240);
-            btnHqbirdPage.Location = new Point(203, 83);
-            btnHqbirdPage.Name = "btnHqbirdPage";
-            btnHqbirdPage.Size = new Size(119, 38);
-            btnHqbirdPage.TabIndex = 4;
-            btnHqbirdPage.Text = "Página Oficial HQBird";
-            btnHqbirdPage.UseVisualStyleBackColor = false;
-            btnHqbirdPage.Click += btnHqbirdPage_Click;
             // 
             // label1
             // 
@@ -198,7 +183,6 @@
             Controls.Add(btnFirebirdInstall);
             Controls.Add(label2);
             Controls.Add(label1);
-            Controls.Add(btnHqbirdPage);
             Controls.Add(btnDirectDownload);
             ForeColor = Color.FromArgb(226, 232, 240);
             Name = "FirebirdHqbirdForm";

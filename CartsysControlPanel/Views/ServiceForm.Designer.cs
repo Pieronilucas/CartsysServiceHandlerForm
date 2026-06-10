@@ -30,6 +30,10 @@
         {
             panelServicos = new FlowLayoutPanel();
             panelActions = new Panel();
+            btnInitAllServices = new Button();
+            btnInitService = new Button();
+            label2 = new Label();
+            label1 = new Label();
             btnReboot = new Button();
             btnUninstallAll = new Button();
             btnInstall = new Button();
@@ -55,6 +59,10 @@
             // panelActions
             // 
             panelActions.BackColor = Color.FromArgb(17, 24, 39);
+            panelActions.Controls.Add(btnInitAllServices);
+            panelActions.Controls.Add(btnInitService);
+            panelActions.Controls.Add(label2);
+            panelActions.Controls.Add(label1);
             panelActions.Controls.Add(btnReboot);
             panelActions.Controls.Add(btnUninstallAll);
             panelActions.Controls.Add(btnInstall);
@@ -62,13 +70,65 @@
             panelActions.Controls.Add(btnUninstall);
             panelActions.Dock = DockStyle.Fill;
             panelActions.Location = new Point(280, 0);
-            panelActions.MaximumSize = new Size(280, 1080);
-            panelActions.MinimumSize = new Size(280, 280);
+            panelActions.MaximumSize = new Size(480, 1080);
+            panelActions.MinimumSize = new Size(480, 480);
             panelActions.Name = "panelActions";
-            panelActions.Size = new Size(280, 450);
+            panelActions.Size = new Size(480, 480);
             panelActions.TabIndex = 3;
             panelActions.Paint += panelActions_Paint;
             panelActions.Resize += panelActions_Resize;
+            // 
+            // btnInitAllServices
+            // 
+            btnInitAllServices.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnInitAllServices.BackColor = Color.FromArgb(30, 58, 95);
+            btnInitAllServices.FlatAppearance.BorderSize = 0;
+            btnInitAllServices.FlatStyle = FlatStyle.Flat;
+            btnInitAllServices.ForeColor = Color.FromArgb(226, 232, 240);
+            btnInitAllServices.Location = new Point(43, 289);
+            btnInitAllServices.Name = "btnInitAllServices";
+            btnInitAllServices.Size = new Size(400, 40);
+            btnInitAllServices.TabIndex = 12;
+            btnInitAllServices.Text = "Iniciar Todos os Serviço ";
+            btnInitAllServices.UseVisualStyleBackColor = false;
+            btnInitAllServices.Click += btnInitAllServices_Click;
+            // 
+            // btnInitService
+            // 
+            btnInitService.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnInitService.BackColor = Color.FromArgb(30, 58, 95);
+            btnInitService.FlatAppearance.BorderSize = 0;
+            btnInitService.FlatStyle = FlatStyle.Flat;
+            btnInitService.ForeColor = Color.FromArgb(226, 232, 240);
+            btnInitService.Location = new Point(43, 131);
+            btnInitService.Name = "btnInitService";
+            btnInitService.Size = new Size(400, 40);
+            btnInitService.TabIndex = 11;
+            btnInitService.Text = "Iniciar Serviço Selecionado";
+            btnInitService.UseVisualStyleBackColor = false;
+            btnInitService.Click += btnInitService_Click;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label2.ForeColor = Color.FromArgb(226, 232, 240);
+            label2.Location = new Point(43, 174);
+            label2.Name = "label2";
+            label2.Size = new Size(128, 20);
+            label2.TabIndex = 10;
+            label2.Text = "Todos os serviços ";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label1.ForeColor = Color.FromArgb(226, 232, 240);
+            label1.Location = new Point(43, 9);
+            label1.Name = "label1";
+            label1.Size = new Size(141, 20);
+            label1.TabIndex = 9;
+            label1.Text = "Serviço selecionado";
             // 
             // btnReboot
             // 
@@ -79,7 +139,7 @@
             btnReboot.ForeColor = Color.FromArgb(226, 232, 240);
             btnReboot.Location = new Point(43, 350);
             btnReboot.Name = "btnReboot";
-            btnReboot.Size = new Size(200, 40);
+            btnReboot.Size = new Size(400, 40);
             btnReboot.TabIndex = 8;
             btnReboot.Text = "Colocar serviços para reinicializar";
             btnReboot.UseVisualStyleBackColor = false;
@@ -87,16 +147,16 @@
             // 
             // btnUninstallAll
             // 
-            btnUninstallAll.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnUninstallAll.Anchor = AnchorStyles.None;
             btnUninstallAll.BackColor = Color.FromArgb(127, 29, 29);
             btnUninstallAll.FlatAppearance.BorderSize = 0;
             btnUninstallAll.FlatStyle = FlatStyle.Flat;
             btnUninstallAll.ForeColor = Color.FromArgb(226, 232, 240);
-            btnUninstallAll.Location = new Point(43, 267);
+            btnUninstallAll.Location = new Point(43, 243);
             btnUninstallAll.Name = "btnUninstallAll";
-            btnUninstallAll.Size = new Size(200, 40);
+            btnUninstallAll.Size = new Size(400, 40);
             btnUninstallAll.TabIndex = 7;
-            btnUninstallAll.Text = "Desinstalar Todos";
+            btnUninstallAll.Text = "Desinstalar Todos os Serviços";
             btnUninstallAll.UseVisualStyleBackColor = false;
             btnUninstallAll.Click += btnUninstallAll_Click;
             // 
@@ -107,11 +167,11 @@
             btnInstall.FlatAppearance.BorderSize = 0;
             btnInstall.FlatStyle = FlatStyle.Flat;
             btnInstall.ForeColor = Color.FromArgb(226, 232, 240);
-            btnInstall.Location = new Point(43, 92);
+            btnInstall.Location = new Point(43, 39);
             btnInstall.Name = "btnInstall";
-            btnInstall.Size = new Size(200, 40);
+            btnInstall.Size = new Size(400, 40);
             btnInstall.TabIndex = 4;
-            btnInstall.Text = "Instalar serviço";
+            btnInstall.Text = "Instalar Serviço Selecionado";
             btnInstall.UseVisualStyleBackColor = false;
             btnInstall.Click += btnInstall_Click;
             // 
@@ -122,11 +182,11 @@
             btnInstallAll.FlatAppearance.BorderSize = 0;
             btnInstallAll.FlatStyle = FlatStyle.Flat;
             btnInstallAll.ForeColor = Color.FromArgb(226, 232, 240);
-            btnInstallAll.Location = new Point(43, 221);
+            btnInstallAll.Location = new Point(43, 197);
             btnInstallAll.Name = "btnInstallAll";
-            btnInstallAll.Size = new Size(200, 40);
+            btnInstallAll.Size = new Size(400, 40);
             btnInstallAll.TabIndex = 6;
-            btnInstallAll.Text = "Instalar Todos";
+            btnInstallAll.Text = "Instalar Todos os Serviços";
             btnInstallAll.UseVisualStyleBackColor = false;
             btnInstallAll.Click += btnInstallAll_Click;
             // 
@@ -137,11 +197,11 @@
             btnUninstall.FlatAppearance.BorderSize = 0;
             btnUninstall.FlatStyle = FlatStyle.Flat;
             btnUninstall.ForeColor = Color.FromArgb(226, 232, 240);
-            btnUninstall.Location = new Point(43, 138);
+            btnUninstall.Location = new Point(43, 85);
             btnUninstall.Name = "btnUninstall";
-            btnUninstall.Size = new Size(200, 40);
+            btnUninstall.Size = new Size(400, 40);
             btnUninstall.TabIndex = 5;
-            btnUninstall.Text = "Desinstalar Serviço";
+            btnUninstall.Text = "Desinstalar Serviço Selecionado";
             btnUninstall.UseVisualStyleBackColor = false;
             btnUninstall.Click += btnUninstall_Click;
             // 
@@ -158,6 +218,7 @@
             Load += ServiceForm_Load;
             Shown += ServiceForm_Shown;
             panelActions.ResumeLayout(false);
+            panelActions.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -169,5 +230,9 @@
         private Button btnInstallAll;
         private Button btnUninstallAll;
         private Button btnReboot;
+        private Label label2;
+        private Label label1;
+        private Button btnInitService;
+        private Button btnInitAllServices;
     }
 }

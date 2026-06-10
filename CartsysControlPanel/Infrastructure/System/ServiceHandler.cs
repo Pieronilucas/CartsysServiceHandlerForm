@@ -9,6 +9,8 @@ namespace CartsysControlPanel.Infrastructure.System
 {
     public static class ServiceHandler
     {
+        public enum ServiceStatus { Running, Stopped, NotInstalled }
+
         private static Dictionary<int, string> executaveis = new Dictionary<int, string>
         {
             {1, "Cartsys.Registro.Executa.exe"},
@@ -37,10 +39,8 @@ namespace CartsysControlPanel.Infrastructure.System
         };
 
         // utiliza .Net InstallUtil para instalar os serviços.
-        public static void ServiceInstaller(int option)
+        public static async Task ServiceInstaller(int option)
         {
-
-
             object? regValue = Registry
                 .GetValue("HKEY_CURRENT_USER\\Software\\SC Sistemas\\Atualiza", "Caminho", null);
 
@@ -61,6 +61,8 @@ namespace CartsysControlPanel.Infrastructure.System
                 return;
             }
 
+            UnblockFile(fullPath);
+
             var startInfo = new ProcessStartInfo
             {
                 WorkingDirectory = cartorioPath,
@@ -78,15 +80,19 @@ namespace CartsysControlPanel.Infrastructure.System
                 using var process = Process.Start(startInfo);
                 if (process != null)
                 {
+                    string output = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
+                    LoggingFile.Error(error);
                     process.WaitForExit();
                     if (process.ExitCode != 0)
                     {
-                        LoggingFile.Error($"Falha ao instalar o serviço {serviceNames[option]}. Código de saída: {process.ExitCode}");
-                        return;
+                        LoggingFile.Error($"Falha ao instalar o serviço {serviceNames[option]}. Código de saída: {process.ExitCode} | {output} | {error}");
+                        throw new Exception(error);
                     }
                 }
                 LoggingFile.Info($"Serviço {serviceNames[option]} instalado com sucesso.");
-               
+                ServiceRestartAtFailure(option);
+                LoggingFile.Info($"Serviço {serviceNames[option]} configurado para reiniciar em caso de falha.");
             }
             catch (Win32Exception ex) when (ex.NativeErrorCode == 5) // Erro de Acesso Negado
             {
@@ -103,17 +109,28 @@ namespace CartsysControlPanel.Infrastructure.System
                 LoggingFile.Error($"Falha inesperada na instalação do serviço {serviceNames[option]}. Erro: {ex.Message}", ex);
                 throw;
             }
-            ServiceRestartAtFailure(option);
-            LoggingFile.Info($"Serviço {serviceNames[option]} configurado para reiniciar em caso de falha.");
+            
         }
 
 
-        public static void ServiceInstallAll()
+        public static async Task ServiceInstallAll()
         {
+            var failures = new List<string>();
             foreach (var service in serviceNames)
             {
-                ServiceInstaller(service.Key);
+                try
+                {
+                    ServiceInstaller(service.Key);
+                }
+                catch (Exception ex)
+                {
+                    LoggingFile.Error($"Falha ao instalar {service.Value}", ex);
+                    failures.Add(service.Value);
+                }
+
             }
+            if (failures.Any())
+                throw new Exception($"{string.Join(", ", failures)}");
         }
 
         // Para os serviços e desinstala eles através do sc delete.
@@ -159,7 +176,7 @@ namespace CartsysControlPanel.Infrastructure.System
 
         }
 
-        public static  async void ServiceUninstallAll()
+        public static async Task ServiceUninstallAll()
         {
             foreach (var service in serviceNames)
             {
@@ -170,42 +187,104 @@ namespace CartsysControlPanel.Infrastructure.System
         // setta os serviçs para reiniciar em caso de falha.
         public static void ServiceRestartAtFailure(int option)
         {
-           
-                string serviceName = serviceNames[option    ];
-                var startInfo = new ProcessStartInfo
+
+            string serviceName = serviceNames[option];
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "sc.exe",
+                Arguments = $"failure \"{serviceName}\" reset= 0 actions= restart/60000",
+                UseShellExecute = false,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true,
+            };
+            try
+            {
+                using var process = Process.Start(startInfo);
+                if (process != null)
                 {
-                    FileName = "sc.exe",
-                    Arguments = $"failure \"{serviceName}\" reset= 0 actions= restart/60000",
-                    UseShellExecute = false,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true,
-                };
+                    process.WaitForExit();
+                    if (process.ExitCode != 0)
+                    {
+                        LoggingFile.Error($"Falha ao configurar o serviço {serviceNames[option]} para reinicializar. Código de saída: {process.ExitCode}");
+                        return;
+                    }
+                }
+                LoggingFile.Info($"Serviço {serviceNames[option]} configurado para reinicializar em caso de falha.");
+            }
+            catch (Win32Exception wEx)
+            {
+                LoggingFile.Error($"Não foi possível executar o 'sc.exe' para configurar o serviço {serviceNames[option]}: {wEx.Message}", wEx);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                LoggingFile.Error($"Falha ao configurar o serviço {serviceNames[option]} para reinicializar. Erro: {ex.Message}", ex);
+                throw;
+            }
+
+        }
+
+        public static async Task InitServices(int option)
+        {
+
+            string serviceName = serviceNames[option];
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "sc.exe",
+                Arguments = $"start \"{serviceName}\"",
+                UseShellExecute = false,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true,
+            };
+            try
+            {
+                using var process = Process.Start(startInfo);
+                if (process != null)
+                {
+                    process.WaitForExit();
+                    if (process.ExitCode != 0)
+                    {
+                        LoggingFile.Error($"Falha ao iniciar o serviço {serviceNames[option]}. Código de saída: {process.ExitCode}");
+                        return;
+                    }
+                }
+                LoggingFile.Info($"Serviço {serviceNames[option]} iniciado com sucesso.");
+            }
+            catch (Win32Exception wEx)
+            {
+                LoggingFile.Error($"Não foi possível executar o 'sc.exe' para iniciar o serviço {serviceNames[option]}: {wEx.Message}", wEx);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                LoggingFile.Error($"Falha ao iniciar o serviço {serviceNames[option]}. Erro: {ex.Message}", ex);
+                throw;
+            }
+
+        }
+
+        public static async Task InitAllServices()
+        {
+            var failures = new List<string>();
+            foreach (var service in serviceNames)
+            {
                 try
                 {
-                    using var process = Process.Start(startInfo);
-                    if (process != null)
-                    {
-                        process.WaitForExit();
-                        if (process.ExitCode != 0)
-                        {
-                            LoggingFile.Error($"Falha ao configurar o serviço {serviceNames[option]} para reinicializar. Código de saída: {process.ExitCode}");
-                            return;
-                        }
-                    }
-                    LoggingFile.Info($"Serviço {serviceNames[option]} configurado para reinicializar em caso de falha.");
-                }
-                catch (Win32Exception wEx)
-                {
-                    LoggingFile.Error($"Não foi possível executar o 'sc.exe' para configurar o serviço {serviceNames[option]}: {wEx.Message}", wEx);
-                    throw;
+                    InitServices(service.Key);
                 }
                 catch (Exception ex)
                 {
-                    LoggingFile.Error($"Falha ao configurar o serviço {serviceNames[option]} para reinicializar. Erro: {ex.Message}", ex);
-                    throw;
+                    LoggingFile.Error($"Falha ao iniciar {service.Value}", ex);
+                    failures.Add(service.Value);
                 }
-            
+
+            }
+            if (failures.Any())
+            {
+                throw new Exception($"{string.Join(", ", failures)}");
+            }
         }
 
         public async static Task SetAllToRestart()
@@ -284,19 +363,52 @@ namespace CartsysControlPanel.Infrastructure.System
 
             return true;
         }
+        
+        public static ServiceStatus GetServiceStatus(int option)
+        {
+            try
+            {
+                using var sc = new ServiceController(serviceNames[option]);
+                var status = sc.Status; // Tenta acessar o status para verificar se o serviço existe
+                return status == ServiceControllerStatus.Running
+                    ?
+                    ServiceStatus.Running :
+                    ServiceStatus.Stopped;
+            }
+            catch (InvalidOperationException)
+            {
+                return ServiceStatus.NotInstalled;
+            }
+        }
 
         public static int CartsysServicesInstalled()
         {
-
             int quantity = 0;
             foreach (var service in serviceNames)
             {
                 if (IsServiceInstalled(service.Value))
                 {
-                    quantity++; 
+                    quantity++;
                 }
             }
             return quantity;
+        }
+
+        private static void UnblockFile(string filePath)
+        {
+            try
+            {
+                string streamPath = filePath + ":Zone.Identifier";
+                if (File.Exists(streamPath))
+                {
+                    File.Delete(streamPath);
+                    LoggingFile.Info($"Arquivo {Path.GetFileName(filePath)} desbloqueado com sucesso.");
+                }
+            }
+            catch (Exception ex)
+            {
+                LoggingFile.Error($"Erro ao tentar desbloquear o arquivo {Path.GetFileName(filePath)}: {ex.Message}", ex);
+            }
         }
     }
 }

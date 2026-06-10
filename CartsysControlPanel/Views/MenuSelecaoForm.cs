@@ -1,4 +1,6 @@
-﻿using FontAwesome.Sharp;
+﻿using CartsysControlPanel.Infrastructure.Network;
+using CartsysControlPanel.Infrastructure.System;
+using FontAwesome.Sharp;
 
 namespace CartsysControlPanel.Views
 {
@@ -7,9 +9,14 @@ namespace CartsysControlPanel.Views
         private IconButton _currentBtn;
         private Panel _leftBorderBtn;
         private Form _currentChildForm;
-        private bool _isOpenMenu = false;
+        private bool _isOpenMenu = true;
         private const int _widthClosed = 60;
         private const int _widthOpen = 220;
+        private readonly Lazy<ServiceForm> _serviceForm = new Lazy<ServiceForm>(() => new ServiceForm());
+        private readonly Lazy<FirebirdHqbirdForm> _firebirdForm = new Lazy<FirebirdHqbirdForm>(() => new FirebirdHqbirdForm());
+        private readonly Lazy<HqbirdCalculatorForm> _calculatorForm = new Lazy<HqbirdCalculatorForm>(() => new HqbirdCalculatorForm());
+        private readonly Lazy<ConfigsForm> _configForm = new Lazy<ConfigsForm>(() => new ConfigsForm());
+        private readonly Lazy<MenuPrincipal> _menuPrincipalForm = new Lazy<MenuPrincipal>(() => new MenuPrincipal());
 
         public MenuSelecaoForm()
         {
@@ -67,48 +74,62 @@ namespace CartsysControlPanel.Views
         {
             if (_currentChildForm != null)
             {
-                _currentChildForm.Close();
+                _currentChildForm.Hide();
             }
             _currentChildForm = childForm;
-            childForm.TopLevel = false;
-            childForm.FormBorderStyle = FormBorderStyle.None;
-            childForm.Dock = DockStyle.Fill;
-            panelDesktop.Controls.Add(childForm);
-            panelDesktop.Tag = childForm;
-            childForm.BringToFront();
+            if (!panelDesktop.Controls.Contains(childForm))
+            {
+                childForm.TopLevel = false;
+                childForm.FormBorderStyle = FormBorderStyle.None;
+                childForm.Dock = DockStyle.Fill;
+                panelDesktop.Controls.Add(childForm);
+                //panelDesktop.Tag = childForm;
+            }
             childForm.Show();
+            childForm.BringToFront();
         }
 
         private void btnHome_Click(object sender, EventArgs e)
         {
             ActivateButton(sender);
-            _currentChildForm?.Close();
+            _currentChildForm?.Hide();
+            _currentChildForm = null;
             Reset();
-            OpenChildForm(new MenuPrincipal());
+            OpenChildForm(_menuPrincipalForm.Value);
         }
 
         private void servicesHandlerBtn_Click(object sender, EventArgs e)
         {
             ActivateButton(sender);
-            OpenChildForm(new ServiceForm());
+            var form = new ServiceForm();
+            form.ProcessingChanged += (s, e) =>
+            {
+                bool isProcessing = form.IsProcessing;
+                servicesHandlerBtn.Enabled = !isProcessing;
+                configsHandlerBtn.Enabled = !isProcessing;
+                firebirdHqbirdBtn.Enabled = !isProcessing;
+                hqBirdCalculatorBtn.Enabled = !isProcessing;
+                btnHome.Enabled = !isProcessing;
+            };
+            OpenChildForm(form);
         }
 
         private void configsHandlerBtn_Click(object sender, EventArgs e)
         {
             ActivateButton(sender);
-            OpenChildForm(new ConfigsForm());
+            OpenChildForm(_configForm.Value);
         }
 
         private void firebirdHqbirdBtn_Click(object sender, EventArgs e)
         {
             ActivateButton(sender);
-            OpenChildForm(new FirebirdHqbirdForm());
+            OpenChildForm(_firebirdForm.Value);
         }
 
         private void hqBirdCalculatorBtn_Click(object sender, EventArgs e)
         {
             ActivateButton(sender);
-            OpenChildForm(new HqbirdCalculatorForm());
+            OpenChildForm(_calculatorForm.Value);
         }
 
         private void btnIcon_Click(object sender, EventArgs e)
@@ -147,7 +168,7 @@ namespace CartsysControlPanel.Views
         private void regeditBtn_Click(object sender, EventArgs e)
         {
             ActivateButton(sender);
-           
+
         }
     }
 }
