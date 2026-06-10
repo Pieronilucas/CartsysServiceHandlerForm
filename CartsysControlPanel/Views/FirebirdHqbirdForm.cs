@@ -59,12 +59,20 @@ namespace CartsysControlPanel.Views
             btnFirebirdConfig.Text = "Configurando...";
             await Task.Run((() =>
             {
+                using var portForm = new FirebirdPortForm();
+                if(!portForm.ShowDialog().Equals(DialogResult.OK))
+                {
+                    LoggingFile.Info("Configuração do 'firebird.conf' cancelada pelo usuário.");
+                    Invoke(() =>
+                   MessageBox.Show("Configuração do 'firebird.conf' cancelada."));
+                    return;
+                }
                 try
                 {
-                    DependencyManager.SetFirebirdConfig();
-                    LoggingFile.Info("Configuração do 'firebird.conf' concluída com sucesso.");
+                    DependencyManager.SetFirebirdConfig(portForm.ServicePort, portForm.AuxPort);
+                    LoggingFile.Info($"Configuração do 'firebird.conf' concluída com sucesso. \nPorta de serviço: {portForm.ServicePort}\nPorta auxiliar: {portForm.AuxPort}");
                     Invoke(() =>
-                   MessageBox.Show("Configuração do 'firebird.conf' concluída com sucesso."));
+                   MessageBox.Show($"Configuração do 'firebird.conf' concluída com sucesso. \nPorta de serviço: {portForm.ServicePort}\nPorta auxiliar: {portForm.AuxPort}"));
                 }
                 catch (IOException iEx)
                 {
@@ -176,9 +184,17 @@ namespace CartsysControlPanel.Views
             btnAllConfig.Text = "Configurando...";
             await Task.Run((() =>
             {
+                using var portForm = new FirebirdPortForm();
+                if (!portForm.ShowDialog().Equals(DialogResult.OK))
+                {
+                    LoggingFile.Info("Configuração do 'firebird.conf' cancelada pelo usuário.");
+                    Invoke(() =>
+                   MessageBox.Show("Configuração do 'firebird.conf' cancelada."));
+                    return;
+                }
                 try
                 {
-                    DependencyManager.SetFirebirdConfig();
+                    DependencyManager.SetFirebirdConfig(portForm.ServicePort, portForm.AuxPort);
                     DependencyManager.SetDbCrypt();
                     DependencyManager.SetBackupFolder();
                     DependencyManager.SetUdrDll();

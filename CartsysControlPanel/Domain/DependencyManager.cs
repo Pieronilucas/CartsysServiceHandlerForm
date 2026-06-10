@@ -2,6 +2,7 @@
 using CartsysControlPanel.Logging;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text;
 
 namespace CartsysControlPanel.Domain
 {
@@ -87,7 +88,7 @@ namespace CartsysControlPanel.Domain
 
         }
 
-        public static void SetFirebirdConfig()
+        public static void SetFirebirdConfig(int servicePort, int auxPort)
         {
             string targetPath = Path.Combine(HqbirdPath, "firebird.conf");
 
@@ -99,13 +100,12 @@ namespace CartsysControlPanel.Domain
                     {
                         throw new FileNotFoundException("O recurso incorporado 'firebird.conf' não foi encontrado.");
                     }
-                    LoggingFile.Info($"Extraindo 'firebird.conf' para '{targetPath}'...");
-                    using (var fileStream = new FileStream(targetPath, FileMode.Create, FileAccess.Write))
-                    {
-                        ResourceStream.CopyTo(fileStream);
-                        fileStream.Flush();
-                    }
-                    LoggingFile.Info($"Extração de 'firebird.conf' concluída com sucesso.");
+                    string content = new StreamReader(ResourceStream).ReadToEnd();
+                    content = content.Replace("{servicePort}", servicePort.ToString());
+                    content = content.Replace("{auxPort}", auxPort.ToString());
+                    LoggingFile.Info($"Ajustando 'firebird.conf' para '{targetPath}'...");
+                    File.WriteAllText(targetPath, content, Encoding.UTF8);
+                    LoggingFile.Info($"Ajuste de 'firebird.conf' concluído com sucesso.");
                 }
             }
             catch (IOException iEx)

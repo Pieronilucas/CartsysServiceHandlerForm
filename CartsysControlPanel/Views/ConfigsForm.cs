@@ -117,6 +117,15 @@ namespace CartsysControlPanel.Views
 
                  try
                  {
+                     if (string.IsNullOrEmpty(tbPort.Text) || string.IsNullOrEmpty(tbAuxPort.Text))
+                     {
+                         var result = MessageBox.Show("Nenhuma porta foi informada, então será utilizada as portas padrões (3050 e 3051).", "Atenção", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                         if (result == DialogResult.No)
+                         {
+                             return;
+                         }
+                         FirewallHandler.OpenFirebirdPort(3050, 3051);
+                     }
                      FirewallHandler.OpenFirebirdPort(int.Parse(tbPort.Text), int.Parse(tbAuxPort.Text));
                      MessageBox.Show("Porta do Firebird configurada com sucesso no firewall do Windows!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                  }
@@ -145,7 +154,7 @@ namespace CartsysControlPanel.Views
 
         private void tbPort_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if(!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
             {
                 e.Handled = true;
             }
@@ -154,11 +163,16 @@ namespace CartsysControlPanel.Views
 
         private void tbAuxPort_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if(!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
             {
                 e.Handled = true;
             }
-            tbAuxPort.MaxLength = 5;    
-            }
+            tbAuxPort.MaxLength = 5;
+        }
+
+        private void tbPort_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

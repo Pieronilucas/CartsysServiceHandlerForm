@@ -128,12 +128,15 @@ namespace CartsysControlPanel.Views
         {
             btnInstall.Enabled = false;
             btnUninstall.Enabled = false;
+            btnInitService.Enabled = false;
             btnReboot.Enabled = true;
             btnInstall.Size = new Size(200, 40);
             btnUninstall.Size = new Size(200, 40);
             btnInstallAll.Size = new Size(200, 40);
             btnUninstallAll.Size = new Size(200, 40);
             btnReboot.Size = new Size(200, 40);
+            btnInitService.Size = new Size(200, 40);
+            btnInitAllServices.Size = new Size(200, 40);
         }
         private void LoadServiceButtons()
         {
@@ -275,6 +278,7 @@ namespace CartsysControlPanel.Views
             panel.BackColor = _colorActive;
             btnInstall.Enabled = true;
             btnUninstall.Enabled = true;
+            btnInitService.Enabled = true;
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)

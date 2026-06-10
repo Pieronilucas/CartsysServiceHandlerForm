@@ -195,6 +195,7 @@
             tbPort.PlaceholderText = "Porta Padrão = 3050";
             tbPort.Size = new Size(136, 23);
             tbPort.TabIndex = 11;
+            tbPort.TextChanged += tbPort_TextChanged;
             tbPort.KeyPress += tbPort_KeyPress;
             // 
             // label6
