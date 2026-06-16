@@ -62,4 +62,6 @@ public sealed class ConversaoUTF8
 
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
+
+    
 }
