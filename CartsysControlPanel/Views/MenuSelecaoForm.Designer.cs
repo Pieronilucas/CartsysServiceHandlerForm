@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MenuSelecaoForm));
             menuPanel = new Panel();
+            btnBackupRestore = new FontAwesome.Sharp.IconButton();
             hqBirdCalculatorBtn = new FontAwesome.Sharp.IconButton();
             firebirdHqbirdBtn = new FontAwesome.Sharp.IconButton();
             configsHandlerBtn = new FontAwesome.Sharp.IconButton();
@@ -46,6 +47,7 @@
             // menuPanel
             // 
             menuPanel.BackColor = Color.FromArgb(30, 42, 56);
+            menuPanel.Controls.Add(btnBackupRestore);
             menuPanel.Controls.Add(hqBirdCalculatorBtn);
             menuPanel.Controls.Add(firebirdHqbirdBtn);
             menuPanel.Controls.Add(configsHandlerBtn);
@@ -57,6 +59,28 @@
             menuPanel.Name = "menuPanel";
             menuPanel.Size = new Size(220, 681);
             menuPanel.TabIndex = 0;
+            // 
+            // btnBackupRestore
+            // 
+            btnBackupRestore.Dock = DockStyle.Top;
+            btnBackupRestore.FlatAppearance.BorderSize = 0;
+            btnBackupRestore.FlatStyle = FlatStyle.Flat;
+            btnBackupRestore.ForeColor = Color.FromArgb(226, 232, 240);
+            btnBackupRestore.IconChar = FontAwesome.Sharp.IconChar.WindowRestore;
+            btnBackupRestore.IconColor = Color.FromArgb(100, 116, 139);
+            btnBackupRestore.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnBackupRestore.IconSize = 32;
+            btnBackupRestore.ImageAlign = ContentAlignment.MiddleLeft;
+            btnBackupRestore.Location = new Point(0, 400);
+            btnBackupRestore.Name = "btnBackupRestore";
+            btnBackupRestore.Padding = new Padding(10, 0, 20, 0);
+            btnBackupRestore.Size = new Size(220, 60);
+            btnBackupRestore.TabIndex = 7;
+            btnBackupRestore.Text = "Backup/Restore";
+            btnBackupRestore.TextAlign = ContentAlignment.MiddleLeft;
+            btnBackupRestore.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnBackupRestore.UseVisualStyleBackColor = true;
+            btnBackupRestore.Click += backupRestore_Click;
             // 
             // hqBirdCalculatorBtn
             // 
@@ -211,6 +235,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Suporte Cartsys";
             WindowState = FormWindowState.Maximized;
+            Activated += MenuSelecaoForm_Activated;
             Load += MenuPrincipal_Load;
             menuPanel.ResumeLayout(false);
             logoPanel.ResumeLayout(false);
@@ -230,5 +255,6 @@
         private FontAwesome.Sharp.IconButton servicesHandlerBtn;
         private PictureBox btnIcon;
         private Panel panelDesktop;
+        private FontAwesome.Sharp.IconButton btnBackupRestore;
     }
 }

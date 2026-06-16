@@ -43,6 +43,8 @@
             label6 = new Label();
             label7 = new Label();
             tbAuxPort = new TextBox();
+            tbErroCaminhoCartorio = new TextBox();
+            tbErroCaminhoBanco = new TextBox();
             SuspendLayout();
             // 
             // textBox1
@@ -50,13 +52,12 @@
             textBox1.BackColor = Color.FromArgb(30, 42, 56);
             textBox1.BorderStyle = BorderStyle.FixedSingle;
             textBox1.ForeColor = Color.FromArgb(226, 232, 240);
-            textBox1.Location = new Point(12, 146);
+            textBox1.Location = new Point(12, 132);
             textBox1.Name = "textBox1";
             textBox1.PlaceholderText = "Caminho pasta cartório";
             textBox1.ReadOnly = true;
             textBox1.Size = new Size(378, 23);
             textBox1.TabIndex = 0;
-            textBox1.TextChanged += textBox1_TextChanged;
             // 
             // textBox2
             // 
@@ -69,7 +70,6 @@
             textBox2.ReadOnly = true;
             textBox2.Size = new Size(378, 23);
             textBox2.TabIndex = 1;
-            textBox2.TextChanged += textBox2_TextChanged;
             // 
             // btnCreateRegistry
             // 
@@ -77,7 +77,7 @@
             btnCreateRegistry.FlatAppearance.BorderSize = 0;
             btnCreateRegistry.FlatStyle = FlatStyle.Flat;
             btnCreateRegistry.ForeColor = Color.FromArgb(226, 232, 240);
-            btnCreateRegistry.Location = new Point(12, 267);
+            btnCreateRegistry.Location = new Point(12, 277);
             btnCreateRegistry.Name = "btnCreateRegistry";
             btnCreateRegistry.Size = new Size(119, 38);
             btnCreateRegistry.TabIndex = 2;
@@ -92,7 +92,7 @@
             btnFbdCartorio.FlatAppearance.BorderSize = 0;
             btnFbdCartorio.FlatStyle = FlatStyle.Flat;
             btnFbdCartorio.ForeColor = Color.FromArgb(226, 232, 240);
-            btnFbdCartorio.Location = new Point(380, 146);
+            btnFbdCartorio.Location = new Point(380, 132);
             btnFbdCartorio.Name = "btnFbdCartorio";
             btnFbdCartorio.Size = new Size(28, 23);
             btnFbdCartorio.TabIndex = 3;
@@ -118,7 +118,7 @@
             // 
             label1.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.FromArgb(226, 232, 240);
-            label1.Location = new Point(12, 120);
+            label1.Location = new Point(12, 106);
             label1.Name = "label1";
             label1.Size = new Size(247, 23);
             label1.TabIndex = 5;
@@ -153,7 +153,7 @@
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label4.ForeColor = Color.FromArgb(226, 232, 240);
-            label4.Location = new Point(12, 87);
+            label4.Location = new Point(12, 73);
             label4.Name = "label4";
             label4.Size = new Size(153, 20);
             label4.TabIndex = 8;
@@ -195,7 +195,6 @@
             tbPort.PlaceholderText = "Porta Padrão = 3050";
             tbPort.Size = new Size(136, 23);
             tbPort.TabIndex = 11;
-            tbPort.TextChanged += tbPort_TextChanged;
             tbPort.KeyPress += tbPort_KeyPress;
             // 
             // label6
@@ -232,12 +231,36 @@
             tbAuxPort.TabIndex = 13;
             tbAuxPort.KeyPress += tbAuxPort_KeyPress;
             // 
+            // tbErroCaminhoCartorio
+            // 
+            tbErroCaminhoCartorio.BackColor = Color.FromArgb(17, 24, 39);
+            tbErroCaminhoCartorio.BorderStyle = BorderStyle.None;
+            tbErroCaminhoCartorio.ForeColor = Color.FromArgb(248, 113, 113);
+            tbErroCaminhoCartorio.Location = new Point(12, 161);
+            tbErroCaminhoCartorio.Name = "tbErroCaminhoCartorio";
+            tbErroCaminhoCartorio.Size = new Size(396, 16);
+            tbErroCaminhoCartorio.TabIndex = 15;
+            tbErroCaminhoCartorio.Visible = false;
+            // 
+            // tbErroCaminhoBanco
+            // 
+            tbErroCaminhoBanco.BackColor = Color.FromArgb(17, 24, 39);
+            tbErroCaminhoBanco.BorderStyle = BorderStyle.None;
+            tbErroCaminhoBanco.ForeColor = Color.FromArgb(248, 113, 113);
+            tbErroCaminhoBanco.Location = new Point(12, 243);
+            tbErroCaminhoBanco.Name = "tbErroCaminhoBanco";
+            tbErroCaminhoBanco.Size = new Size(396, 16);
+            tbErroCaminhoBanco.TabIndex = 16;
+            tbErroCaminhoBanco.Visible = false;
+            // 
             // ConfigsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(17, 24, 39);
             ClientSize = new Size(991, 626);
+            Controls.Add(tbErroCaminhoBanco);
+            Controls.Add(tbErroCaminhoCartorio);
             Controls.Add(label7);
             Controls.Add(tbAuxPort);
             Controls.Add(label6);
@@ -255,7 +278,6 @@
             Controls.Add(textBox2);
             Name = "ConfigsForm";
             Text = "RegeditForm";
-            Load += ConfigsForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -277,5 +299,7 @@
         private Label label6;
         private Label label7;
         private TextBox tbAuxPort;
+        private TextBox tbErroCaminhoCartorio;
+        private TextBox tbErroCaminhoBanco;
     }
 }

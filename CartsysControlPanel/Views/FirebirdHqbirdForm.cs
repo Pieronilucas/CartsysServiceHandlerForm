@@ -8,6 +8,7 @@ namespace CartsysControlPanel.Views
     public partial class FirebirdHqbirdForm : Form
     {
         private readonly Lazy<FirebirdPortForm> _portForm = new Lazy<FirebirdPortForm>(() => new FirebirdPortForm(), LazyThreadSafetyMode.None);
+        
         public FirebirdHqbirdForm()
         {
             InitializeComponent();
@@ -135,13 +136,14 @@ namespace CartsysControlPanel.Views
             await Task.Run((() =>
             {
 
-                if (!EnsurePortsConfigured()) {
+                if (!EnsurePortsConfigured())
+                {
                     LoggingFile.Info("Configuração do 'firebird.conf' cancelada pelo usuário.");
                     Invoke(() =>
                    MessageBox.Show("Configuração do 'firebird.conf' cancelada."));
                     return;
                 }
-              
+
                 try
                 {
                     DependencyManager.SetBackupFolder(_portForm.Value.ServicePort);
@@ -236,7 +238,10 @@ namespace CartsysControlPanel.Views
             btnAllConfig.Text = "Aplicar Todas as Configurações";
         }
 
+        private void FirebirdHqbirdForm_Load(object sender, EventArgs e)
+        {
 
+        }
     }
 }
 

@@ -30,6 +30,8 @@
         {
             panelServicos = new FlowLayoutPanel();
             panelActions = new Panel();
+            btnStopService = new Button();
+            btnStopAll = new Button();
             btnInitAllServices = new Button();
             btnInitService = new Button();
             label2 = new Label();
@@ -52,13 +54,15 @@
             panelServicos.MaximumSize = new Size(280, 0);
             panelServicos.MinimumSize = new Size(280, 280);
             panelServicos.Name = "panelServicos";
-            panelServicos.Size = new Size(280, 450);
+            panelServicos.Size = new Size(280, 681);
             panelServicos.TabIndex = 2;
             panelServicos.Paint += panelServicos_Paint;
             // 
             // panelActions
             // 
             panelActions.BackColor = Color.FromArgb(17, 24, 39);
+            panelActions.Controls.Add(btnStopService);
+            panelActions.Controls.Add(btnStopAll);
             panelActions.Controls.Add(btnInitAllServices);
             panelActions.Controls.Add(btnInitService);
             panelActions.Controls.Add(label2);
@@ -73,9 +77,39 @@
             panelActions.MaximumSize = new Size(480, 1080);
             panelActions.MinimumSize = new Size(480, 480);
             panelActions.Name = "panelActions";
-            panelActions.Size = new Size(480, 480);
+            panelActions.Size = new Size(480, 681);
             panelActions.TabIndex = 3;
             panelActions.Resize += panelActions_Resize;
+            // 
+            // btnStopService
+            // 
+            btnStopService.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnStopService.BackColor = Color.FromArgb(146, 64, 14);
+            btnStopService.FlatAppearance.BorderSize = 0;
+            btnStopService.FlatStyle = FlatStyle.Flat;
+            btnStopService.ForeColor = Color.FromArgb(226, 232, 240);
+            btnStopService.Location = new Point(43, 177);
+            btnStopService.Name = "btnStopService";
+            btnStopService.Size = new Size(400, 40);
+            btnStopService.TabIndex = 14;
+            btnStopService.Text = "Parar Serviço Selecionado";
+            btnStopService.UseVisualStyleBackColor = false;
+            btnStopService.Click += btnStopService_Click;
+            // 
+            // btnStopAll
+            // 
+            btnStopAll.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnStopAll.BackColor = Color.FromArgb(146, 64, 14);
+            btnStopAll.FlatAppearance.BorderSize = 0;
+            btnStopAll.FlatStyle = FlatStyle.Flat;
+            btnStopAll.ForeColor = Color.FromArgb(226, 232, 240);
+            btnStopAll.Location = new Point(43, 323);
+            btnStopAll.Name = "btnStopAll";
+            btnStopAll.Size = new Size(400, 40);
+            btnStopAll.TabIndex = 13;
+            btnStopAll.Text = "Parar Todos os Serviços";
+            btnStopAll.UseVisualStyleBackColor = false;
+            btnStopAll.Click += btnStopAll_Click;
             // 
             // btnInitAllServices
             // 
@@ -84,7 +118,7 @@
             btnInitAllServices.FlatAppearance.BorderSize = 0;
             btnInitAllServices.FlatStyle = FlatStyle.Flat;
             btnInitAllServices.ForeColor = Color.FromArgb(226, 232, 240);
-            btnInitAllServices.Location = new Point(43, 289);
+            btnInitAllServices.Location = new Point(43, 369);
             btnInitAllServices.Name = "btnInitAllServices";
             btnInitAllServices.Size = new Size(400, 40);
             btnInitAllServices.TabIndex = 12;
@@ -112,7 +146,7 @@
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.ForeColor = Color.FromArgb(226, 232, 240);
-            label2.Location = new Point(43, 174);
+            label2.Location = new Point(43, 254);
             label2.Name = "label2";
             label2.Size = new Size(128, 20);
             label2.TabIndex = 10;
@@ -136,13 +170,13 @@
             btnReboot.FlatAppearance.BorderSize = 0;
             btnReboot.FlatStyle = FlatStyle.Flat;
             btnReboot.ForeColor = Color.FromArgb(226, 232, 240);
-            btnReboot.Location = new Point(43, 350);
+            btnReboot.Location = new Point(43, 482);
             btnReboot.Name = "btnReboot";
             btnReboot.Size = new Size(400, 40);
             btnReboot.TabIndex = 8;
             btnReboot.Text = "Colocar serviços para reinicializar";
             btnReboot.UseVisualStyleBackColor = false;
-            btnReboot.Click += button1_Click;
+            btnReboot.Click += btnReboot_Click;
             // 
             // btnUninstallAll
             // 
@@ -151,7 +185,7 @@
             btnUninstallAll.FlatAppearance.BorderSize = 0;
             btnUninstallAll.FlatStyle = FlatStyle.Flat;
             btnUninstallAll.ForeColor = Color.FromArgb(226, 232, 240);
-            btnUninstallAll.Location = new Point(43, 243);
+            btnUninstallAll.Location = new Point(43, 423);
             btnUninstallAll.Name = "btnUninstallAll";
             btnUninstallAll.Size = new Size(400, 40);
             btnUninstallAll.TabIndex = 7;
@@ -181,7 +215,7 @@
             btnInstallAll.FlatAppearance.BorderSize = 0;
             btnInstallAll.FlatStyle = FlatStyle.Flat;
             btnInstallAll.ForeColor = Color.FromArgb(226, 232, 240);
-            btnInstallAll.Location = new Point(43, 197);
+            btnInstallAll.Location = new Point(43, 277);
             btnInstallAll.Name = "btnInstallAll";
             btnInstallAll.Size = new Size(400, 40);
             btnInstallAll.TabIndex = 6;
@@ -209,7 +243,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(17, 24, 39);
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1264, 681);
             Controls.Add(panelActions);
             Controls.Add(panelServicos);
             Name = "ServiceForm";
@@ -233,5 +267,7 @@
         private Label label1;
         private Button btnInitService;
         private Button btnInitAllServices;
+        private Button btnStopService;
+        private Button btnStopAll;
     }
 }

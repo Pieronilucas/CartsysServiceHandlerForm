@@ -19,6 +19,8 @@
       <None Remove="Assets\firebird.conf" />
       <None Remove="Assets\Firebird.exe" />
       <None Remove="Assets\UDR_SC.dll" />
+      <None Remove="Assets\utf8.dll" />
+      <None Remove="Assets\utf8_64.dll" />
       <None Remove="Resources\Cartsys_logo.png" />
     </ItemGroup>
 
@@ -34,6 +36,8 @@
       <EmbeddedResource Include="Assets\firebird.conf" />
       <EmbeddedResource Include="Assets\Firebird.exe" />
       <EmbeddedResource Include="Assets\UDR_SC.dll" />
+      <EmbeddedResource Include="Assets\utf8.dll" />
+      <EmbeddedResource Include="Assets\utf8_64.dll" />
       <EmbeddedResource Include="Resources\Cartsys_logo.png" />
     </ItemGroup>
 

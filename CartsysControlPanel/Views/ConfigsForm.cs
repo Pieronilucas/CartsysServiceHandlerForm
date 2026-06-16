@@ -16,61 +16,79 @@ namespace CartsysControlPanel.Views
             InitializeComponent();
         }
 
-        private void ConfigsForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ConfigForm_Resize(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnCreateRegistry_Click(object sender, EventArgs e)
         {
+            
+            if (!validatePaths())
+            {
+                return;
+            }
 
             try
-            {
-                if (string.IsNullOrEmpty(_dbPath))
-                {
-                    MessageBox.Show("Por favor, selecione o caminho do banco de dados antes de salvar.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
+                { 
+                    RegistryHandler.CreateRegistryKey(_dbPath, _cartorioPath);
+                    MessageBox.Show("Configurações salvas com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                RegistryHandler.CreateRegistryKey(_dbPath, _cartorioPath);
-                MessageBox.Show("Configurações salvas com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                catch (SecurityException sEx)
+                {
+                    MessageBox.Show("Permissão negada. Por favor, execute o aplicativo como administrador para salvar as configurações.", "Erro de Permissão", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (UnauthorizedAccessException uaEx)
+                {
+                    MessageBox.Show("Acesso negado. Por favor, execute o aplicativo como administrador para salvar as configurações.", "Erro de Acesso", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (IOException ioEx)
+                {
+                    MessageBox.Show("Erro de I/O ao tentar gravar no Registro do Windows. Verifique se o caminho do banco de dados é válido e se você tem permissão para acessar o Registro.", "Erro de I/O", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (ArgumentException argEx)
+                {
+                    MessageBox.Show($"Erro de argumento: {argEx.Message}. Verifique se os caminhos fornecidos são válidos.", "Erro de Argumento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ocorreu um erro inesperado: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+        }
 
+        private bool validatePaths()
+        {
+            if(string.IsNullOrEmpty(_cartorioPath) && string.IsNullOrEmpty(_dbPath))
+            {
+                tbErroCaminhoCartorio.Text = "Por favor, selecione o caminho do cartório antes de salvar.";
+                tbErroCaminhoCartorio.Visible = true;
+                tbErroCaminhoBanco.Text = "Por favor, selecione o caminho do banco de dados antes de salvar.";
+                tbErroCaminhoBanco.Visible = true;
+                textBox1.Focus();
+                return false;
+            }
 
-            }
-            catch (SecurityException sEx)
+            if (string.IsNullOrEmpty(_cartorioPath))
             {
-                MessageBox.Show("Permissão negada. Por favor, execute o aplicativo como administrador para salvar as configurações.", "Erro de Permissão", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tbErroCaminhoCartorio.Text = "Por favor, selecione o caminho do cartório antes de salvar.";
+                tbErroCaminhoCartorio.Visible = true;
+                textBox1.Focus();
+                return false;
             }
-            catch (UnauthorizedAccessException uaEx)
+            else
             {
-                MessageBox.Show("Acesso negado. Por favor, execute o aplicativo como administrador para salvar as configurações.", "Erro de Acesso", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tbErroCaminhoCartorio.Visible = false;
             }
-            catch (IOException ioEx)
+            if (string.IsNullOrEmpty(_dbPath))
             {
-                MessageBox.Show("Erro de I/O ao tentar gravar no Registro do Windows. Verifique se o caminho do banco de dados é válido e se você tem permissão para acessar o Registro.", "Erro de I/O", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tbErroCaminhoBanco.Text = "Por favor, selecione o caminho do banco de dados antes de salvar.";
+                tbErroCaminhoBanco.Visible = true;
+                textBox2.Focus();
+                return false;
             }
-            catch (ArgumentException argEx)
+            else
             {
-                MessageBox.Show($"Erro de argumento: {argEx.Message}. Verifique se os caminhos fornecidos são válidos.", "Erro de Argumento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tbErroCaminhoBanco.Visible = false;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ocorreu um erro inesperado: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+
+            tbErroCaminhoBanco.Visible = false;
+            tbErroCaminhoCartorio.Visible = false;
+            return true;
         }
 
         private void btnFbdCartorio_Click(object sender, EventArgs e)
@@ -117,16 +135,25 @@ namespace CartsysControlPanel.Views
 
                  try
                  {
-                     if (string.IsNullOrEmpty(tbPort.Text) || string.IsNullOrEmpty(tbAuxPort.Text))
+                     int port;
+                     int auxPort;
+                     if (string.IsNullOrWhiteSpace(tbPort.Text) || string.IsNullOrWhiteSpace(tbAuxPort.Text))
                      {
                          var result = MessageBox.Show("Nenhuma porta foi informada, então será utilizada as portas padrões (3050 e 3051).", "Atenção", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                          if (result == DialogResult.No)
                          {
                              return;
                          }
-                         FirewallHandler.OpenFirebirdPort(3050, 3051);
+                         port = 3050;
+                         auxPort = 3051;
                      }
-                     FirewallHandler.OpenFirebirdPort(int.Parse(tbPort.Text), int.Parse(tbAuxPort.Text));
+                     else
+                     {
+                         port = int.Parse(tbPort.Text);
+                         auxPort = int.Parse(tbAuxPort.Text);
+                     }
+
+                     FirewallHandler.OpenFirebirdPort(int.Parse(port.ToString()), int.Parse(auxPort.ToString()));
                      MessageBox.Show("Porta do Firebird configurada com sucesso no firewall do Windows!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                  }
                  catch (UnauthorizedAccessException)
@@ -170,9 +197,6 @@ namespace CartsysControlPanel.Views
             tbAuxPort.MaxLength = 5;
         }
 
-        private void tbPort_TextChanged(object sender, EventArgs e)
-        {
 
-        }
     }
 }

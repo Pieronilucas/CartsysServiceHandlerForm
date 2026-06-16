@@ -17,6 +17,7 @@ namespace CartsysControlPanel.Views
         private readonly Lazy<HqbirdCalculatorForm> _calculatorForm = new Lazy<HqbirdCalculatorForm>(() => new HqbirdCalculatorForm());
         private readonly Lazy<ConfigsForm> _configForm = new Lazy<ConfigsForm>(() => new ConfigsForm());
         private readonly Lazy<MenuPrincipal> _menuPrincipalForm = new Lazy<MenuPrincipal>(() => new MenuPrincipal());
+        private readonly Lazy<BackupRestore> _backupRestoreForm = new Lazy<BackupRestore>(() => new BackupRestore());
 
         public MenuSelecaoForm()
         {
@@ -110,6 +111,7 @@ namespace CartsysControlPanel.Views
                 firebirdHqbirdBtn.Enabled = !isProcessing;
                 hqBirdCalculatorBtn.Enabled = !isProcessing;
                 btnHome.Enabled = !isProcessing;
+                btnBackupRestore.Enabled = !isProcessing;
             };
             OpenChildForm(form);
         }
@@ -148,6 +150,7 @@ namespace CartsysControlPanel.Views
             configsHandlerBtn.Text = _isOpenMenu ? "Configurações" : "";
             firebirdHqbirdBtn.Text = _isOpenMenu ? "Firebird/HQbird" : "";
             hqBirdCalculatorBtn.Text = _isOpenMenu ? "Calculadora HQbird" : "";
+            btnBackupRestore.Text = _isOpenMenu ? "Backup/Restore" : "";
 
 
             btnIcon.Width = _isOpenMenu ? _widthOpen : _widthClosed;
@@ -162,13 +165,30 @@ namespace CartsysControlPanel.Views
 
         private void MenuPrincipal_Load(object sender, EventArgs e)
         {
-
+            verifyHqbirdInstalled();
+        }
+        private void verifyHqbirdInstalled()
+        {
+            bool hqbirdInstalado = ServiceHandler.IsServiceInstalled("FirebirdServerHQBirdInstanceFB3");
+            hqBirdCalculatorBtn.Enabled = hqbirdInstalado;
+            btnBackupRestore.Enabled = hqbirdInstalado;
         }
 
         private void regeditBtn_Click(object sender, EventArgs e)
         {
             ActivateButton(sender);
 
+        }
+
+        private void backupRestore_Click(object sender, EventArgs e)
+        {
+            ActivateButton(sender);
+            OpenChildForm(_backupRestoreForm.Value);
+        }
+
+        private void MenuSelecaoForm_Activated(object sender, EventArgs e)
+        {
+            verifyHqbirdInstalled();
         }
     }
 }
