@@ -1,22 +1,27 @@
 ﻿using CartsysControlPanel.Infrastructure.FileSystem;
 using CartsysControlPanel.Logging;
+using CartsysControlPanel.Views;
 using System.Management;
 
 namespace CartsysControlPanel.Domain
 {
+    public record PageSizeConfig(
+    int Cartorio = 4096,
+    int Arquivos = 4096,
+    int Auditoria = 4096,
+    int Indisponibilidade = 4096,
+    int NotaFiscal = 4096
+);
+
 
     public static class DatabaseConfigCalculator
     {
+        private static int _cartorioPage;
+        private static int _arquivosPage;
+        private static int _auditoriaPage;
+        private static int _indisponibilidadePage;
+        private static int _notaFiscalPage;
 
-
-        private static readonly Dictionary<string, (int PageSize, bool IsOptional)> _databases = new()
-        {
-            { "CARTORIO.FDB",          (16384, false) },
-            { "ARQUIVOS.FDB",          (16384, false) },
-            { "AUDITORIA.FDB",         (16384,  false) },
-            { "INDISPONIBILIDADE.FDB", (8192,  false) },
-            { "NOTAFISCALDB.FDB",      (16384,  true)  }
-        };
 
         public static (long TotalRAMKB, long SafeLimitKB) GetMemoryInfo()
         {
@@ -59,12 +64,30 @@ namespace CartsysControlPanel.Domain
             return Math.Max(calculatedPages, minPages);
         }
 
-        public static Dictionary<string, long?> CalculateAll(string folderPath)
+        public static Dictionary<string, long?> CalculateAll(string folderPath,
+            PageSizeConfig config)
         {
+
+
             long safeLimitKB = GetSafeLimitKB();
             var results = new Dictionary<string, long?>();
 
-            foreach (var db in _databases)
+            _cartorioPage = Convert.ToInt32(config.Cartorio);
+            _arquivosPage = Convert.ToInt32(config.Arquivos);
+            _auditoriaPage = Convert.ToInt32(config.Auditoria);
+            _indisponibilidadePage = Convert.ToInt32(config.Indisponibilidade);
+            _notaFiscalPage = Convert.ToInt32(config.NotaFiscal);
+
+            var databases = new Dictionary<string, (int PageSize, bool IsOptional)>
+            {
+                { "CARTORIO.FDB",          (_cartorioPage,          false) },
+                { "ARQUIVOS.FDB",          (_arquivosPage,          false) },
+                { "AUDITORIA.FDB",         (_auditoriaPage,         false) },
+                { "INDISPONIBILIDADE.FDB", (_indisponibilidadePage, false) },
+                { "NOTAFISCALDB.FDB",      (_notaFiscalPage,        true)  }
+            };
+
+            foreach (var db in databases)
             {
                 string fullPath = Path.Combine(folderPath, db.Key);
 
