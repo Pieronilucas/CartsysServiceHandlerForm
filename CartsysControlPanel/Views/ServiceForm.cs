@@ -70,7 +70,7 @@ namespace CartsysControlPanel.Views
             int col2x = (panelActions.Width / 2) + margin;
 
             int blockHeight = labelHeight + 5 + btnHeight + spacing + btnHeight;
-            int startY = panelActions.Height / 2 - blockHeight / 2;
+            int startY = panelActions.Height / 3 - blockHeight / 2;
 
             label1.Size = new Size(btnWidth, btnHeight);
             label1.Location = new Point(col1x, startY);
@@ -84,6 +84,11 @@ namespace CartsysControlPanel.Views
             btnInitService.Size = new Size(btnWidth, btnHeight);
             btnInitService.Location = new Point(col1x, startY + labelHeight + 5 + (btnHeight + spacing) * 2);
 
+            btnStopService.Size = new Size(btnWidth, btnHeight);
+            btnStopService.Location = new Point(col1x, startY + labelHeight + 5 + (btnHeight + spacing) * 3);
+
+
+
             label2.Size = new Size(btnWidth, btnHeight);
             label2.Location = new Point(col2x, startY);
 
@@ -96,8 +101,11 @@ namespace CartsysControlPanel.Views
             btnInitAllServices.Size = new Size(btnWidth, btnHeight);
             btnInitAllServices.Location = new Point(col2x, startY + labelHeight + 5 + (btnHeight + spacing) * 2);
 
+            btnStopAll.Size = new Size(btnWidth, btnHeight);
+            btnStopAll.Location = new Point(col2x, startY + labelHeight + 5 + (btnHeight + spacing) * 3);
+
             btnReboot.Size = new Size(btnWidth, btnHeight);
-            btnReboot.Location = new Point(panelActions.Width / 2 - btnWidth / 2, startY + blockHeight + separatorHeight + btnHeight + 5);
+            btnReboot.Location = new Point(panelActions.Width / 2 - btnWidth / 2, startY + (blockHeight*2) + separatorHeight +  + 5);
 
         }
         private void ResetButtonPositions()
@@ -128,6 +136,7 @@ namespace CartsysControlPanel.Views
             btnUninstall.Enabled = false;
             btnInitService.Enabled = false;
             btnReboot.Enabled = true;
+            btnStopService.Enabled = false;
             btnInstall.Size = new Size(200, 40);
             btnUninstall.Size = new Size(200, 40);
             btnInstallAll.Size = new Size(200, 40);
@@ -135,6 +144,8 @@ namespace CartsysControlPanel.Views
             btnReboot.Size = new Size(200, 40);
             btnInitService.Size = new Size(200, 40);
             btnInitAllServices.Size = new Size(200, 40);
+            btnStopService.Size = new Size(200, 40);
+            btnStopAll.Size = new Size(200, 40);
         }
         private void LoadServiceButtons()
         {
@@ -215,9 +226,6 @@ namespace CartsysControlPanel.Views
                 c.MouseLeave += ServiceBtn_MouseLeave;
                 c.Click += ServiceBtn_Click;
             }
-
-
-
             return panel;
         }
 
@@ -230,6 +238,8 @@ namespace CartsysControlPanel.Views
             btnReboot.Enabled = false;
             btnInitAllServices.Enabled = false;
             btnInitService.Enabled = false;
+            btnStopAll.Enabled = false;
+            btnStopService.Enabled = false;
         }
 
         private void EnableAllButtons()
@@ -238,9 +248,12 @@ namespace CartsysControlPanel.Views
             btnUninstallAll.Enabled = true;
             btnInstall.Enabled = _selectedService != -1;
             btnUninstall.Enabled = _selectedService != -1;
-            btnReboot.Enabled = _selectedService != -1;
+            btnReboot.Enabled = true;
             btnInitAllServices.Enabled = true;
             btnInitService.Enabled = _selectedService != -1;
+            btnStopAll.Enabled = true;
+            btnStopService.Enabled = _selectedService != -1;
+
         }
 
 
@@ -277,6 +290,7 @@ namespace CartsysControlPanel.Views
             btnInstall.Enabled = true;
             btnUninstall.Enabled = true;
             btnInitService.Enabled = true;
+            btnStopService.Enabled = true;
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -406,11 +420,7 @@ namespace CartsysControlPanel.Views
         {
             SetProcessing(true);
             btnUninstall.Text = "Desinstalando...";
-            btnInstallAll.Enabled = false;
-            btnUninstallAll.Enabled = false;
-            btnInstall.Enabled = false;
-            btnUninstall.Enabled = false;
-            btnReboot.Enabled = false;
+            DisableAllButtons();
             try
             {
                 await ServiceHandler.ServiceUninstaller(_selectedService);
@@ -427,14 +437,10 @@ namespace CartsysControlPanel.Views
 
 
 
-            btnInstallAll.Enabled = true;
-            btnUninstallAll.Enabled = true;
-            btnInstall.Enabled = _selectedService != -1;
-            btnUninstall.Enabled = _selectedService != -1;
-            btnReboot.Enabled = _selectedService != -1;
+            EnableAllButtons();
             btnUninstall.Text = "Desinstalar Serviço Selecionado";
             SetProcessing(false);
-            RefreshStatus();
+            RefreshStatus(); 
 
         }
 
@@ -443,7 +449,7 @@ namespace CartsysControlPanel.Views
 
         }
 
-        private async void button1_Click(object sender, EventArgs e)
+        private async void btnReboot_Click(object sender, EventArgs e)
         {
             SetProcessing(true);
             DisableAllButtons();
@@ -523,6 +529,46 @@ namespace CartsysControlPanel.Views
                 MessageBox.Show("Ocorreu um erro ao tentar inicializar os serviços: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             btnInitAllServices.Text = "Inicializar Todos os Serviços";
+            EnableAllButtons();
+            RefreshStatus();
+        }
+
+        private async void btnStopService_Click(object sender, EventArgs e)
+        {
+            DisableAllButtons();
+            btnStopService.Text = "Parando...";
+            try
+            {
+                await ServiceHandler.ServiceStop(_selectedService);
+                MessageBox.Show("Serviço parado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Win32Exception wEx)
+            {
+                MessageBox.Show($"Erro de sistema ao tentar parar o serviço: {_serviceNames[_selectedService].name}. {wEx.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocorreu um erro ao tentar parar o serviço: {_serviceNames[_selectedService].name}. {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            btnStopService.Text = "Parar Serviço Selecionado";
+            EnableAllButtons();
+            RefreshStatus();
+        }
+
+        private async void btnStopAll_Click(object sender, EventArgs e)
+        {
+            DisableAllButtons();
+            btnStopAll.Text = "Parando...";
+            try
+            {
+                await ServiceHandler.StopAllServices();
+                MessageBox.Show("Todos os serviços parados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocorreu um erro ao tentar parar os serviços: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            btnStopAll.Text = "Parar Todos os Serviços";
             EnableAllButtons();
             RefreshStatus();
         }

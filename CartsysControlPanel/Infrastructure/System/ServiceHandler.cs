@@ -109,7 +109,7 @@ namespace CartsysControlPanel.Infrastructure.System
                 LoggingFile.Error($"Falha inesperada na instalação do serviço {serviceNames[option]}. Erro: {ex.Message}", ex);
                 throw;
             }
-            
+
         }
 
 
@@ -303,17 +303,39 @@ namespace CartsysControlPanel.Infrastructure.System
                 {
                     var sc = new ServiceController(serviceNames[option]);
                     sc.Stop();
-                    sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(5));
+                    sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
                 }
-                catch
+                catch (Win32Exception Wex)
                 {
-                    LoggingFile.Warning($"Não foi possível parar o serviço {serviceNames[option]}. Ele pode não estar em execução ou pode ter sido desinstalado.");
+                     LoggingFile.Error($"Erro ao tentar parar o serviço {serviceNames[option]}: {Wex.Message}", Wex);
+                }
+                catch (Exception ex)
+                {
+                    LoggingFile.Error($"Erro inesperado ao tentar parar o serviço {serviceNames[option]}: {ex.Message}", ex);  
                 }
 
             });
             await task;
         }
 
+        public async static Task StopAllServices()
+        {
+            var failures = new List<string>();
+            foreach (var service in serviceNames)
+            {
+                try
+                {
+                    await ServiceStop(service.Key);
+                }
+                catch (Exception ex)
+                {
+                    LoggingFile.Error($"Falha ao parar {service.Value}", ex);
+                    failures.Add(service.Value);
+                }
+            }
+            if (failures.Any())
+                throw new Exception($"{string.Join(", ", failures)}");
+        }
 
 
         // Tenta pegar a pasta raiz do executável do serviço.
@@ -363,7 +385,7 @@ namespace CartsysControlPanel.Infrastructure.System
 
             return true;
         }
-        
+
         public static ServiceStatus GetServiceStatus(int option)
         {
             try
