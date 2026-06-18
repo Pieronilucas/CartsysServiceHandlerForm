@@ -61,6 +61,13 @@ namespace CartsysControlPanel.Views
                 }
                 else if (restore && crypt)
                 {
+                    var result = MessageBox.Show("O backup selecionado será criptografado. Deseja continuar com o restore?\n Aviso: Caso realize o procedimento em um banco não criptografado, o processo pode falhar ou causar danos aos dados.",
+                        "Aviso", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (result == DialogResult.No)
+                    {
+                        LoggingFile.Info("Procedimento cancelado — restore com criptografia.");
+                        return;
+                    }
                     LoggingFile.Info("Iniciando restore com criptografia.");
                     await Restore.RestoreComCrypt(_bancoEntrada, _bancoSaidaFDB, user, password, _selectedPagination);
                     LoggingFile.Info($"Restore com criptografia concluído. Paginação utilizada: {_selectedPagination}");
@@ -72,6 +79,13 @@ namespace CartsysControlPanel.Views
                 }
                 else
                 {
+                    var result = MessageBox.Show("O banco selecionado será criptografado. Deseja continuar com o backup?\n Aviso: Caso realize o procedimento em um banco não criptografado, o processo pode falhar ou causar danos aos dados.",
+                        "Aviso", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (result == DialogResult.No)
+                    {
+                        LoggingFile.Info("Procedimento cancelado — backup com criptografia.");
+                        return;
+                    }
                     LoggingFile.Info("Iniciando backup com criptografia.");
                     await Backup.BackupComCrypt(_bancoEntrada, _bancoSaidaFBK, user, password);
                 }
