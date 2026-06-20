@@ -45,6 +45,12 @@
             tbAuxPort = new TextBox();
             tbErroCaminhoCartorio = new TextBox();
             tbErroCaminhoBanco = new TextBox();
+            radioNotas = new RadioButton();
+            radioImoveis = new RadioButton();
+            tbErroCaminhoImagens = new TextBox();
+            label8 = new Label();
+            btnImagens = new Button();
+            textBox4 = new TextBox();
             SuspendLayout();
             // 
             // textBox1
@@ -64,7 +70,7 @@
             textBox2.BackColor = Color.FromArgb(30, 42, 56);
             textBox2.BorderStyle = BorderStyle.FixedSingle;
             textBox2.ForeColor = Color.FromArgb(226, 232, 240);
-            textBox2.Location = new Point(12, 214);
+            textBox2.Location = new Point(12, 207);
             textBox2.Name = "textBox2";
             textBox2.PlaceholderText = "Caminho banco de dados";
             textBox2.ReadOnly = true;
@@ -77,7 +83,7 @@
             btnCreateRegistry.FlatAppearance.BorderSize = 0;
             btnCreateRegistry.FlatStyle = FlatStyle.Flat;
             btnCreateRegistry.ForeColor = Color.FromArgb(226, 232, 240);
-            btnCreateRegistry.Location = new Point(12, 277);
+            btnCreateRegistry.Location = new Point(12, 336);
             btnCreateRegistry.Name = "btnCreateRegistry";
             btnCreateRegistry.Size = new Size(119, 38);
             btnCreateRegistry.TabIndex = 2;
@@ -92,7 +98,7 @@
             btnFbdCartorio.FlatAppearance.BorderSize = 0;
             btnFbdCartorio.FlatStyle = FlatStyle.Flat;
             btnFbdCartorio.ForeColor = Color.FromArgb(226, 232, 240);
-            btnFbdCartorio.Location = new Point(380, 132);
+            btnFbdCartorio.Location = new Point(391, 132);
             btnFbdCartorio.Name = "btnFbdCartorio";
             btnFbdCartorio.Size = new Size(28, 23);
             btnFbdCartorio.TabIndex = 3;
@@ -106,7 +112,7 @@
             btnFbdDb.FlatAppearance.BorderSize = 0;
             btnFbdDb.FlatStyle = FlatStyle.Flat;
             btnFbdDb.ForeColor = Color.FromArgb(226, 232, 240);
-            btnFbdDb.Location = new Point(380, 214);
+            btnFbdDb.Location = new Point(391, 207);
             btnFbdDb.Name = "btnFbdDb";
             btnFbdDb.Size = new Size(28, 23);
             btnFbdDb.TabIndex = 4;
@@ -130,7 +136,7 @@
             // 
             label2.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.ForeColor = Color.FromArgb(226, 232, 240);
-            label2.Location = new Point(12, 188);
+            label2.Location = new Point(12, 181);
             label2.Name = "label2";
             label2.Size = new Size(272, 23);
             label2.TabIndex = 6;
@@ -153,7 +159,7 @@
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label4.ForeColor = Color.FromArgb(226, 232, 240);
-            label4.Location = new Point(12, 73);
+            label4.Location = new Point(12, 55);
             label4.Name = "label4";
             label4.Size = new Size(153, 20);
             label4.TabIndex = 8;
@@ -165,7 +171,7 @@
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label5.ForeColor = Color.FromArgb(226, 232, 240);
-            label5.Location = new Point(12, 340);
+            label5.Location = new Point(12, 397);
             label5.Name = "label5";
             label5.Size = new Size(136, 20);
             label5.TabIndex = 9;
@@ -177,7 +183,7 @@
             btnFirewall.FlatAppearance.BorderSize = 0;
             btnFirewall.FlatStyle = FlatStyle.Flat;
             btnFirewall.ForeColor = Color.FromArgb(226, 232, 240);
-            btnFirewall.Location = new Point(12, 494);
+            btnFirewall.Location = new Point(12, 551);
             btnFirewall.Name = "btnFirewall";
             btnFirewall.Size = new Size(119, 38);
             btnFirewall.TabIndex = 10;
@@ -190,7 +196,7 @@
             tbPort.BackColor = Color.FromArgb(30, 42, 56);
             tbPort.BorderStyle = BorderStyle.FixedSingle;
             tbPort.ForeColor = Color.FromArgb(226, 232, 240);
-            tbPort.Location = new Point(12, 396);
+            tbPort.Location = new Point(12, 453);
             tbPort.Name = "tbPort";
             tbPort.PlaceholderText = "Porta Padrão = 3050";
             tbPort.Size = new Size(136, 23);
@@ -201,7 +207,7 @@
             // 
             label6.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label6.ForeColor = Color.FromArgb(226, 232, 240);
-            label6.Location = new Point(12, 371);
+            label6.Location = new Point(12, 428);
             label6.Name = "label6";
             label6.Size = new Size(148, 23);
             label6.TabIndex = 12;
@@ -212,7 +218,7 @@
             // 
             label7.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label7.ForeColor = Color.FromArgb(226, 232, 240);
-            label7.Location = new Point(12, 422);
+            label7.Location = new Point(12, 479);
             label7.Name = "label7";
             label7.Size = new Size(148, 23);
             label7.TabIndex = 14;
@@ -224,7 +230,7 @@
             tbAuxPort.BackColor = Color.FromArgb(30, 42, 56);
             tbAuxPort.BorderStyle = BorderStyle.FixedSingle;
             tbAuxPort.ForeColor = Color.FromArgb(226, 232, 240);
-            tbAuxPort.Location = new Point(12, 447);
+            tbAuxPort.Location = new Point(12, 504);
             tbAuxPort.Name = "tbAuxPort";
             tbAuxPort.PlaceholderText = "Porta Padrão = 3051";
             tbAuxPort.Size = new Size(136, 23);
@@ -247,11 +253,84 @@
             tbErroCaminhoBanco.BackColor = Color.FromArgb(17, 24, 39);
             tbErroCaminhoBanco.BorderStyle = BorderStyle.None;
             tbErroCaminhoBanco.ForeColor = Color.FromArgb(248, 113, 113);
-            tbErroCaminhoBanco.Location = new Point(12, 243);
+            tbErroCaminhoBanco.Location = new Point(12, 236);
             tbErroCaminhoBanco.Name = "tbErroCaminhoBanco";
             tbErroCaminhoBanco.Size = new Size(396, 16);
             tbErroCaminhoBanco.TabIndex = 16;
             tbErroCaminhoBanco.Visible = false;
+            // 
+            // radioNotas
+            // 
+            radioNotas.AutoSize = true;
+            radioNotas.ForeColor = Color.FromArgb(226, 232, 240);
+            radioNotas.Location = new Point(84, 84);
+            radioNotas.Name = "radioNotas";
+            radioNotas.Size = new Size(56, 19);
+            radioNotas.TabIndex = 34;
+            radioNotas.TabStop = true;
+            radioNotas.Text = "Notas";
+            radioNotas.UseVisualStyleBackColor = true;
+            radioNotas.CheckedChanged += radioNotas_CheckedChanged;
+            // 
+            // radioImoveis
+            // 
+            radioImoveis.AutoSize = true;
+            radioImoveis.ForeColor = Color.FromArgb(226, 232, 240);
+            radioImoveis.Location = new Point(12, 84);
+            radioImoveis.Name = "radioImoveis";
+            radioImoveis.Size = new Size(66, 19);
+            radioImoveis.TabIndex = 33;
+            radioImoveis.TabStop = true;
+            radioImoveis.Text = "Imóveis";
+            radioImoveis.UseVisualStyleBackColor = true;
+            // 
+            // tbErroCaminhoImagens
+            // 
+            tbErroCaminhoImagens.BackColor = Color.FromArgb(17, 24, 39);
+            tbErroCaminhoImagens.BorderStyle = BorderStyle.None;
+            tbErroCaminhoImagens.ForeColor = Color.FromArgb(248, 113, 113);
+            tbErroCaminhoImagens.Location = new Point(12, 314);
+            tbErroCaminhoImagens.Name = "tbErroCaminhoImagens";
+            tbErroCaminhoImagens.Size = new Size(396, 16);
+            tbErroCaminhoImagens.TabIndex = 38;
+            tbErroCaminhoImagens.Visible = false;
+            // 
+            // label8
+            // 
+            label8.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label8.ForeColor = Color.FromArgb(226, 232, 240);
+            label8.Location = new Point(12, 259);
+            label8.Name = "label8";
+            label8.Size = new Size(272, 23);
+            label8.TabIndex = 37;
+            label8.Text = "Selecione o caminho da pasta CartsysImagens";
+            label8.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // btnImagens
+            // 
+            btnImagens.BackColor = Color.FromArgb(30, 42, 56);
+            btnImagens.FlatAppearance.BorderSize = 0;
+            btnImagens.FlatStyle = FlatStyle.Flat;
+            btnImagens.ForeColor = Color.FromArgb(226, 232, 240);
+            btnImagens.Location = new Point(391, 285);
+            btnImagens.Name = "btnImagens";
+            btnImagens.Size = new Size(28, 23);
+            btnImagens.TabIndex = 36;
+            btnImagens.Text = "...";
+            btnImagens.UseVisualStyleBackColor = true;
+            btnImagens.Click += btnImagens_Click;
+            // 
+            // textBox4
+            // 
+            textBox4.BackColor = Color.FromArgb(30, 42, 56);
+            textBox4.BorderStyle = BorderStyle.FixedSingle;
+            textBox4.ForeColor = Color.FromArgb(226, 232, 240);
+            textBox4.Location = new Point(12, 285);
+            textBox4.Name = "textBox4";
+            textBox4.PlaceholderText = "Caminho pasta imagens";
+            textBox4.ReadOnly = true;
+            textBox4.Size = new Size(378, 23);
+            textBox4.TabIndex = 35;
             // 
             // ConfigsForm
             // 
@@ -259,6 +338,12 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(17, 24, 39);
             ClientSize = new Size(991, 626);
+            Controls.Add(tbErroCaminhoImagens);
+            Controls.Add(label8);
+            Controls.Add(btnImagens);
+            Controls.Add(textBox4);
+            Controls.Add(radioNotas);
+            Controls.Add(radioImoveis);
             Controls.Add(tbErroCaminhoBanco);
             Controls.Add(tbErroCaminhoCartorio);
             Controls.Add(label7);
@@ -301,5 +386,11 @@
         private TextBox tbAuxPort;
         private TextBox tbErroCaminhoCartorio;
         private TextBox tbErroCaminhoBanco;
+        private RadioButton radioNotas;
+        private RadioButton radioImoveis;
+        private TextBox tbErroCaminhoImagens;
+        private Label label8;
+        private Button btnImagens;
+        private TextBox textBox4;
     }
 }

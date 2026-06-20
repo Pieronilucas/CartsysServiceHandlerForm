@@ -8,7 +8,7 @@ namespace CartsysControlPanel.Infrastructure.System
     public static class RegistryHandler
     {
         private readonly static string _userRoot = "HKEY_CURRENT_USER\\Software\\";
-        public static void CreateRegistryKey(string dbPath, string? cartorioPath = null)
+        public static void CreateImoveisReg(string dbPath, string? cartorioPath = null)
         {
             try
             {
@@ -20,6 +20,8 @@ namespace CartsysControlPanel.Infrastructure.System
                 }
 
                 string scSistema = _userRoot + @"SC Sistemas\";
+                int position = cartorioPath.LastIndexOf('\\') + 1;
+                string cartorio = cartorioPath.Substring(position);
 
                 // ACESSO
                 Registry.SetValue(scSistema + "ACESSO", "Porta", "3051");
@@ -36,7 +38,7 @@ namespace CartsysControlPanel.Infrastructure.System
 
                 // Atualiza e BDS
                 Registry.SetValue(scSistema + "Atualiza", "Caminho", $@"{cartorioPath}\");
-                Registry.SetValue(scSistema + "BDS", "CaminhoSaidaArquivo", $@"\\{_serverName}\cartorio\BDS\");
+                Registry.SetValue(scSistema + "BDS", "CaminhoSaidaArquivo", $@"\\{_serverName}\{cartorio}\BDS\");
 
                 // Biometria, Certificado, DAP
                 Registry.SetValue(scSistema + "BIOMETRIA", "ATIVADO", "0");
@@ -47,11 +49,11 @@ namespace CartsysControlPanel.Infrastructure.System
                 string dicKey = scSistema + @"Dicionario\Cartorio";
                 Registry.SetValue(dicKey, "_FirstRun", "+");
                 Registry.SetValue(dicKey, "_Main_count", "1");
-                Registry.SetValue(dicKey, "_Main_0", $"\\\\{_serverName}\\cartorio\\Dicionario.adm");
+                Registry.SetValue(dicKey, "_Main_0", $"\\\\{_serverName}\\{cartorio}\\Dicionario.adm");
                 Registry.SetValue(dicKey, "_Custom_count", "1");
-                Registry.SetValue(dicKey, "_Custom_0", $"\\\\{_serverName}\\cartorio\\DicPersonal.adu");
+                Registry.SetValue(dicKey, "_Custom_0", $"\\\\{_serverName}\\{cartorio}\\DicPersonal.adu");
                 Registry.SetValue(dicKey, "_MSWordCustom_count", "0");
-                Registry.SetValue(dicKey, "_ActiveCustom", $"\\\\{_serverName}\\cartorio\\DicPersonal.adu");
+                Registry.SetValue(dicKey, "_ActiveCustom", $"\\\\{_serverName}\\{cartorio}\\DicPersonal.adu");
                 Registry.SetValue(dicKey, "_soUpcase", "-");
                 Registry.SetValue(dicKey, "_soNumbers", "-");
                 Registry.SetValue(dicKey, "_soHTML", "-");
@@ -89,9 +91,9 @@ namespace CartsysControlPanel.Infrastructure.System
 
                 // Notificação e SeloE
                 Registry.SetValue(scSistema + "Notificacao", "ExibirNotificacao", 1, RegistryValueKind.DWord);
-                Registry.SetValue(scSistema + "SeloE", "CaminhoSaidaXML", $@"\\{_serverName}\cartorio\LOG_SELOE\");
+                Registry.SetValue(scSistema + "SeloE", "CaminhoSaidaXML", $@"\\{_serverName}\{cartorio}\LOG_SELOE\");
 
-                LoggingFile.Info("Chaves de registro criadas/atualizadas com sucesso.");
+                LoggingFile.Info("Chaves de registro do imóveis criadas/atualizadas com sucesso.");
             }
             catch (SecurityException sEx)
             {
@@ -118,6 +120,98 @@ namespace CartsysControlPanel.Infrastructure.System
                 LoggingFile.Error($"Erro inesperado ao tentar gravar no Registro do Windows. {ex.Message}", ex);
                 throw;
             }
+        }
+
+        public static void CreateNotasReg(string dbPath, string? cartorioPath = null, string? imagePath = null)
+        {
+            try
+            {
+                string _serverName = NetworkHandler.ServerName();
+
+                if (_serverName == null)
+                {
+                    LoggingFile.Error("Não foi possível obter o nome do servidor. Verifique a conexão de rede e as configurações do sistema.");
+                }
+
+                string Cartsys = _userRoot + @"CartSys\Notas\";
+                int position = cartorioPath.LastIndexOf('\\') +1;
+                string cartorio = cartorioPath.Substring(position);
+
+
+
+                // Atualiza e CENSEC
+                Registry.SetValue(Cartsys + "Atualiza", "Caminho", $@"{cartorioPath}\");
+                Registry.SetValue(Cartsys + "CENSEC", "CaminhoSaidaXML", $@"\\{_serverName}\{cartorio}\CENSEC\");
+
+                // Biometria
+                Registry.SetValue(Cartsys + "BIOMETRIA", "ATIVADO", 0);
+
+                // Configuracoes
+                Registry.SetValue(Cartsys + "Configuracoes", "SysUser", "Cartsys");
+
+                // DAP
+                Registry.SetValue(Cartsys + "DAP", "CaminhoSaidaXML", @"C:\Users\cartorio\Desktop");
+                
+
+                // Digitalização
+                string digKey = Cartsys + "DIGITALIZACAO";
+                Registry.SetValue(digKey, "OPCAO", 0);
+                Registry.SetValue(digKey, "ScannerPadrao", "");
+                Registry.SetValue(digKey, "ROTACAO", "iearNone");
+                Registry.SetValue(digKey, "CONTRASTE", 0);
+                Registry.SetValue(digKey, "LIMIAR", 0);
+                Registry.SetValue(digKey, "ASSISTENTE_DIGITALIZACAO", 0);
+                Registry.SetValue(digKey, "FRENTE_VERSO_DIGITALIZACAO", 0);
+                Registry.SetValue(digKey, "SEL_SCANNER_DIGITALIZACAO", 0);
+                Registry.SetValue(digKey, "RESOLUCAO_DIGITALIZACAO", 100);
+                Registry.SetValue(digKey, "CAMINHO_IMAGEM", $@"{imagePath}\");
+
+                
+
+
+                // FIREBIRD (Configurações de Banco de Dados)
+                string firebird = Cartsys + "FIREBIRD";
+                Registry.SetValue(firebird, "Conexao", 2, RegistryValueKind.DWord);
+                Registry.SetValue(firebird, "Protocolo", 2, RegistryValueKind.DWord);
+                Registry.SetValue(firebird, "Servidor", _serverName);
+                Registry.SetValue(firebird, "DBCartorio", dbPath);
+                Registry.SetValue(firebird, "ATIVADO", "0");
+                Registry.SetValue(firebird, "Usuario", "SYSDBA");
+                Registry.SetValue(firebird, "Senha", "?3!&7 97+");
+
+                // Layout
+
+                // SeloE
+                Registry.SetValue(Cartsys + "SeloE", "CaminhoSaidaXML", $@"\\{_serverName}\{cartorio}\LOG_SELOE\");
+
+                LoggingFile.Info("Chaves de registro do notas criadas/atualizadas com sucesso.");
+            }
+            catch (SecurityException sEx)
+            {
+                LoggingFile.Error($"Permissões insuficientes para gravar no Registro do Windows. {sEx.Message}", sEx);
+                throw;
+            }
+            catch (UnauthorizedAccessException uaEx)
+            {
+                LoggingFile.Error($"Acesso negado ao tentar gravar no Registro do Windows. {uaEx.Message}", uaEx);
+                throw;
+            }
+            catch (IOException ioEx)
+            {
+                LoggingFile.Error($"Erro de I/O ao tentar gravar no Registro do Windows. {ioEx.Message}", ioEx);
+                throw;
+            }
+            catch (ArgumentException argEx)
+            {
+                LoggingFile.Error($"Argumento inválido ao tentar gravar no Registro do Windows. {argEx.Message}", argEx);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                LoggingFile.Error($"Erro inesperado ao tentar gravar no Registro do Windows. {ex.Message}", ex);
+                throw;
+            }
+
         }
     }
 }

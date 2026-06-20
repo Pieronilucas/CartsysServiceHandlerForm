@@ -36,5 +36,13 @@ namespace CartsysControlPanel.Views
             tbPassword.Clear();
             Close();
         }
+
+        private void CredentialForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnContinue_Click(btnContinue, EventArgs.Empty); 
+            }
+        }
     }
 }

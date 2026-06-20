@@ -11,23 +11,30 @@ namespace CartsysControlPanel.Views
     {
         private static string _cartorioPath;
         private static string _dbPath;
+        private static string _imagensPath;
         public ConfigsForm()
         {
             InitializeComponent();
+            textBox4.Visible = false;
+            btnImagens.Visible = false;
+            label8.Visible = false;
+            radioImoveis.Checked = true;
         }
 
         private void btnCreateRegistry_Click(object sender, EventArgs e)
         {
-            
+
             if (!validatePaths())
             {
                 return;
             }
 
-            try
-                { 
-                    RegistryHandler.CreateRegistryKey(_dbPath, _cartorioPath);
-                    MessageBox.Show("Configurações salvas com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (radioImoveis.Checked)
+            {
+                try
+                {
+                    RegistryHandler.CreateImoveisReg(_dbPath, _cartorioPath);
+                    MessageBox.Show("Regedit do imóveis criado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (SecurityException sEx)
                 {
@@ -49,48 +56,140 @@ namespace CartsysControlPanel.Views
                 {
                     MessageBox.Show($"Ocorreu um erro inesperado: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+            else
+            {
+                try
+                {
+                    RegistryHandler.CreateNotasReg(_dbPath, _cartorioPath, _imagensPath);
+                    MessageBox.Show("Regedit do notas criado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (SecurityException sEx)
+                {
+                    MessageBox.Show("Permissão negada. Por favor, execute o aplicativo como administrador para salvar as configurações.", "Erro de Permissão", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (UnauthorizedAccessException uaEx)
+                {
+                    MessageBox.Show("Acesso negado. Por favor, execute o aplicativo como administrador para salvar as configurações.", "Erro de Acesso", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (IOException ioEx)
+                {
+                    MessageBox.Show("Erro de I/O ao tentar gravar no Registro do Windows. Verifique se o caminho do banco de dados é válido e se você tem permissão para acessar o Registro.", "Erro de I/O", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (ArgumentException argEx)
+                {
+                    MessageBox.Show($"Erro de argumento: {argEx.Message}. Verifique se os caminhos fornecidos são válidos.", "Erro de Argumento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ocorreu um erro inesperado: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private bool validatePaths()
         {
-            if(string.IsNullOrEmpty(_cartorioPath) && string.IsNullOrEmpty(_dbPath))
+            if (radioImoveis.Checked)
             {
-                tbErroCaminhoCartorio.Text = "Por favor, selecione o caminho do cartório antes de salvar.";
-                tbErroCaminhoCartorio.Visible = true;
-                tbErroCaminhoBanco.Text = "Por favor, selecione o caminho do banco de dados antes de salvar.";
-                tbErroCaminhoBanco.Visible = true;
-                textBox1.Focus();
-                return false;
-            }
+                if (string.IsNullOrEmpty(_cartorioPath) && string.IsNullOrEmpty(_dbPath))
+                {
+                    tbErroCaminhoCartorio.Text = "Por favor, selecione o caminho do cartório antes de salvar.";
+                    tbErroCaminhoCartorio.Visible = true;
+                    tbErroCaminhoBanco.Text = "Por favor, selecione o caminho do banco de dados antes de salvar.";
+                    tbErroCaminhoBanco.Visible = true;
+                    textBox1.Focus();
+                    return false;
+                }
 
-            if (string.IsNullOrEmpty(_cartorioPath))
-            {
-                tbErroCaminhoCartorio.Text = "Por favor, selecione o caminho do cartório antes de salvar.";
-                tbErroCaminhoCartorio.Visible = true;
-                textBox1.Focus();
-                return false;
-            }
-            else
-            {
-                tbErroCaminhoCartorio.Visible = false;
-            }
-            if (string.IsNullOrEmpty(_dbPath))
-            {
-                tbErroCaminhoBanco.Text = "Por favor, selecione o caminho do banco de dados antes de salvar.";
-                tbErroCaminhoBanco.Visible = true;
-                textBox2.Focus();
-                return false;
-            }
-            else
-            {
+                if (string.IsNullOrEmpty(_cartorioPath))
+                {
+                    tbErroCaminhoCartorio.Text = "Por favor, selecione o caminho do cartório antes de salvar.";
+                    tbErroCaminhoCartorio.Visible = true;
+                    textBox1.Focus();
+                    return false;
+                }
+                else
+                {
+                    tbErroCaminhoCartorio.Visible = false;
+                }
+                if (string.IsNullOrEmpty(_dbPath))
+                {
+                    tbErroCaminhoBanco.Text = "Por favor, selecione o caminho do banco de dados antes de salvar.";
+                    tbErroCaminhoBanco.Visible = true;
+                    textBox2.Focus();
+                    return false;
+                }
+                else
+                {
+                    tbErroCaminhoBanco.Visible = false;
+                }
+
                 tbErroCaminhoBanco.Visible = false;
+                tbErroCaminhoCartorio.Visible = false;
+                return true;
             }
+            else
+            {
+                if (radioImoveis.Checked)
+                {
+                    if (string.IsNullOrEmpty(_cartorioPath) && string.IsNullOrEmpty(_dbPath) && string.IsNullOrEmpty(_imagensPath))
+                    {
+                        tbErroCaminhoCartorio.Text = "Por favor, selecione o caminho do cartório antes de salvar.";
+                        tbErroCaminhoCartorio.Visible = true;
+                        tbErroCaminhoBanco.Text = "Por favor, selecione o caminho do banco de dados antes de salvar.";
+                        tbErroCaminhoBanco.Visible = true;
+                        tbErroCaminhoImagens.Text = "Por favor, selecione o caminho das imagens antes de salvar.";
+                        tbErroCaminhoImagens.Visible = true;
+                        textBox1.Focus();
+                        return false;
+                    }
 
-            tbErroCaminhoBanco.Visible = false;
-            tbErroCaminhoCartorio.Visible = false;
-            return true;
+                    if (string.IsNullOrEmpty(_cartorioPath))
+                    {
+                        tbErroCaminhoCartorio.Text = "Por favor, selecione o caminho do cartório antes de salvar.";
+                        tbErroCaminhoCartorio.Visible = true;
+                        textBox1.Focus();
+                        return false;
+                    }
+                    else
+                    {
+                        tbErroCaminhoCartorio.Visible = false;
+                    }
+                    if (string.IsNullOrEmpty(_dbPath))
+                    {
+                        tbErroCaminhoBanco.Text = "Por favor, selecione o caminho do banco de dados antes de salvar.";
+                        tbErroCaminhoBanco.Visible = true;
+                        textBox2.Focus();
+                        return false;
+                    }
+                    else
+                    {
+                        tbErroCaminhoBanco.Visible = false;
+                    }
+                    if (!string.IsNullOrEmpty(_dbPath))
+                    {
+                        tbErroCaminhoImagens.Text = "Por favor, selecione o caminho das imagens antes de salvar.";
+                        tbErroCaminhoImagens.Visible = true;
+                        textBox4.Focus();
+                        return false;
+                    }
+                    else
+                    {
+                        tbErroCaminhoImagens.Visible = false;
+                    }
+
+                    tbErroCaminhoBanco.Visible = false;
+                    tbErroCaminhoCartorio.Visible = false;
+                    tbErroCaminhoImagens.Visible = false;
+                    return true;
+                }
+                tbErroCaminhoBanco.Visible = false;
+                tbErroCaminhoCartorio.Visible = false;
+                tbErroCaminhoImagens.Visible = false;
+                return true;
+
+            }
         }
-
         private void btnFbdCartorio_Click(object sender, EventArgs e)
         {
             using (var fdb = new FolderBrowserDialog())
@@ -197,6 +296,33 @@ namespace CartsysControlPanel.Views
             tbAuxPort.MaxLength = 5;
         }
 
+        private void btnImagens_Click(object sender, EventArgs e)
+        {
+            using (var fdb = new FolderBrowserDialog())
+            {
+                fdb.InitialDirectory = @"C:\";
+                if (fdb.ShowDialog() == DialogResult.OK)
+                {
+                    textBox4.Text = fdb.SelectedPath;
+                    _imagensPath = fdb.SelectedPath;
+                }
+            }
+        }
 
+        private void radioNotas_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioNotas.Checked)
+            {
+                textBox4.Visible = true;
+                btnImagens.Visible = true;
+                label8.Visible = true;
+            }
+            else
+            {
+                textBox4.Visible = false;
+                btnImagens.Visible = false;
+                label8.Visible = false;
+            }
+        }
     }
 }

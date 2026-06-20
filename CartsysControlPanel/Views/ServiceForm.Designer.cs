@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             panelServicos = new FlowLayoutPanel();
+            radioImoveis = new RadioButton();
+            radioNotas = new RadioButton();
             panelActions = new Panel();
             btnStopService = new Button();
             btnStopAll = new Button();
@@ -41,6 +43,7 @@
             btnInstall = new Button();
             btnInstallAll = new Button();
             btnUninstall = new Button();
+            panelServicos.SuspendLayout();
             panelActions.SuspendLayout();
             SuspendLayout();
             // 
@@ -48,6 +51,8 @@
             // 
             panelServicos.AutoScroll = true;
             panelServicos.BackColor = Color.FromArgb(17, 24, 39);
+            panelServicos.Controls.Add(radioImoveis);
+            panelServicos.Controls.Add(radioNotas);
             panelServicos.Dock = DockStyle.Left;
             panelServicos.FlowDirection = FlowDirection.TopDown;
             panelServicos.Location = new Point(0, 0);
@@ -57,6 +62,31 @@
             panelServicos.Size = new Size(280, 681);
             panelServicos.TabIndex = 2;
             panelServicos.Paint += panelServicos_Paint;
+            // 
+            // radioImoveis
+            // 
+            radioImoveis.AutoSize = true;
+            radioImoveis.ForeColor = Color.FromArgb(226, 232, 240);
+            radioImoveis.Location = new Point(3, 3);
+            radioImoveis.Name = "radioImoveis";
+            radioImoveis.Size = new Size(66, 19);
+            radioImoveis.TabIndex = 0;
+            radioImoveis.TabStop = true;
+            radioImoveis.Text = "Imóveis";
+            radioImoveis.UseVisualStyleBackColor = true;
+            radioImoveis.CheckedChanged += radioImoveis_CheckedChanged;
+            // 
+            // radioNotas
+            // 
+            radioNotas.AutoSize = true;
+            radioNotas.ForeColor = Color.FromArgb(226, 232, 240);
+            radioNotas.Location = new Point(3, 28);
+            radioNotas.Name = "radioNotas";
+            radioNotas.Size = new Size(56, 19);
+            radioNotas.TabIndex = 15;
+            radioNotas.TabStop = true;
+            radioNotas.Text = "Notas";
+            radioNotas.UseVisualStyleBackColor = true;
             // 
             // panelActions
             // 
@@ -174,7 +204,7 @@
             btnReboot.Name = "btnReboot";
             btnReboot.Size = new Size(400, 40);
             btnReboot.TabIndex = 8;
-            btnReboot.Text = "Colocar serviços para reinicializar";
+            btnReboot.Text = "Colocar serviços para reinicializar em caso de falha";
             btnReboot.UseVisualStyleBackColor = false;
             btnReboot.Click += btnReboot_Click;
             // 
@@ -250,6 +280,8 @@
             Text = "ServiceForm";
             Load += ServiceForm_Load;
             Shown += ServiceForm_Shown;
+            panelServicos.ResumeLayout(false);
+            panelServicos.PerformLayout();
             panelActions.ResumeLayout(false);
             panelActions.PerformLayout();
             ResumeLayout(false);
@@ -269,5 +301,7 @@
         private Button btnInitAllServices;
         private Button btnStopService;
         private Button btnStopAll;
+        private RadioButton radioImoveis;
+        private RadioButton radioNotas;
     }
 }

@@ -32,10 +32,12 @@
             lbSerialHd = new Label();
             tbServer = new TextBox();
             tbHqbirdInstalled = new TextBox();
-            tbServicesInstalled = new TextBox();
+            tbServicesInstalledImoveis = new TextBox();
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
+            label4 = new Label();
+            tbServicesInstalledNotas = new TextBox();
             SuspendLayout();
             // 
             // tbSerialHd
@@ -51,7 +53,6 @@
             tbSerialHd.Size = new Size(102, 26);
             tbSerialHd.TabIndex = 0;
             tbSerialHd.TextAlign = HorizontalAlignment.Center;
-            tbSerialHd.TextChanged += tbSerialHd_TextChanged;
             // 
             // lbSerialHd
             // 
@@ -76,7 +77,6 @@
             tbServer.Size = new Size(102, 26);
             tbServer.TabIndex = 3;
             tbServer.TextAlign = HorizontalAlignment.Center;
-            tbServer.TextChanged += tbServer_TextChanged;
             // 
             // tbHqbirdInstalled
             // 
@@ -92,19 +92,19 @@
             tbHqbirdInstalled.TabIndex = 4;
             tbHqbirdInstalled.TextAlign = HorizontalAlignment.Center;
             // 
-            // tbServicesInstalled
+            // tbServicesInstalledImoveis
             // 
-            tbServicesInstalled.BackColor = Color.FromArgb(30, 42, 56);
-            tbServicesInstalled.BorderStyle = BorderStyle.FixedSingle;
-            tbServicesInstalled.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            tbServicesInstalled.ForeColor = Color.FromArgb(226, 232, 240);
-            tbServicesInstalled.Location = new Point(25, 360);
-            tbServicesInstalled.Multiline = true;
-            tbServicesInstalled.Name = "tbServicesInstalled";
-            tbServicesInstalled.ReadOnly = true;
-            tbServicesInstalled.Size = new Size(102, 26);
-            tbServicesInstalled.TabIndex = 5;
-            tbServicesInstalled.TextAlign = HorizontalAlignment.Center;
+            tbServicesInstalledImoveis.BackColor = Color.FromArgb(30, 42, 56);
+            tbServicesInstalledImoveis.BorderStyle = BorderStyle.FixedSingle;
+            tbServicesInstalledImoveis.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            tbServicesInstalledImoveis.ForeColor = Color.FromArgb(226, 232, 240);
+            tbServicesInstalledImoveis.Location = new Point(25, 360);
+            tbServicesInstalledImoveis.Multiline = true;
+            tbServicesInstalledImoveis.Name = "tbServicesInstalledImoveis";
+            tbServicesInstalledImoveis.ReadOnly = true;
+            tbServicesInstalledImoveis.Size = new Size(102, 26);
+            tbServicesInstalledImoveis.TabIndex = 5;
+            tbServicesInstalledImoveis.TextAlign = HorizontalAlignment.Center;
             // 
             // label1
             // 
@@ -131,10 +131,34 @@
             label3.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label3.Location = new Point(25, 334);
             label3.Name = "label3";
-            label3.Size = new Size(234, 23);
+            label3.Size = new Size(297, 23);
             label3.TabIndex = 8;
-            label3.Text = "SERVIÇOS CARTSYS INSTALADOS";
+            label3.Text = "SERVIÇOS CARTSYS IMÓVEIS INSTALADOS";
             label3.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label4
+            // 
+            label4.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label4.Location = new Point(25, 432);
+            label4.Name = "label4";
+            label4.Size = new Size(297, 23);
+            label4.TabIndex = 10;
+            label4.Text = "SERVIÇOS CARTSYS NOTAS INSTALADOS";
+            label4.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // tbServicesInstalledNotas
+            // 
+            tbServicesInstalledNotas.BackColor = Color.FromArgb(30, 42, 56);
+            tbServicesInstalledNotas.BorderStyle = BorderStyle.FixedSingle;
+            tbServicesInstalledNotas.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            tbServicesInstalledNotas.ForeColor = Color.FromArgb(226, 232, 240);
+            tbServicesInstalledNotas.Location = new Point(25, 458);
+            tbServicesInstalledNotas.Multiline = true;
+            tbServicesInstalledNotas.Name = "tbServicesInstalledNotas";
+            tbServicesInstalledNotas.ReadOnly = true;
+            tbServicesInstalledNotas.Size = new Size(102, 26);
+            tbServicesInstalledNotas.TabIndex = 9;
+            tbServicesInstalledNotas.TextAlign = HorizontalAlignment.Center;
             // 
             // MenuPrincipal
             // 
@@ -142,10 +166,12 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(17, 24, 39);
             ClientSize = new Size(1264, 681);
+            Controls.Add(label4);
+            Controls.Add(tbServicesInstalledNotas);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
-            Controls.Add(tbServicesInstalled);
+            Controls.Add(tbServicesInstalledImoveis);
             Controls.Add(tbHqbirdInstalled);
             Controls.Add(tbServer);
             Controls.Add(lbSerialHd);
@@ -166,8 +192,10 @@
         private Label lbSerialHd;
         private TextBox tbServer;
         private TextBox tbHqbirdInstalled;
-        private TextBox tbServicesInstalled;
+        private TextBox tbServicesInstalledImoveis;
         private Label label2;
         private Label label3;
+        private Label label4;
+        private TextBox tbServicesInstalledNotas;
     }
 }

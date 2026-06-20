@@ -19,24 +19,11 @@ namespace CartsysControlPanel.Views
             tbSerialHd.Text = HardwareHandler.GetHdSerial();
             tbServer.Text = NetworkHandler.ServerName() ?? "Não foi possível determinar";
             tbHqbirdInstalled.Text = ServiceHandler.IsServiceInstalled("FirebirdServerHQBirdInstanceFB3") ? "Sim" : "Não";
-            tbServicesInstalled.Text = $"{ServiceHandler.CartsysServicesInstalled().ToString()}/10";
+            tbServicesInstalledImoveis.Text = $"{ServiceHandler.CartsysServicesInstalled(isImoveis:true).ToString()}/10";
+            tbServicesInstalledNotas.Text = $"{ServiceHandler.CartsysServicesInstalled(isImoveis:false).ToString()}/10";
         }
 
         private void MenuPrincipal_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void tbSerialHd_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tbServer_TextChanged(object sender, EventArgs e)
         {
 
         }

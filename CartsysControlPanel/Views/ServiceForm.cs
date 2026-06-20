@@ -1,5 +1,6 @@
 ﻿using CartsysControlPanel.Infrastructure.System;
 using System.ComponentModel;
+using System.Xaml;
 using static CartsysControlPanel.Infrastructure.System.ServiceHandler;
 
 namespace CartsysControlPanel.Views
@@ -14,6 +15,7 @@ namespace CartsysControlPanel.Views
         private static readonly Color _colorInactive = Color.FromArgb(30, 42, 56);
         private static readonly Color _colorActive = Color.FromArgb(30, 58, 95);
         private static readonly Color _colorText = Color.FromArgb(226, 232, 240);
+        private static bool _isImoveis;
         public bool IsProcessing { get; private set; }
         public event EventHandler ProcessingChanged;
 
@@ -31,11 +33,19 @@ namespace CartsysControlPanel.Views
         {7, ("Update", Properties.Resources.cartsys)},
         {8, ("Parcela Express", Properties.Resources.cartsys)},
         {9, ("SignalR Cliente", Properties.Resources.signalr)},
-        {10, ("Alertas", Properties.Resources.cartsys)}
+        {10, ("Alertas", Properties.Resources.cartsys)},
+        {11, ("Alertas Notas", Properties.Resources.cartsys)}
     };
+        private Dictionary<int, (string name, Image Icone)> _getActiveServices()
+        {
+            return _serviceNames
+                .Where(s => s.Key != (_isImoveis ? 11 : 10))
+                .ToDictionary(s => s.Key, s => s.Value);
+        }
         public ServiceForm()
         {
             InitializeComponent();
+            radioImoveis.Checked = true;
         }
         private void CenterServiceList()
         {
@@ -105,7 +115,7 @@ namespace CartsysControlPanel.Views
             btnStopAll.Location = new Point(col2x, startY + labelHeight + 5 + (btnHeight + spacing) * 3);
 
             btnReboot.Size = new Size(btnWidth, btnHeight);
-            btnReboot.Location = new Point(panelActions.Width / 2 - btnWidth / 2, startY + (blockHeight*2) + separatorHeight +  + 5);
+            btnReboot.Location = new Point(panelActions.Width / 2 - btnWidth / 2, startY + (blockHeight * 2) + separatorHeight + +5);
 
         }
         private void ResetButtonPositions()
@@ -149,13 +159,19 @@ namespace CartsysControlPanel.Views
         }
         private void LoadServiceButtons()
         {
+            var toRemove = panelServicos.Controls
+                .OfType<Panel>()
+                .ToList();
 
-            foreach (var service in _serviceNames)
+            foreach (var p in toRemove)
+                panelServicos.Controls.Remove(p);
+            foreach (var service in _getActiveServices())
             {
                 var status = ServiceHandler.GetServiceStatus(service.Key);
                 var panel = CreateServiceButton(service.Value.name, service.Key, status);
                 panelServicos.Controls.Add(panel);
             }
+            CenterServiceList();
         }
         private static string GetStatusText(ServiceStatus status) => status switch
         {
@@ -333,8 +349,12 @@ namespace CartsysControlPanel.Views
 
             try
             {
-                await ServiceHandler.ServiceInstallAll();
+                await ServiceHandler.ServiceInstallAll(_isImoveis);
                 MessageBox.Show("Todos os serviços foram instalados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (ArgumentException aE)
+            {
+                MessageBox.Show(aE.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Win32Exception ex) when (ex.NativeErrorCode == 5) // Erro de Acesso Negado
             {
@@ -369,7 +389,7 @@ namespace CartsysControlPanel.Views
 
             try
             {
-                await ServiceHandler.ServiceUninstallAll();
+                await ServiceHandler.ServiceUninstallAll(_isImoveis);
                 MessageBox.Show("Todos os serviços foram desinstalados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Win32Exception wEx)
@@ -394,8 +414,12 @@ namespace CartsysControlPanel.Views
 
             try
             {
-                await ServiceHandler.ServiceInstaller(_selectedService);
+                await ServiceHandler.ServiceInstaller(_selectedService, _isImoveis);
                 MessageBox.Show("Serviço instalado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (ArgumentException aE)
+            {
+                MessageBox.Show(aE.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Win32Exception ex) when (ex.NativeErrorCode == 5) // Erro de Acesso Negado
             {
@@ -440,7 +464,7 @@ namespace CartsysControlPanel.Views
             EnableAllButtons();
             btnUninstall.Text = "Desinstalar Serviço Selecionado";
             SetProcessing(false);
-            RefreshStatus(); 
+            RefreshStatus();
 
         }
 
@@ -517,7 +541,7 @@ namespace CartsysControlPanel.Views
             btnInitAllServices.Text = "Inicializando...";
             try
             {
-                await ServiceHandler.InitAllServices();
+                await ServiceHandler.InitAllServices(_isImoveis);
                 MessageBox.Show("Todos os serviços inicializados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Win32Exception wEx)
@@ -561,7 +585,7 @@ namespace CartsysControlPanel.Views
             btnStopAll.Text = "Parando...";
             try
             {
-                await ServiceHandler.StopAllServices();
+                await ServiceHandler.StopAllServices(_isImoveis);
                 MessageBox.Show("Todos os serviços parados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -571,6 +595,21 @@ namespace CartsysControlPanel.Views
             btnStopAll.Text = "Parar Todos os Serviços";
             EnableAllButtons();
             RefreshStatus();
+        }
+
+        private void radioImoveis_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioImoveis.Checked == true)
+            {
+                _isImoveis = true;
+                LoadServiceButtons();
+            }
+            else
+            {
+                _isImoveis = false;
+                LoadServiceButtons();
+            }
+
         }
     }
 }

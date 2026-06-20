@@ -1,5 +1,6 @@
 ﻿using CartsysControlPanel.Domain;
 using CartsysControlPanel.Infrastructure.Network;
+using CartsysControlPanel.Infrastructure.System;
 using CartsysControlPanel.Logging;
 using System.ComponentModel;
 
@@ -57,9 +58,27 @@ namespace CartsysControlPanel.Views
             LoggingFile.Info("Iniciando instalação do Firebird.");
             btnFirebirdInstall.Enabled = false;
             btnFirebirdInstall.Text = "Instalando...";
-            await Task.Run(() => DependencyManager.InstallFirebird());
-            btnFirebirdInstall.Enabled = true;
-            btnFirebirdInstall.Text = "Instalar Firebird";
+
+            try
+            {
+                await Task.Run(() => DependencyManager.InstallFirebird());
+                await Task.Run(() => ServiceHandler.ServiceStop("FirebirdServerDefaultInstance"));
+                await Task.Run(() => ServiceHandler.DisableService("FirebirdServerDefaultInstance"));
+                LoggingFile.Info("Firebird instalado e instância padrão desabilitada.");
+                MessageBox.Show("Firebird instalado com sucesso.", "Sucesso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                LoggingFile.Error("Falha na instalação do Firebird.", ex);
+                MessageBox.Show($"Erro: {ex.Message}", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnFirebirdInstall.Enabled = true;
+                btnFirebirdInstall.Text = "Instalar Firebird";
+            }
         }
 
         private async void btnFirebirdConfig_Click(object sender, EventArgs e)

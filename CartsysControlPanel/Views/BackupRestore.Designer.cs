@@ -126,18 +126,19 @@
             // radioBackup
             // 
             radioBackup.AutoSize = true;
-            radioBackup.Location = new Point(47, 130);
+            radioBackup.Location = new Point(47, 146);
             radioBackup.Name = "radioBackup";
             radioBackup.Size = new Size(64, 19);
             radioBackup.TabIndex = 31;
             radioBackup.TabStop = true;
             radioBackup.Text = "Backup";
             radioBackup.UseVisualStyleBackColor = true;
+            radioBackup.CheckedChanged += radioBackup_CheckedChanged;
             // 
             // radioRestore
             // 
             radioRestore.AutoSize = true;
-            radioRestore.Location = new Point(47, 155);
+            radioRestore.Location = new Point(47, 171);
             radioRestore.Name = "radioRestore";
             radioRestore.Size = new Size(64, 19);
             radioRestore.TabIndex = 32;

@@ -132,10 +132,12 @@
             Controls.Add(btnContinue);
             Controls.Add(btnCancel);
             ForeColor = Color.FromArgb(226, 232, 240);
+            KeyPreview = true;
             MaximumSize = new Size(480, 350);
             Name = "CredentialForm";
             Text = "CredentialForm";
             Load += CredentialForm_Load;
+            KeyDown += CredentialForm_KeyDown;
             ResumeLayout(false);
             PerformLayout();
         }

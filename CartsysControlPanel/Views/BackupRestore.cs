@@ -112,7 +112,7 @@ namespace CartsysControlPanel.Views
             using var file = new OpenFileDialog();
             file.Filter = "Arquivos FBK (*.fbk)|*.fbk|Banco Firebird (*.fdb)|*.fdb|Todos (*.*)|*.*";
             file.FilterIndex = 2;
-            if (radioRestore.Checked) { file.FilterIndex = 0;}         
+            if (radioRestore.Checked) { file.FilterIndex = 0; }
             file.RestoreDirectory = true;
 
             if (file.ShowDialog() == DialogResult.OK)
@@ -136,6 +136,11 @@ namespace CartsysControlPanel.Views
         {
             cbPagination.Visible = radioRestore.Checked;
             label4.Visible = radioRestore.Checked;
+        }
+
+        private void radioBackup_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

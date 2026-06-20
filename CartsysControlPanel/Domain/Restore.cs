@@ -13,19 +13,28 @@ namespace CartsysControlPanel.Domain
         {
             LoggingFile.Info($"Iniciando restore sem criptografia: '{caminhoBanco}' → '{caminhoSaida}'");
 
-            string comando = $"{_caminhoGbak} -user {user} -pas {password} -c -v -page_size {pagination} \"{caminhoBanco}\" \"localhost:{caminhoSaida}\"";
+            string comando = $"{_caminhoGbak} -user {user} -pas {password} -c -page_size {pagination} \"{caminhoBanco}\" \"localhost:{caminhoSaida}\"";
             
 
             var processo = new Process();
             processo.StartInfo.FileName = "cmd.exe";
             processo.StartInfo.Arguments = $"/c {comando}";
-            processo.StartInfo.UseShellExecute = true;
+            processo.StartInfo.RedirectStandardOutput = true;
+            processo.StartInfo.RedirectStandardError = true;
+            processo.StartInfo.UseShellExecute = false;
+            processo.StartInfo.CreateNoWindow = true;
 
             processo.Start();
-            await Task.Run(() => processo.WaitForExit());
 
-            if (processo.ExitCode != 0)
-                throw new Exception($"Restore falhou. Código de saída: {processo.ExitCode}");
+            string output = await processo.StandardOutput.ReadToEndAsync();
+            string error = await processo.StandardError.ReadToEndAsync();
+
+            await processo.WaitForExitAsync();
+
+            if (processo.ExitCode != 0 && processo.ExitCode != -1073741819)
+                throw new Exception($"Backup falhou. Código de saída: {processo.ExitCode}. \n erro: {error}");
+            if (processo.ExitCode == -1073741819)
+                throw new Exception($"Backup falhou. Código de saída: {processo.ExitCode}. Verifique se o banco não está criptografado.");
 
             LoggingFile.Info("Restore sem criptografia concluído com sucesso.");
         }
@@ -38,19 +47,26 @@ namespace CartsysControlPanel.Domain
             string[] partes = utf8Key.Split(':');
   
 
-            string comando = $"{_caminhoGbakCrypt} -keyname {partes[0]} -key \"{partes[1]}\", -user {user} -pas {password} -c -v -page_size {pagination} \"{caminhoBanco}\" \"localhost:{caminhoSaida}\"";
+            string comando = $"{_caminhoGbakCrypt} -keyname {partes[0]} -key \"{partes[1]}\", -user {user} -pas {password} -c -page_size {pagination} \"{caminhoBanco}\" \"localhost:{caminhoSaida}\"";
 
 
             var processo = new Process();
             processo.StartInfo.FileName = "cmd.exe";
             processo.StartInfo.Arguments = $"/c {comando}";
-            processo.StartInfo.UseShellExecute = true;
+            processo.StartInfo.RedirectStandardOutput = true;
+            processo.StartInfo.RedirectStandardError = true;
+            processo.StartInfo.UseShellExecute = false;
+            processo.StartInfo.CreateNoWindow = true;
 
             processo.Start();
-            await Task.Run(() => processo.WaitForExit());
+
+            string output = await processo.StandardOutput.ReadToEndAsync();
+            string error = await processo.StandardError.ReadToEndAsync();
+
+            await processo.WaitForExitAsync();
 
             if (processo.ExitCode != 0)
-                throw new Exception($"Restore com criptografia falhou. Código de saída: {processo.ExitCode}");
+                throw new Exception($"Restore com criptografia falhou. Código de saída: {processo.ExitCode}. \n erro: {error}");
 
             LoggingFile.Info("Restore com criptografia concluído com sucesso.");
         }
