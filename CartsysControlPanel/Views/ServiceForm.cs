@@ -431,7 +431,7 @@ namespace CartsysControlPanel.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"correu um erro ao tentar instalar o serviço: {_serviceNames[_selectedService].name}. {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Ocorreu um erro ao tentar instalar o serviço: {_serviceNames[_selectedService].name}. {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             EnableAllButtons();

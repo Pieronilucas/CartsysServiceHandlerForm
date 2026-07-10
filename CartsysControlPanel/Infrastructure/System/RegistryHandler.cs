@@ -155,15 +155,18 @@ namespace CartsysControlPanel.Infrastructure.System
 
                 // Digitalização
                 string digKey = Cartsys + "DIGITALIZACAO";
-                Registry.SetValue(digKey, "OPCAO", 0);
+                Registry.SetValue(digKey, "OPCAO", "0");
                 Registry.SetValue(digKey, "ScannerPadrao", "");
+                Registry.SetValue(digKey, "CORES", "ieapMonochrome");
+                Registry.SetValue(digKey, "ORIENTACAO", "ieaoPortrait");
                 Registry.SetValue(digKey, "ROTACAO", "iearNone");
-                Registry.SetValue(digKey, "CONTRASTE", 0);
-                Registry.SetValue(digKey, "LIMIAR", 0);
-                Registry.SetValue(digKey, "ASSISTENTE_DIGITALIZACAO", 0);
-                Registry.SetValue(digKey, "FRENTE_VERSO_DIGITALIZACAO", 0);
-                Registry.SetValue(digKey, "SEL_SCANNER_DIGITALIZACAO", 0);
-                Registry.SetValue(digKey, "RESOLUCAO_DIGITALIZACAO", 100);
+                Registry.SetValue(digKey, "CONTRASTE", "0");
+                Registry.SetValue(digKey, "BRILHO", "0");
+                Registry.SetValue(digKey, "LIMIAR", "0");
+                Registry.SetValue(digKey, "ASSISTENTE_DIGITALIZACAO", "0");
+                Registry.SetValue(digKey, "FRENTE_VERSO_DIGITALIZACAO", "0");
+                Registry.SetValue(digKey, "SEL_SCANNER_DIGITALIZACAO", "0");
+                Registry.SetValue(digKey, "RESOLUCAO_DIGITALIZACAO", "100");
                 Registry.SetValue(digKey, "CAMINHO_IMAGEM", $@"{imagePath}\");
 
                 
@@ -178,8 +181,6 @@ namespace CartsysControlPanel.Infrastructure.System
                 Registry.SetValue(firebird, "ATIVADO", "0");
                 Registry.SetValue(firebird, "Usuario", "SYSDBA");
                 Registry.SetValue(firebird, "Senha", "?3!&7 97+");
-
-                // Layout
 
                 // SeloE
                 Registry.SetValue(Cartsys + "SeloE", "CaminhoSaidaXML", $@"\\{_serverName}\{cartorio}\LOG_SELOE\");
