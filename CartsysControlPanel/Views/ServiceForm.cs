@@ -491,6 +491,7 @@ namespace CartsysControlPanel.Views
                 }
             });
             EnableAllButtons();
+            SetProcessing(false);
             btnReboot.Text = "Colocar serviços para reinicializar";
         }
 
