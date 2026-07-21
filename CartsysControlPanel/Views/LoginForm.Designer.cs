@@ -40,7 +40,7 @@
             // 
             pictureBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             pictureBox1.Image = Properties.Resources.cartsysLogo;
-            pictureBox1.Location = new Point(540, 190);
+            pictureBox1.Location = new Point(300, 89);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(200, 200);
             pictureBox1.TabIndex = 0;
@@ -51,7 +51,7 @@
             tbPassword.BackColor = Color.FromArgb(30, 42, 56);
             tbPassword.BorderStyle = BorderStyle.FixedSingle;
             tbPassword.ForeColor = Color.FromArgb(226, 232, 240);
-            tbPassword.Location = new Point(540, 453);
+            tbPassword.Location = new Point(300, 323);
             tbPassword.MaxLength = 15;
             tbPassword.Name = "tbPassword";
             tbPassword.Size = new Size(200, 23);
@@ -64,7 +64,7 @@
             // 
             label1.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.FromArgb(226, 232, 240);
-            label1.Location = new Point(540, 422);
+            label1.Location = new Point(300, 292);
             label1.Name = "label1";
             label1.Size = new Size(200, 23);
             label1.TabIndex = 2;
@@ -77,7 +77,7 @@
             button1.FlatAppearance.BorderSize = 0;
             button1.FlatStyle = FlatStyle.Flat;
             button1.ForeColor = Color.FromArgb(226, 232, 240);
-            button1.Location = new Point(540, 484);
+            button1.Location = new Point(300, 354);
             button1.Name = "button1";
             button1.Size = new Size(200, 37);
             button1.TabIndex = 3;
@@ -90,16 +90,16 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(17, 24, 39);
-            ClientSize = new Size(1264, 681);
+            ClientSize = new Size(784, 561);
             Controls.Add(button1);
             Controls.Add(label1);
             Controls.Add(tbPassword);
             Controls.Add(pictureBox1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
-            MaximumSize = new Size(1280, 720);
+            MaximumSize = new Size(1280, 600);
             MinimizeBox = false;
-            MinimumSize = new Size(1280, 720);
+            MinimumSize = new Size(800, 600);
             Name = "LoginForm";
             SizeGripStyle = SizeGripStyle.Hide;
             StartPosition = FormStartPosition.CenterScreen;
